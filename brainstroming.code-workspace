@@ -1,0 +1,27 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../IntegrateWise Business Operations Design"
+		}
+	],
+	"settings": {
+		"chat.agent.maxRequests": 1000,
+		"chat.agent.thinking.collapsedTools": "withThinking",
+		"chat.customAgentInSubagent.enabled": true,
+		"chat.useAgentSkills": true,
+		"chat.useNestedAgentsMdFiles": true,
+		"inlineChat.notebookAgent": true,
+		"geminicodeassist.agentDebugMode": true,
+		"files.exclude": {
+			"**/.git": true,
+			"**/.svn": true,
+			"**/.hg": true,
+			"**/.DS_Store": true,
+			"**/Thumbs.db": true,
+			".mule": true
+		}
+	}
+}
