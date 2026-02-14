@@ -7,9 +7,10 @@
 ### 📚 Core Documentation (Start Here)
 | Document | Location | Purpose |
 |----------|----------|---------|
-| Agent Navigation Guide | [CLAUDE.md](CLAUDE.md) | Complete agent navigation with architecture, implementation guides, and search tips |
+| AI Agent Navigation | [agents.md](agents.md) | **PRIMARY** - Complete agent navigation with architecture, workflows, and search patterns |
+| Complete File Index | [NAVIGATION.md](NAVIGATION.md) | Comprehensive file index with all documentation links (you are here) |
 | Repository Overview | [README.md](README.md) | Human-readable overview and getting started |
-| This Navigation Map | [NAVIGATION.md](NAVIGATION.md) | Comprehensive file index (you are here) |
+| Claude Code Guide | [CLAUDE.md](CLAUDE.md) | Claude Code specific navigation guide |
 
 ### 🏗️ Architecture & System Design
 | Document | Location | Description |

@@ -7,8 +7,8 @@
 ## 🗺️ Navigation & Documentation
 
 **For AI Agents & Developers:**
+- 🤖 **[agents.md](agents.md)** - Primary AI agent navigation guide with architecture, workflows, and search patterns
 - 📖 **[NAVIGATION.md](NAVIGATION.md)** - Complete file index with all documentation links (no blind zones)
-- 🤖 **[CLAUDE.md](CLAUDE.md)** - AI agent navigation guide with architecture, workflows, and search patterns
 - 📚 **[README.md](README.md)** - This file (overview and getting started)
 
 **Quick Links:**
