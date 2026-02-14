@@ -2,6 +2,23 @@
 
 **IntegrateWise OS** - Complete business operations platform monorepo
 
+---
+
+## 🗺️ Navigation & Documentation
+
+**For AI Agents & Developers:**
+- 📖 **[NAVIGATION.md](NAVIGATION.md)** - Complete file index with all documentation links (no blind zones)
+- 🤖 **[CLAUDE.md](CLAUDE.md)** - AI agent navigation guide with architecture, workflows, and search patterns
+- 📚 **[README.md](README.md)** - This file (overview and getting started)
+
+**Quick Links:**
+- [Architecture Diagram](apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md)
+- [Infrastructure Mapping](docs/INFRASTRUCTURE_MAPPING.md)
+- [Implementation Guide](docs/PHASE1_IMPLEMENTATION_GUIDE.md)
+- [UI/UX Audit](apps/frontend-figma/src/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md)
+
+---
+
 ## Repository Structure
 
 ### `/apps/frontend-figma/`
