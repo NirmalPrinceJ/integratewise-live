@@ -54,7 +54,8 @@
       "WebFetch(domain:api.github.com)",
       "Bash(for file in blog.tsx dashboard.tsx media.tsx pages.tsx seo.tsx theme.tsx)",
       "Bash(do echo \"=== $file ===\")",
-      "Read(//Users/nirmal/Github/**)"
+      "Read(//Users/nirmal/Github/**)",
+      "Bash(git remote set-url:*)"
     ]
   }
 }
