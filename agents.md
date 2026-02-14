@@ -6,17 +6,19 @@
 
 When you need to understand this codebase, read these files **in order**:
 
-1. **[agents.md](agents.md)** (this file) - Agent navigation and workflow
-2. **[NAVIGATION.md](NAVIGATION.md)** - Complete file index with all documentation links
-3. **[apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md](apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md)** - System architecture
-4. **[docs/INFRASTRUCTURE_MAPPING.md](docs/INFRASTRUCTURE_MAPPING.md)** - Infrastructure topology
-5. **[docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)** - Data model
+1. **[SYSTEM_SPECIFICATION.md](SYSTEM_SPECIFICATION.md)** - 🔴 **CANONICAL** technical specification (L0-L3 architecture, 8-stage pipeline, dual-loop, 15 modules, 14 components)
+2. **[agents.md](agents.md)** (this file) - Agent navigation and workflow
+3. **[NAVIGATION.md](NAVIGATION.md)** - Complete file index with all documentation links
+4. **[apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md](apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md)** - System architecture
+5. **[docs/INFRASTRUCTURE_MAPPING.md](docs/INFRASTRUCTURE_MAPPING.md)** - Infrastructure topology
+6. **[docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)** - Data model
 
 ## 📂 Critical Documents Index
 
 ### Architecture & Design
 | Document | Location | Purpose |
 |----------|----------|---------|
+| **System Specification** | [SYSTEM_SPECIFICATION.md](SYSTEM_SPECIFICATION.md) | 🔴 **CANONICAL** - Complete L0-L3 architecture, 8-stage pipeline, dual-loop, accelerators, data stores |
 | Architecture Diagram | [apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md](apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md) | Complete system architecture and component relationships |
 | Architecture Restructure | [apps/frontend-figma/src/ARCHITECTURE_RESTRUCTURE.md](apps/frontend-figma/src/ARCHITECTURE_RESTRUCTURE.md) | Restructuring plans and migration paths |
 | Infrastructure Mapping | [docs/INFRASTRUCTURE_MAPPING.md](docs/INFRASTRUCTURE_MAPPING.md) | Infrastructure topology, services, deployment architecture |

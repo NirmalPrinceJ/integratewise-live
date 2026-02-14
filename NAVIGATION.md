@@ -7,6 +7,7 @@
 ### 📚 Core Documentation (Start Here)
 | Document | Location | Purpose |
 |----------|----------|---------|
+| **System Specification** | [SYSTEM_SPECIFICATION.md](SYSTEM_SPECIFICATION.md) | 🔴 **CANONICAL** - Complete technical specification (L0-L3, 8-stage pipeline, dual-loop architecture) |
 | AI Agent Navigation | [agents.md](agents.md) | **PRIMARY** - Complete agent navigation with architecture, workflows, and search patterns |
 | Complete File Index | [NAVIGATION.md](NAVIGATION.md) | Comprehensive file index with all documentation links (you are here) |
 | Repository Overview | [README.md](README.md) | Human-readable overview and getting started |
@@ -15,6 +16,7 @@
 ### 🏗️ Architecture & System Design
 | Document | Location | Description |
 |----------|----------|-------------|
+| **System Specification** | [SYSTEM_SPECIFICATION.md](SYSTEM_SPECIFICATION.md) | 🔴 **CANONICAL** - L0-L3 architecture, 15 modules, 14 components, 8-stage pipeline, dual-loop, accelerators, data stores |
 | Architecture Diagram | [apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md](apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md) | Complete system architecture and component relationships |
 | Architecture Restructure | [apps/frontend-figma/src/ARCHITECTURE_RESTRUCTURE.md](apps/frontend-figma/src/ARCHITECTURE_RESTRUCTURE.md) | Restructuring plans and migration paths |
 | Infrastructure Mapping | [docs/INFRASTRUCTURE_MAPPING.md](docs/INFRASTRUCTURE_MAPPING.md) | Infrastructure topology, services, and deployment architecture |
