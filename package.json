@@ -1,0 +1,13 @@
+{
+  "name": "integratewise-live",
+  "version": "0.1.0",
+  "private": true,
+  "description": "IntegrateWise OS - Complete business operations platform monorepo",
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/frontend-figma",
+    "build": "npm run build --workspace=apps/frontend-figma"
+  },
+  "workspaces": [
+    "apps/*"
+  ]
+}

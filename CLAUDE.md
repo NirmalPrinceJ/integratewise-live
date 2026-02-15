@@ -12,26 +12,26 @@ This is the **IntegrateWise OS Live** monorepo containing:
 ## 📂 Critical Documents Index
 
 ### Architecture & Design
-- **[apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md](apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md)** - Complete system architecture
-- **[apps/frontend-figma/src/ARCHITECTURE_RESTRUCTURE.md](apps/frontend-figma/src/ARCHITECTURE_RESTRUCTURE.md)** - Restructuring plans
+- **[docs/ARCHITECTURE_DIAGRAM.md](docs/ARCHITECTURE_DIAGRAM.md)** - Complete system architecture
+- **[docs/ARCHITECTURE_RESTRUCTURE.md](docs/ARCHITECTURE_RESTRUCTURE.md)** - Restructuring plans
 - **[docs/INFRASTRUCTURE_MAPPING.md](docs/INFRASTRUCTURE_MAPPING.md)** - Infrastructure topology
 - **[docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)** - Database schema and relationships
 
 ### Frontend UI/UX
-- **[apps/frontend-figma/src/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md](apps/frontend-figma/src/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md)** - Complete UI/UX audit
-- **[apps/frontend-figma/src/FIGMA_DESIGN_SYSTEM_AUDIT.md](apps/frontend-figma/src/FIGMA_DESIGN_SYSTEM_AUDIT.md)** - Design system documentation
-- **[apps/frontend-figma/src/LANDING_PAGE_AUDIT_REPORT.md](apps/frontend-figma/src/LANDING_PAGE_AUDIT_REPORT.md)** - Landing page analysis
-- **[apps/frontend-figma/FIGMA_MARKETING_AUDIT.md](apps/frontend-figma/FIGMA_MARKETING_AUDIT.md)** - Marketing site audit
+- **[docs/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md](docs/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md)** - Complete UI/UX audit
+- **[docs/FIGMA_DESIGN_SYSTEM_AUDIT.md](docs/FIGMA_DESIGN_SYSTEM_AUDIT.md)** - Design system documentation
+- **[docs/LANDING_PAGE_AUDIT_REPORT.md](docs/LANDING_PAGE_AUDIT_REPORT.md)** - Landing page analysis
+- **[docs/FIGMA_MARKETING_AUDIT.md](docs/FIGMA_MARKETING_AUDIT.md)** - Marketing site audit
 
 ### Implementation & Deployment
 - **[docs/PHASE1_IMPLEMENTATION_GUIDE.md](docs/PHASE1_IMPLEMENTATION_GUIDE.md)** - Step-by-step implementation
 - **[docs/CLOUDFLARE_DEPLOYMENT_STATUS.md](docs/CLOUDFLARE_DEPLOYMENT_STATUS.md)** - Deployment configuration
-- **[apps/frontend-figma/src/INTEGRATION_PLAN.md](apps/frontend-figma/src/INTEGRATION_PLAN.md)** - Integration strategy
-- **[apps/frontend-figma/src/PRODUCTION_READY_SIGNOFF.md](apps/frontend-figma/src/PRODUCTION_READY_SIGNOFF.md)** - Production readiness checklist
-- **[apps/frontend-figma/src/FINAL_LAUNCH_SIGNOFF.md](apps/frontend-figma/src/FINAL_LAUNCH_SIGNOFF.md)** - Launch approval
+- **[docs/INTEGRATION_PLAN.md](docs/INTEGRATION_PLAN.md)** - Integration strategy
+- **[docs/PRODUCTION_READY_SIGNOFF.md](docs/PRODUCTION_READY_SIGNOFF.md)** - Production readiness checklist
+- **[docs/FINAL_LAUNCH_SIGNOFF.md](docs/FINAL_LAUNCH_SIGNOFF.md)** - Launch approval
 
 ### Planning & Optimization
-- **[apps/frontend-figma/DIRECTORY_CONSOLIDATION_PLAN.md](apps/frontend-figma/DIRECTORY_CONSOLIDATION_PLAN.md)** - Cleanup and consolidation plan
+- **[docs/DIRECTORY_CONSOLIDATION_PLAN.md](docs/DIRECTORY_CONSOLIDATION_PLAN.md)** - Cleanup and consolidation plan
 - **[docs/CHAT_SESSIONS_FEB_7_8_2026.md](docs/CHAT_SESSIONS_FEB_7_8_2026.md)** - Development session notes
 
 ## 🏗️ Codebase Structure
@@ -47,19 +47,15 @@ integratewise-live/
 │       │   │   ├── hydration/     # Hydration fabric + Spine integration
 │       │   │   ├── landing/       # Marketing landing pages
 │       │   │   └── ui/            # Radix UI component library
-│       │   ├── ARCHITECTURE_*.md  # Architecture documentation
-│       │   └── *_AUDIT*.md        # Audit reports
-│       ├── DIRECTORY_CONSOLIDATION_PLAN.md
-│       ├── FIGMA_MARKETING_AUDIT.md
+│       │   ├── imports/           # Figma-exported page components
+│       │   └── utils/             # Utility modules (Supabase client)
+│       ├── tsconfig.json
+│       ├── tsconfig.node.json
 │       └── package.json
-├── docs/
-│   ├── CLOUDFLARE_DEPLOYMENT_STATUS.md
-│   ├── DATABASE_SCHEMA.md
-│   ├── INFRASTRUCTURE_MAPPING.md
-│   ├── PHASE1_IMPLEMENTATION_GUIDE.md
-│   └── CHAT_SESSIONS_FEB_7_8_2026.md
+├── docs/                          # All documentation (architecture, audits, guides)
 ├── .github/workflows/             # CI/CD pipelines
 ├── .vscode/                       # VSCode workspace config
+├── package.json                   # Root monorepo package.json
 ├── CLAUDE.md                      # This file - agent navigation
 └── README.md                      # Human-readable overview
 ```
@@ -95,13 +91,13 @@ See [docs/INFRASTRUCTURE_MAPPING.md](docs/INFRASTRUCTURE_MAPPING.md) for complet
 ## 🚀 Quick Start for Agents
 
 ### To understand the system:
-1. Read [apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md](apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md)
+1. Read [docs/ARCHITECTURE_DIAGRAM.md](docs/ARCHITECTURE_DIAGRAM.md)
 2. Review [docs/INFRASTRUCTURE_MAPPING.md](docs/INFRASTRUCTURE_MAPPING.md)
 3. Check [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)
 
 ### To work on frontend:
 1. Navigate to `apps/frontend-figma/`
-2. Check [apps/frontend-figma/src/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md](apps/frontend-figma/src/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md)
+2. Check [docs/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md](docs/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md)
 3. Review component structure in `src/components/`
 
 ### To deploy:
@@ -112,44 +108,43 @@ See [docs/INFRASTRUCTURE_MAPPING.md](docs/INFRASTRUCTURE_MAPPING.md) for complet
 
 **Finding architecture decisions:**
 ```bash
-grep -r "architecture\|design decision" apps/frontend-figma/src/*.md docs/*.md
+grep -r "architecture\|design decision" docs/*.md
 ```
 
 **Finding component documentation:**
 ```bash
-find apps/frontend-figma/src/components -name "*.tsx" -o -name "*.md"
+find apps/frontend-figma/src/components -name "*.tsx"
 ```
 
 **Finding infrastructure config:**
 ```bash
-ls docs/*.md .github/workflows/*.{yml,yaml,md}
+ls docs/*.md .github/workflows/*.yml
 ```
 
 ## 📝 Important Notes for Agents
 
-1. **Documentation is distributed** across `apps/frontend-figma/src/`, `apps/frontend-figma/`, and `docs/`
-2. **Architecture docs** are in `apps/frontend-figma/src/` alongside code
-3. **Infrastructure docs** are in `docs/`
-4. **Audit reports** contain critical UI/UX decisions
-5. **PRODUCTION_READY_SIGNOFF.md** and **FINAL_LAUNCH_SIGNOFF.md** track deployment readiness
+1. **All documentation** is centralized in the `docs/` directory
+2. **Frontend source code** is in `apps/frontend-figma/src/`
+3. **Audit reports** contain critical UI/UX decisions
+4. **PRODUCTION_READY_SIGNOFF.md** and **FINAL_LAUNCH_SIGNOFF.md** track deployment readiness
 
 ## 🤖 Agent Workflow Recommendations
 
 **For code changes:**
-1. Check relevant `ARCHITECTURE_*.md` and `*_AUDIT.md` files first
+1. Check relevant docs in `docs/` first (architecture, audits)
 2. Review component structure in target domain
-3. Consult `INTEGRATION_PLAN.md` for integration patterns
+3. Consult `docs/INTEGRATION_PLAN.md` for integration patterns
 4. Follow patterns in existing components
 
 **For infrastructure changes:**
 1. Start with `docs/INFRASTRUCTURE_MAPPING.md`
-2. Check `CLOUDFLARE_DEPLOYMENT_STATUS.md`
-3. Review `PHASE1_IMPLEMENTATION_GUIDE.md`
+2. Check `docs/CLOUDFLARE_DEPLOYMENT_STATUS.md`
+3. Review `docs/PHASE1_IMPLEMENTATION_GUIDE.md`
 4. Update relevant deployment docs after changes
 
 **For new features:**
-1. Read `COMPREHENSIVE_UI_UX_AUDIT_REPORT.md` for design patterns
-2. Check `FIGMA_DESIGN_SYSTEM_AUDIT.md` for component guidelines
+1. Read `docs/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md` for design patterns
+2. Check `docs/FIGMA_DESIGN_SYSTEM_AUDIT.md` for component guidelines
 3. Follow domain-specific patterns in `components/domains/`
 4. Update architecture docs as needed
 
