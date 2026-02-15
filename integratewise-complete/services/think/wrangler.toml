@@ -1,0 +1,51 @@
+name = "integratewise-think"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[dev]
+port = 8003
+local_protocol = "http"
+
+[env.production]
+name = "integratewise-think"
+routes = [
+  { pattern = "think.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+
+[vars]
+ENVIRONMENT = "production"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-prod"
+database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
+
+[[queues.consumers]]
+queue = "integratewise-think-queue"
+max_batch_size = 10
+max_batch_timeout = 5
+
+[env.staging]
+name = "integratewise-think-staging"
+routes = [
+  { pattern = "think-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+vars = { ENVIRONMENT = "staging" }
+
+[env.development]
+vars = { ENVIRONMENT = "development" }
+
+# ============================================================================
+# Observability & Monitoring
+# ============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+
+# ============================================================================
+# Alerting (configured in Cloudflare Dashboard)
+# ============================================================================

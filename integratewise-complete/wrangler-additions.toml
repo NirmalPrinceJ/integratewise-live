@@ -1,0 +1,32 @@
+# wrangler.toml additions for new features
+
+# Workers AI binding
+[ai]
+binding = "AI"
+
+# Analytics Engine binding
+[[analytics_engine_datasets]]
+binding = "ANALYTICS"
+dataset = "integratewise-logs"
+
+# Queue for sync events
+[[queues.producers]]
+binding = "SYNC_QUEUE"
+queue = "sync-events"
+
+[[queues.consumers]]
+queue = "sync-events"
+max_batch_size = 10
+max_batch_timeout = 30
+max_retries = 3
+dead_letter_queue = "sync-dlq"
+
+# Think Worker
+[[services]]
+binding = "THINK_SERVICE"
+service = "integratewise-think-worker"
+
+# Sync Queue Consumer
+[[services]]
+binding = "SYNC_CONSUMER"
+service = "integratewise-sync-consumer"

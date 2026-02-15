@@ -1,0 +1,49 @@
+name = "integratewise-workflow"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[dev]
+port = 8020
+local_protocol = "http"
+
+[env.production]
+name = "integratewise-workflow"
+routes = [
+  { pattern = "workflow.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+
+[vars]
+ENVIRONMENT = "production"
+ACT_URL = "https://act.integratewise.ai"
+GOVERN_URL = "https://govern.integratewise.ai"
+
+[[workflows]]
+name = "approval-workflow"
+binding = "APPROVAL_WORKFLOW"
+class_name = "ApprovalWorkflow"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-prod"
+database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
+
+[env.staging]
+name = "integratewise-workflow-staging"
+routes = [
+  { pattern = "workflow-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+vars = { ENVIRONMENT = "staging", ACT_URL = "https://act-staging.integratewise.ai", GOVERN_URL = "https://govern-staging.integratewise.ai" }
+
+[env.development]
+vars = { ENVIRONMENT = "development", ACT_URL = "http://localhost:8002", GOVERN_URL = "http://localhost:8004" }
+
+# ============================================================================
+# Observability & Monitoring
+# ============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1

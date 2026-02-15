@@ -1,0 +1,2109 @@
+extend type Deal {
+  """
+  ✨ List `Event` objects in a one-to-many relationship (where `Event`.`deal` is this object).
+  """
+  events_on_deal(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Event_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Event_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Event_Having
+  ): [Event!]! @fdc_generated(from: "Event.deal", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Deal", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Deal` table.
+  """
+  _count: Int! @fdc_generated(from: "Deal.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `actualCloseDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  actualCloseDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.actualCloseDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `amount` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  amount_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.amount", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `currency` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  currency_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.currency", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `dealType` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  dealType_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.dealType", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `expectedCloseDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  expectedCloseDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.expectedCloseDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.name", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `notes` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  notes_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.notes", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `organizationId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  organizationId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.organizationId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `ownerId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  ownerId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.ownerId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `probability` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  probability_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.probability", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `stage` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  stage_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.stage", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `updatedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.updatedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Deal` table where the `workspaceId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  workspaceId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Deal.workspaceId", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `amount` field in the `Deal` table.
+  """
+  amount_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Deal.amount", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `probability` field in the `Deal` table.
+  """
+  probability_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Deal.probability", purpose: QUERY_SUM)
+  """
+  ✨ Average the `amount` field in the `Deal` table.
+  """
+  amount_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Deal.amount", purpose: QUERY_AVG)
+  """
+  ✨ Average the `probability` field in the `Deal` table.
+  """
+  probability_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Deal.probability", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `actualCloseDate` field in the `Deal` table.
+  """
+  actualCloseDate_min: Date @fdc_generated(from: "Deal.actualCloseDate", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `amount` field in the `Deal` table.
+  """
+  amount_min: Float @fdc_generated(from: "Deal.amount", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `createdAt` field in the `Deal` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Deal.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `expectedCloseDate` field in the `Deal` table.
+  """
+  expectedCloseDate_min: Date @fdc_generated(from: "Deal.expectedCloseDate", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `probability` field in the `Deal` table.
+  """
+  probability_min: Float @fdc_generated(from: "Deal.probability", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `updatedAt` field in the `Deal` table.
+  """
+  updatedAt_min: Timestamp @fdc_generated(from: "Deal.updatedAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `actualCloseDate` field in the `Deal` table.
+  """
+  actualCloseDate_max: Date @fdc_generated(from: "Deal.actualCloseDate", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `amount` field in the `Deal` table.
+  """
+  amount_max: Float @fdc_generated(from: "Deal.amount", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `createdAt` field in the `Deal` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Deal.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `expectedCloseDate` field in the `Deal` table.
+  """
+  expectedCloseDate_max: Date @fdc_generated(from: "Deal.expectedCloseDate", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `probability` field in the `Deal` table.
+  """
+  probability_max: Float @fdc_generated(from: "Deal.probability", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `updatedAt` field in the `Deal` table.
+  """
+  updatedAt_max: Timestamp @fdc_generated(from: "Deal.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Deal.id", purpose: GLOBAL_ID)
+}
+extend type Document {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Document", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Document` table.
+  """
+  _count: Int! @fdc_generated(from: "Document.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `contentText` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  contentText_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.contentText", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `documentType` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  documentType_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.documentType", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `effectiveDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  effectiveDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.effectiveDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `expiryDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  expiryDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.expiryDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `fileSize` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  fileSize_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.fileSize", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `fileUrl` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  fileUrl_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.fileUrl", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `isCurrent` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  isCurrent_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.isCurrent", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `mimeType` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  mimeType_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.mimeType", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `organizationId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  organizationId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.organizationId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `title` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  title_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.title", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `updatedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.updatedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `version` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  version_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.version", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Document` table where the `workspaceId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  workspaceId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Document.workspaceId", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `fileSize` field in the `Document` table.
+  """
+  fileSize_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Document.fileSize", purpose: QUERY_SUM)
+  """
+  ✨ Average the `fileSize` field in the `Document` table.
+  """
+  fileSize_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Document.fileSize", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `createdAt` field in the `Document` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Document.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `effectiveDate` field in the `Document` table.
+  """
+  effectiveDate_min: Date @fdc_generated(from: "Document.effectiveDate", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `expiryDate` field in the `Document` table.
+  """
+  expiryDate_min: Date @fdc_generated(from: "Document.expiryDate", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `fileSize` field in the `Document` table.
+  """
+  fileSize_min: Int @fdc_generated(from: "Document.fileSize", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `updatedAt` field in the `Document` table.
+  """
+  updatedAt_min: Timestamp @fdc_generated(from: "Document.updatedAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Document` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Document.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `effectiveDate` field in the `Document` table.
+  """
+  effectiveDate_max: Date @fdc_generated(from: "Document.effectiveDate", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `expiryDate` field in the `Document` table.
+  """
+  expiryDate_max: Date @fdc_generated(from: "Document.expiryDate", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `fileSize` field in the `Document` table.
+  """
+  fileSize_max: Int @fdc_generated(from: "Document.fileSize", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `updatedAt` field in the `Document` table.
+  """
+  updatedAt_max: Timestamp @fdc_generated(from: "Document.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Document.id", purpose: GLOBAL_ID)
+}
+extend type Event {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Event", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Event` table.
+  """
+  _count: Int! @fdc_generated(from: "Event.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Event` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Event.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Event` table where the `createdBy` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdBy_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Event.createdBy", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Event` table where the `dealId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  dealId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Event.dealId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Event` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Event.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Event` table where the `durationMinutes` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  durationMinutes_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Event.durationMinutes", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Event` table where the `eventType` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  eventType_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Event.eventType", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Event` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Event.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Event` table where the `occurredAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  occurredAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Event.occurredAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Event` table where the `organizationId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  organizationId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Event.organizationId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Event` table where the `subject` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  subject_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Event.subject", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Event` table where the `ticketId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  ticketId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Event.ticketId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Event` table where the `workspaceId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  workspaceId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Event.workspaceId", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `durationMinutes` field in the `Event` table.
+  """
+  durationMinutes_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Event.durationMinutes", purpose: QUERY_SUM)
+  """
+  ✨ Average the `durationMinutes` field in the `Event` table.
+  """
+  durationMinutes_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Event.durationMinutes", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `createdAt` field in the `Event` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Event.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `durationMinutes` field in the `Event` table.
+  """
+  durationMinutes_min: Int @fdc_generated(from: "Event.durationMinutes", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `occurredAt` field in the `Event` table.
+  """
+  occurredAt_min: Timestamp @fdc_generated(from: "Event.occurredAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Event` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Event.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `durationMinutes` field in the `Event` table.
+  """
+  durationMinutes_max: Int @fdc_generated(from: "Event.durationMinutes", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `occurredAt` field in the `Event` table.
+  """
+  occurredAt_max: Timestamp @fdc_generated(from: "Event.occurredAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Event.id", purpose: GLOBAL_ID)
+}
+extend type Metric {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Metric", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Metric` table.
+  """
+  _count: Int! @fdc_generated(from: "Metric.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Metric` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Metric.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Metric` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Metric.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Metric` table where the `measuredAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  measuredAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Metric.measuredAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Metric` table where the `metricName` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  metricName_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Metric.metricName", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Metric` table where the `metricType` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  metricType_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Metric.metricType", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Metric` table where the `metricUnit` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  metricUnit_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Metric.metricUnit", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Metric` table where the `metricValue` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  metricValue_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Metric.metricValue", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Metric` table where the `organizationId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  organizationId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Metric.organizationId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Metric` table where the `period` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  period_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Metric.period", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Metric` table where the `workspaceId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  workspaceId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Metric.workspaceId", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `metricValue` field in the `Metric` table.
+  """
+  metricValue_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Metric.metricValue", purpose: QUERY_SUM)
+  """
+  ✨ Average the `metricValue` field in the `Metric` table.
+  """
+  metricValue_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Metric.metricValue", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `createdAt` field in the `Metric` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Metric.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `measuredAt` field in the `Metric` table.
+  """
+  measuredAt_min: Timestamp @fdc_generated(from: "Metric.measuredAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `metricValue` field in the `Metric` table.
+  """
+  metricValue_min: Float @fdc_generated(from: "Metric.metricValue", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Metric` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Metric.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `measuredAt` field in the `Metric` table.
+  """
+  measuredAt_max: Timestamp @fdc_generated(from: "Metric.measuredAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `metricValue` field in the `Metric` table.
+  """
+  metricValue_max: Float @fdc_generated(from: "Metric.metricValue", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Metric.id", purpose: GLOBAL_ID)
+}
+extend type Organization {
+  """
+  ✨ List `Deal` objects in a one-to-many relationship (where `Deal`.`organization` is this object).
+  """
+  deals_on_organization(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Deal_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Deal_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Deal_Having
+  ): [Deal!]! @fdc_generated(from: "Deal.organization", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Document` objects in a one-to-many relationship (where `Document`.`organization` is this object).
+  """
+  documents_on_organization(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Document_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Document_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Document_Having
+  ): [Document!]! @fdc_generated(from: "Document.organization", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Event` objects in a one-to-many relationship (where `Event`.`organization` is this object).
+  """
+  events_on_organization(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Event_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Event_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Event_Having
+  ): [Event!]! @fdc_generated(from: "Event.organization", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Metric` objects in a one-to-many relationship (where `Metric`.`organization` is this object).
+  """
+  metrics_on_organization(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Metric_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Metric_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Metric_Having
+  ): [Metric!]! @fdc_generated(from: "Metric.organization", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Person` objects in a one-to-many relationship (where `Person`.`organization` is this object).
+  """
+  people_on_organization(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Person_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Person_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Person_Having
+  ): [Person!]! @fdc_generated(from: "Person.organization", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `Ticket` objects in a one-to-many relationship (where `Ticket`.`organization` is this object).
+  """
+  tickets_on_organization(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Ticket_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Ticket_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Ticket_Having
+  ): [Ticket!]! @fdc_generated(from: "Ticket.organization", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Organization", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Organization` table.
+  """
+  _count: Int! @fdc_generated(from: "Organization.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `activeUsers` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  activeUsers_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.activeUsers", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `arr` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  arr_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.arr", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `churnDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  churnDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.churnDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `contractValue` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  contractValue_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.contractValue", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `currency` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  currency_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.currency", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `customerSince` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  customerSince_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.customerSince", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `domain` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  domain_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.domain", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `employeeCount` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  employeeCount_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.employeeCount", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `healthScore` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  healthScore_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.healthScore", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `healthStatus` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  healthStatus_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.healthStatus", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `industry` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  industry_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.industry", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `lastQbrDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  lastQbrDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.lastQbrDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `legalName` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  legalName_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.legalName", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `licenseCount` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  licenseCount_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.licenseCount", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `lifecycleStage` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  lifecycleStage_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.lifecycleStage", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `mrr` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  mrr_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.mrr", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `mulesoftOrgId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  mulesoftOrgId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.mulesoftOrgId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.name", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `nextQbrDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  nextQbrDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.nextQbrDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `primaryCsmId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  primaryCsmId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.primaryCsmId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `primaryTamId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  primaryTamId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.primaryTamId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `region` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  region_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.region", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `renewalDate` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  renewalDate_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.renewalDate", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `salesOwnerId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  salesOwnerId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.salesOwnerId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `segment` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  segment_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.segment", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `supportLeadId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  supportLeadId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.supportLeadId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `technicalScore` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  technicalScore_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.technicalScore", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `updatedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.updatedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Organization` table where the `workspaceId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  workspaceId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Organization.workspaceId", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `activeUsers` field in the `Organization` table.
+  """
+  activeUsers_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Organization.activeUsers", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `arr` field in the `Organization` table.
+  """
+  arr_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Organization.arr", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `contractValue` field in the `Organization` table.
+  """
+  contractValue_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Organization.contractValue", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `employeeCount` field in the `Organization` table.
+  """
+  employeeCount_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Organization.employeeCount", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `healthScore` field in the `Organization` table.
+  """
+  healthScore_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Organization.healthScore", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `licenseCount` field in the `Organization` table.
+  """
+  licenseCount_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Organization.licenseCount", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `mrr` field in the `Organization` table.
+  """
+  mrr_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Organization.mrr", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `technicalScore` field in the `Organization` table.
+  """
+  technicalScore_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Organization.technicalScore", purpose: QUERY_SUM)
+  """
+  ✨ Average the `activeUsers` field in the `Organization` table.
+  """
+  activeUsers_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Organization.activeUsers", purpose: QUERY_AVG)
+  """
+  ✨ Average the `arr` field in the `Organization` table.
+  """
+  arr_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Organization.arr", purpose: QUERY_AVG)
+  """
+  ✨ Average the `contractValue` field in the `Organization` table.
+  """
+  contractValue_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Organization.contractValue", purpose: QUERY_AVG)
+  """
+  ✨ Average the `employeeCount` field in the `Organization` table.
+  """
+  employeeCount_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Organization.employeeCount", purpose: QUERY_AVG)
+  """
+  ✨ Average the `healthScore` field in the `Organization` table.
+  """
+  healthScore_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Organization.healthScore", purpose: QUERY_AVG)
+  """
+  ✨ Average the `licenseCount` field in the `Organization` table.
+  """
+  licenseCount_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Organization.licenseCount", purpose: QUERY_AVG)
+  """
+  ✨ Average the `mrr` field in the `Organization` table.
+  """
+  mrr_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Organization.mrr", purpose: QUERY_AVG)
+  """
+  ✨ Average the `technicalScore` field in the `Organization` table.
+  """
+  technicalScore_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Organization.technicalScore", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `activeUsers` field in the `Organization` table.
+  """
+  activeUsers_min: Int @fdc_generated(from: "Organization.activeUsers", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `arr` field in the `Organization` table.
+  """
+  arr_min: Float @fdc_generated(from: "Organization.arr", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `churnDate` field in the `Organization` table.
+  """
+  churnDate_min: Date @fdc_generated(from: "Organization.churnDate", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `contractValue` field in the `Organization` table.
+  """
+  contractValue_min: Float @fdc_generated(from: "Organization.contractValue", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `createdAt` field in the `Organization` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Organization.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `customerSince` field in the `Organization` table.
+  """
+  customerSince_min: Date @fdc_generated(from: "Organization.customerSince", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `employeeCount` field in the `Organization` table.
+  """
+  employeeCount_min: Int @fdc_generated(from: "Organization.employeeCount", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `healthScore` field in the `Organization` table.
+  """
+  healthScore_min: Int @fdc_generated(from: "Organization.healthScore", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `lastQbrDate` field in the `Organization` table.
+  """
+  lastQbrDate_min: Date @fdc_generated(from: "Organization.lastQbrDate", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `licenseCount` field in the `Organization` table.
+  """
+  licenseCount_min: Int @fdc_generated(from: "Organization.licenseCount", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `mrr` field in the `Organization` table.
+  """
+  mrr_min: Float @fdc_generated(from: "Organization.mrr", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `nextQbrDate` field in the `Organization` table.
+  """
+  nextQbrDate_min: Date @fdc_generated(from: "Organization.nextQbrDate", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `renewalDate` field in the `Organization` table.
+  """
+  renewalDate_min: Date @fdc_generated(from: "Organization.renewalDate", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `technicalScore` field in the `Organization` table.
+  """
+  technicalScore_min: Int @fdc_generated(from: "Organization.technicalScore", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `updatedAt` field in the `Organization` table.
+  """
+  updatedAt_min: Timestamp @fdc_generated(from: "Organization.updatedAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `activeUsers` field in the `Organization` table.
+  """
+  activeUsers_max: Int @fdc_generated(from: "Organization.activeUsers", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `arr` field in the `Organization` table.
+  """
+  arr_max: Float @fdc_generated(from: "Organization.arr", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `churnDate` field in the `Organization` table.
+  """
+  churnDate_max: Date @fdc_generated(from: "Organization.churnDate", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `contractValue` field in the `Organization` table.
+  """
+  contractValue_max: Float @fdc_generated(from: "Organization.contractValue", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `createdAt` field in the `Organization` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Organization.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `customerSince` field in the `Organization` table.
+  """
+  customerSince_max: Date @fdc_generated(from: "Organization.customerSince", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `employeeCount` field in the `Organization` table.
+  """
+  employeeCount_max: Int @fdc_generated(from: "Organization.employeeCount", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `healthScore` field in the `Organization` table.
+  """
+  healthScore_max: Int @fdc_generated(from: "Organization.healthScore", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `lastQbrDate` field in the `Organization` table.
+  """
+  lastQbrDate_max: Date @fdc_generated(from: "Organization.lastQbrDate", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `licenseCount` field in the `Organization` table.
+  """
+  licenseCount_max: Int @fdc_generated(from: "Organization.licenseCount", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `mrr` field in the `Organization` table.
+  """
+  mrr_max: Float @fdc_generated(from: "Organization.mrr", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `nextQbrDate` field in the `Organization` table.
+  """
+  nextQbrDate_max: Date @fdc_generated(from: "Organization.nextQbrDate", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `renewalDate` field in the `Organization` table.
+  """
+  renewalDate_max: Date @fdc_generated(from: "Organization.renewalDate", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `technicalScore` field in the `Organization` table.
+  """
+  technicalScore_max: Int @fdc_generated(from: "Organization.technicalScore", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `updatedAt` field in the `Organization` table.
+  """
+  updatedAt_max: Timestamp @fdc_generated(from: "Organization.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Organization.id", purpose: GLOBAL_ID)
+}
+extend type Person {
+  """
+  ✨ List `Ticket` objects in a one-to-many relationship (where `Ticket`.`contact` is this object).
+  """
+  tickets_on_contact(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Ticket_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Ticket_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Ticket_Having
+  ): [Ticket!]! @fdc_generated(from: "Ticket.contact", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Person", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Person` table.
+  """
+  _count: Int! @fdc_generated(from: "Person.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `department` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  department_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.department", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `email` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  email_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.email", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `firstName` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  firstName_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.firstName", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `fullName` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  fullName_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.fullName", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `isInternal` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  isInternal_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.isInternal", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `jobTitle` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  jobTitle_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.jobTitle", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `lastContactedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  lastContactedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.lastContactedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `lastName` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  lastName_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.lastName", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `linkedinUrl` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  linkedinUrl_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.linkedinUrl", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `organizationId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  organizationId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.organizationId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `phone` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  phone_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.phone", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `relationshipStrength` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  relationshipStrength_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.relationshipStrength", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `roleType` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  roleType_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.roleType", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `seniority` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  seniority_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.seniority", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `teamRole` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  teamRole_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.teamRole", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `team` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  team_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.team", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `updatedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.updatedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `userId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  userId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.userId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Person` table where the `workspaceId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  workspaceId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Person.workspaceId", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `relationshipStrength` field in the `Person` table.
+  """
+  relationshipStrength_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Person.relationshipStrength", purpose: QUERY_SUM)
+  """
+  ✨ Average the `relationshipStrength` field in the `Person` table.
+  """
+  relationshipStrength_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Person.relationshipStrength", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `createdAt` field in the `Person` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Person.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `lastContactedAt` field in the `Person` table.
+  """
+  lastContactedAt_min: Timestamp @fdc_generated(from: "Person.lastContactedAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `relationshipStrength` field in the `Person` table.
+  """
+  relationshipStrength_min: Int @fdc_generated(from: "Person.relationshipStrength", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `updatedAt` field in the `Person` table.
+  """
+  updatedAt_min: Timestamp @fdc_generated(from: "Person.updatedAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Person` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Person.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `lastContactedAt` field in the `Person` table.
+  """
+  lastContactedAt_max: Timestamp @fdc_generated(from: "Person.lastContactedAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `relationshipStrength` field in the `Person` table.
+  """
+  relationshipStrength_max: Int @fdc_generated(from: "Person.relationshipStrength", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `updatedAt` field in the `Person` table.
+  """
+  updatedAt_max: Timestamp @fdc_generated(from: "Person.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Person.id", purpose: GLOBAL_ID)
+}
+extend type Ticket {
+  """
+  ✨ List `Event` objects in a one-to-many relationship (where `Event`.`ticket` is this object).
+  """
+  events_on_ticket(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Event_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Event_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Event_Having
+  ): [Event!]! @fdc_generated(from: "Event.ticket", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Ticket", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Ticket` table.
+  """
+  _count: Int! @fdc_generated(from: "Ticket.", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `assignedTo` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  assignedTo_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.assignedTo", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `category` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  category_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.category", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `contactId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  contactId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.contactId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `organizationId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  organizationId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.organizationId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `priority` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  priority_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.priority", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `resolutionNotes` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  resolutionNotes_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.resolutionNotes", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `resolvedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  resolvedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.resolvedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `satisfactionScore` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  satisfactionScore_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.satisfactionScore", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `slaBreached` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  slaBreached_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.slaBreached", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `slaDueAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  slaDueAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.slaDueAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `status` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  status_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.status", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `subcategory` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  subcategory_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.subcategory", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `subject` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  subject_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.subject", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `updatedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  updatedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.updatedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Ticket` table where the `workspaceId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  workspaceId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket.workspaceId", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `satisfactionScore` field in the `Ticket` table.
+  """
+  satisfactionScore_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Ticket.satisfactionScore", purpose: QUERY_SUM)
+  """
+  ✨ Average the `satisfactionScore` field in the `Ticket` table.
+  """
+  satisfactionScore_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Ticket.satisfactionScore", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `createdAt` field in the `Ticket` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "Ticket.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `resolvedAt` field in the `Ticket` table.
+  """
+  resolvedAt_min: Timestamp @fdc_generated(from: "Ticket.resolvedAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `satisfactionScore` field in the `Ticket` table.
+  """
+  satisfactionScore_min: Int @fdc_generated(from: "Ticket.satisfactionScore", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `slaDueAt` field in the `Ticket` table.
+  """
+  slaDueAt_min: Timestamp @fdc_generated(from: "Ticket.slaDueAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `updatedAt` field in the `Ticket` table.
+  """
+  updatedAt_min: Timestamp @fdc_generated(from: "Ticket.updatedAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `Ticket` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "Ticket.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `resolvedAt` field in the `Ticket` table.
+  """
+  resolvedAt_max: Timestamp @fdc_generated(from: "Ticket.resolvedAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `satisfactionScore` field in the `Ticket` table.
+  """
+  satisfactionScore_max: Int @fdc_generated(from: "Ticket.satisfactionScore", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `slaDueAt` field in the `Ticket` table.
+  """
+  slaDueAt_max: Timestamp @fdc_generated(from: "Ticket.slaDueAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `updatedAt` field in the `Ticket` table.
+  """
+  updatedAt_max: Timestamp @fdc_generated(from: "Ticket.updatedAt", purpose: QUERY_MAX)
+  """
+  A generated field that is used for caching results in SDKs.
+  """
+  _id: ID! @fdc_generated(from: "Ticket.id", purpose: GLOBAL_ID)
+}

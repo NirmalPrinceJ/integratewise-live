@@ -1,0 +1,40 @@
+name = "integratewise-connector-manager"
+compatibility_date = "2026-01-31"
+compatibility_flags = ["nodejs_compat"]
+main = "./connector-manager-service.ts"
+
+[vars]
+NODE_ENV = "production"
+
+# Required Secrets (set via `wrangler secret put`):
+# NEON_DB_URL
+# CONNECTOR_ENCRYPTION_KEY
+# CONNECTOR_CALLBACK_URL
+# SALESFORCE_CLIENT_ID
+# SALESFORCE_CLIENT_SECRET
+# GOOGLE_CLIENT_ID
+# GOOGLE_CLIENT_SECRET
+# SLACK_CLIENT_ID
+# SLACK_CLIENT_SECRET
+# HUBSPOT_CLIENT_ID
+# HUBSPOT_CLIENT_SECRET
+
+# D1 Database (Session Store)
+[[d1_databases]]
+binding = "SESSION_STORE"
+database_name = "integratewise-session-store"
+database_id = "a8837a2d-a671-4948-b2ae-7e8be0a45dd3"
+
+# KV Storage
+[[kv_namespaces]]
+binding = "SESSIONS"
+id = "508ba759f7a44ca8aaaf8502d603077b"
+
+[[kv_namespaces]]
+binding = "RATE_LIMITS"
+id = "8f61d841d2574061ac1d547187d72a58"
+
+# Vectorize (Vector Search)
+[[vectorize]]
+binding = "KNOWLEDGE"
+index_name = "integratewise-knowledge"

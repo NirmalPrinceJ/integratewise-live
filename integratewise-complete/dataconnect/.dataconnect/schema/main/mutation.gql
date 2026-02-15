@@ -1,0 +1,786 @@
+extend type Mutation {
+  """
+  ✨ Insert a single `Deal` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  deal_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Deal_Data!
+  ): Deal_KeyOutput! @fdc_generated(from: "Deal", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Document` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  document_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Document_Data!
+  ): Document_KeyOutput! @fdc_generated(from: "Document", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Event` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  event_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Event_Data!
+  ): Event_KeyOutput! @fdc_generated(from: "Event", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Metric` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  metric_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Metric_Data!
+  ): Metric_KeyOutput! @fdc_generated(from: "Metric", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Organization` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  organization_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Organization_Data!
+  ): Organization_KeyOutput! @fdc_generated(from: "Organization", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Person` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  person_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Person_Data!
+  ): Person_KeyOutput! @fdc_generated(from: "Person", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Ticket` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  ticket_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Ticket_Data!
+  ): Ticket_KeyOutput! @fdc_generated(from: "Ticket", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert `Deal` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  deal_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Deal_Data!]!
+  ): [Deal_KeyOutput!]! @fdc_generated(from: "Deal", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Document` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  document_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Document_Data!]!
+  ): [Document_KeyOutput!]! @fdc_generated(from: "Document", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Event` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  event_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Event_Data!]!
+  ): [Event_KeyOutput!]! @fdc_generated(from: "Event", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Metric` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  metric_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Metric_Data!]!
+  ): [Metric_KeyOutput!]! @fdc_generated(from: "Metric", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Organization` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  organization_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Organization_Data!]!
+  ): [Organization_KeyOutput!]! @fdc_generated(from: "Organization", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Person` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  person_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Person_Data!]!
+  ): [Person_KeyOutput!]! @fdc_generated(from: "Person", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Ticket` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  ticket_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Ticket_Data!]!
+  ): [Ticket_KeyOutput!]! @fdc_generated(from: "Ticket", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert or update a single `Deal` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Deal`.
+  """
+  deal_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Deal_Data!
+  ): Deal_KeyOutput! @fdc_generated(from: "Deal", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Document` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Document`.
+  """
+  document_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Document_Data!
+  ): Document_KeyOutput! @fdc_generated(from: "Document", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Event` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Event`.
+  """
+  event_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Event_Data!
+  ): Event_KeyOutput! @fdc_generated(from: "Event", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Metric` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Metric`.
+  """
+  metric_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Metric_Data!
+  ): Metric_KeyOutput! @fdc_generated(from: "Metric", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Organization` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Organization`.
+  """
+  organization_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Organization_Data!
+  ): Organization_KeyOutput! @fdc_generated(from: "Organization", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Person` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Person`.
+  """
+  person_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Person_Data!
+  ): Person_KeyOutput! @fdc_generated(from: "Person", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Ticket` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Ticket`.
+  """
+  ticket_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Ticket_Data!
+  ): Ticket_KeyOutput! @fdc_generated(from: "Ticket", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update `Deal` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Deal`.
+  """
+  deal_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Deal_Data!]!
+  ): [Deal_KeyOutput!]! @fdc_generated(from: "Deal", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Document` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Document`.
+  """
+  document_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Document_Data!]!
+  ): [Document_KeyOutput!]! @fdc_generated(from: "Document", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Event` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Event`.
+  """
+  event_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Event_Data!]!
+  ): [Event_KeyOutput!]! @fdc_generated(from: "Event", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Metric` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Metric`.
+  """
+  metric_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Metric_Data!]!
+  ): [Metric_KeyOutput!]! @fdc_generated(from: "Metric", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Organization` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Organization`.
+  """
+  organization_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Organization_Data!]!
+  ): [Organization_KeyOutput!]! @fdc_generated(from: "Organization", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Person` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Person`.
+  """
+  person_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Person_Data!]!
+  ): [Person_KeyOutput!]! @fdc_generated(from: "Person", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Ticket` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Ticket`.
+  """
+  ticket_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Ticket_Data!]!
+  ): [Ticket_KeyOutput!]! @fdc_generated(from: "Ticket", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Update a single `Deal` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Deal` or `null` if not found.
+  """
+  deal_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Deal_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Deal_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Deal_Data!
+  ): Deal_KeyOutput @fdc_generated(from: "Deal", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Document` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Document` or `null` if not found.
+  """
+  document_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Document_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Document_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Document_Data!
+  ): Document_KeyOutput @fdc_generated(from: "Document", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Event` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Event` or `null` if not found.
+  """
+  event_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Event_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Event_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Event_Data!
+  ): Event_KeyOutput @fdc_generated(from: "Event", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Metric` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Metric` or `null` if not found.
+  """
+  metric_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Metric_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Metric_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Metric_Data!
+  ): Metric_KeyOutput @fdc_generated(from: "Metric", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Organization` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Organization` or `null` if not found.
+  """
+  organization_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Organization_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Organization_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Organization_Data!
+  ): Organization_KeyOutput @fdc_generated(from: "Organization", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Person` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Person` or `null` if not found.
+  """
+  person_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Person_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Person_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Person_Data!
+  ): Person_KeyOutput @fdc_generated(from: "Person", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Ticket` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Ticket` or `null` if not found.
+  """
+  ticket_update(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Ticket_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Ticket_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Ticket_Data!
+  ): Ticket_KeyOutput @fdc_generated(from: "Ticket", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update `Deal` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  deal_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Deal_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Deal_Data!
+  ): Int! @fdc_generated(from: "Deal", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Document` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  document_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Document_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Document_Data!
+  ): Int! @fdc_generated(from: "Document", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Event` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  event_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Event_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Event_Data!
+  ): Int! @fdc_generated(from: "Event", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Metric` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  metric_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Metric_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Metric_Data!
+  ): Int! @fdc_generated(from: "Metric", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Organization` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  organization_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Organization_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Organization_Data!
+  ): Int! @fdc_generated(from: "Organization", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Person` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  person_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Person_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Person_Data!
+  ): Int! @fdc_generated(from: "Person", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Ticket` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  ticket_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Ticket_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Ticket_Data!
+  ): Int! @fdc_generated(from: "Ticket", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Delete a single `Deal` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  deal_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Deal_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Deal_FirstRow
+  ): Deal_KeyOutput @fdc_generated(from: "Deal", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Document` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  document_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Document_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Document_FirstRow
+  ): Document_KeyOutput @fdc_generated(from: "Document", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Event` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  event_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Event_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Event_FirstRow
+  ): Event_KeyOutput @fdc_generated(from: "Event", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Metric` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  metric_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Metric_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Metric_FirstRow
+  ): Metric_KeyOutput @fdc_generated(from: "Metric", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Organization` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  organization_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Organization_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Organization_FirstRow
+  ): Organization_KeyOutput @fdc_generated(from: "Organization", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Person` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  person_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Person_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Person_FirstRow
+  ): Person_KeyOutput @fdc_generated(from: "Person", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Ticket` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  ticket_delete(
+    """
+    The unique ID of the object.
+    """
+    id: UUID
+
+    """
+    The key used to identify the object.
+    """
+    key: Ticket_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Ticket_FirstRow
+  ): Ticket_KeyOutput @fdc_generated(from: "Ticket", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete `Deal` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  deal_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Deal_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Deal", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Document` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  document_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Document_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Document", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Event` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  event_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Event_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Event", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Metric` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  metric_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Metric_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Metric", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Organization` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  organization_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Organization_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Organization", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Person` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  person_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Person_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Person", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Ticket` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  ticket_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Ticket_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Ticket", purpose: DELETE_MULTIPLE)
+}

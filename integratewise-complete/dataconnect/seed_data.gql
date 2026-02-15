@@ -1,0 +1,73 @@
+mutation @transaction {
+  organization_insertMany(
+    data: [
+      {
+        id: "a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1",
+        workspaceId: "default-ws",
+        name: "Acme Corp",
+        domain: "acme.com",
+        industry: "Manufacturing",
+        healthScore: 85,
+        healthStatus: "champion",
+        lifecycleStage: "active",
+        arr: 1200000,
+        currency: "USD"
+      },
+      {
+        id: "b2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2",
+        workspaceId: "default-ws",
+        name: "Cyberdyne Systems",
+        domain: "cyberdyne.io",
+        industry: "Technology",
+        healthScore: 42,
+        healthStatus: "at_risk",
+        lifecycleStage: "active",
+        arr: 5400000,
+        currency: "USD"
+      },
+      {
+        id: "c3c3c3c3-c3c3-c3c3-c3c3-c3c3c3c3c3c3",
+        workspaceId: "default-ws",
+        name: "Stark Industries",
+        domain: "stark.com",
+        industry: "Aerospace",
+        healthScore: 98,
+        healthStatus: "champion",
+        lifecycleStage: "active",
+        arr: 25000000,
+        currency: "USD"
+      }
+    ]
+  )
+  person_insertMany(
+    data: [
+      {
+        id: "p1p1p1p1-p1p1-p1p1-p1p1-p1p1p1p1p1p1",
+        workspaceId: "default-ws",
+        fullName: "Tony Stark",
+        email: "tony@stark.com",
+        jobTitle: "CEO",
+        roleType: "economic_buyer",
+        organization_id: "a1a1a1a1-a1a1-a1a1-a1a1-a1a1a1a1a1a1"
+      },
+      {
+        id: "p2p2p2p2-p2p2-p2p2-p2p2-p2p2p2p2p2p2",
+        workspaceId: "default-ws",
+        fullName: "Pepper Potts",
+        email: "pepper@stark.com",
+        jobTitle: "COO",
+        roleType: "champion",
+        organization_id: "c3c3c3c3-c3c3-c3c3-c3c3-c3c3c3c3c3c3"
+      },
+      {
+        id: "p3p3p3p3-p3p3-p3p3-p3p3-p3p3p3p3p3p3",
+        workspaceId: "default-ws",
+        fullName: "John Connor",
+        email: "john@cyberdyne.io",
+        jobTitle: "Resistance Leader",
+        roleType: "blocker",
+        organization_id: "b2b2b2b2-b2b2-b2b2-b2b2-b2b2b2b2b2b2"
+      }
+    ]
+  )
+}

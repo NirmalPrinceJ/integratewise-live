@@ -1,0 +1,5 @@
+import { AccountMasterView } from "@/components/account-success"
+
+export default function Page() {
+  return <AccountMasterView />
+}

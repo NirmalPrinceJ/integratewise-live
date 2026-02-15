@@ -1,0 +1,57 @@
+name = "integratewise-loader"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[dev]
+port = 8006
+local_protocol = "http"
+
+[env.production]
+name = "integratewise-loader"
+routes = [
+  { pattern = "loader.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+vars = { ENVIRONMENT = "production", NORMALIZER_URL = "https://normalizer.integratewise.ai", STORE_URL = "https://store.integratewise.ai", COGNITIVE_EVENTS_URL = "https://app.integratewise.ai/api/events/cognitive" }
+
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-prod"
+database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
+
+[env.staging]
+name = "integratewise-loader-staging"
+routes = [
+  { pattern = "loader-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+vars = { ENVIRONMENT = "staging", NORMALIZER_URL = "https://normalizer-staging.integratewise.ai", STORE_URL = "https://store-staging.integratewise.ai", COGNITIVE_EVENTS_URL = "https://app-staging.integratewise.ai/api/events/cognitive" }
+
+[env.development]
+vars = { ENVIRONMENT = "development", NORMALIZER_URL = "http://localhost:8005", STORE_URL = "http://localhost:8007", COGNITIVE_EVENTS_URL = "http://localhost:3000/api/events/cognitive" }
+
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-prod"
+
+[[queues.producers]]
+binding = "THINK_QUEUE"
+queue = "integratewise-think-queue"
+
+# ============================================================================
+# Observability & Monitoring
+# ============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+
+
+# ============================================================================
+# Alerting (configured in Cloudflare Dashboard)
+# - High error rate (>5% 5xx responses)
+# - High latency (>2s p95 response time)
+# - High CPU usage (>80% sustained)
+# - Function cold starts (>100/minute)
+# ============================================================================

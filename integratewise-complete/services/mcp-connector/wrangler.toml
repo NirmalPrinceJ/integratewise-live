@@ -1,0 +1,48 @@
+name = "integratewise-mcp-tool-server"
+main = "src/index.ts"
+compatibility_date = "2024-01-01"
+
+[env.production]
+routes = [
+  { pattern = "mcp.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+
+# KV namespace for idempotency
+[[env.production.kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "mcp-idempotency-kv"
+
+[env.staging]
+routes = [
+  { pattern = "mcp-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+
+# KV namespace for idempotency
+[[env.staging.kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "mcp-idempotency-kv-preview"
+
+# KV namespace for idempotency
+[[kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "16510bf2287a45d8b24163ddafd3d302"
+preview_id = "ec565755bde04288a448cbf7c8ba6b69"
+
+# ============================================================================
+# Observability & Monitoring
+# ============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+
+
+# ============================================================================
+# Alerting (configured in Cloudflare Dashboard)
+# - High error rate (>5% 5xx responses)
+# - High latency (>2s p95 response time)
+# - High CPU usage (>80% sustained)
+# - Function cold starts (>100/minute)
+# ============================================================================

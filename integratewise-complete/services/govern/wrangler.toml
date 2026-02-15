@@ -1,0 +1,47 @@
+name = "integratewise-govern"
+main = "src/index.ts"
+compatibility_date = "2024-05-29"
+compatibility_flags = ["nodejs_compat"]
+
+[dev]
+port = 8004
+local_protocol = "http"
+
+[env.production]
+name = "integratewise-govern"
+routes = [
+  { pattern = "govern.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+
+[vars]
+ENVIRONMENT = "production"
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "18aa20dfeb304f0ba592d9070964dd31"
+
+[env.staging]
+name = "integratewise-govern-staging"
+routes = [
+  { pattern = "govern-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+vars = { ENVIRONMENT = "staging" }
+
+# ============================================================================
+# Observability & Monitoring
+# ============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+
+
+# ============================================================================
+# Alerting (configured in Cloudflare Dashboard)
+# - High error rate (>5% 5xx responses)
+# - High latency (>2s p95 response time)
+# - High CPU usage (>80% sustained)
+# - Function cold starts (>100/minute)
+# ============================================================================

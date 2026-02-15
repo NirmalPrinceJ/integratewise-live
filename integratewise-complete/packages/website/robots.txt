@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://integratewise.co/sitemap.xml

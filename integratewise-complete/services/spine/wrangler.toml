@@ -1,0 +1,40 @@
+name = "integratewise-spine"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[env.production]
+name = "integratewise-spine"
+routes = [
+	{ pattern = "spine.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-prod"
+database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
+
+[env.staging]
+name = "integratewise-spine-staging"
+vars = { ENVIRONMENT = "staging" }
+routes = [
+	{ pattern = "spine-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+
+# ============================================================================
+# Observability & Monitoring
+# ============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+
+# ============================================================================
+# Alerting (configured in Cloudflare Dashboard)
+# - High error rate (>5% 5xx responses)
+# - High latency (>2s p95 response time)
+# - High CPU usage (>80% sustained)
+# - Function cold starts (>100/minute)
+# ============================================================================
