@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2, User, CheckCircle2, Shield, Zap, Database, Brain } from "lucide-react";
-import { Logo } from "../landing/logo";
+import { Logo } from "../ui/logo";
 
 interface SignUpPageProps {
   onSignUp: (name: string, email: string, password: string) => void;

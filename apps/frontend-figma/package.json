@@ -1,6 +1,6 @@
 
   {
-      "name": "IntegrateWise Business Operations Design",
+      "name": "integratewise-frontend",
       "version": "0.1.0",
       "private": true,
       "dependencies": {

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion } from "motion/react";
 import { Mail, Lock, Eye, EyeOff, ArrowRight, Loader2 } from "lucide-react";
-import { Logo } from "../landing/logo";
+import { Logo } from "../ui/logo";
 
 interface LoginPageProps {
   onLogin: (email: string, password: string) => void;

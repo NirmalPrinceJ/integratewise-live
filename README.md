@@ -22,12 +22,13 @@
 ## Repository Structure
 
 ### `/apps/frontend-figma/`
-Complete Figma frontend export for IntegrateWise Business Operations Design
+IntegrateWise OS — Business Operations Platform
 - React + Vite + TypeScript
 - Radix UI component library
 - Domain shells (Account Success, RevOps, SalesOps, Personal, Marketing)
 - Hydration fabric and Spine integration
-- Landing pages and marketing site
+
+> **Note:** The marketing website is hosted on Webflow separately.
 
 ### `/docs/`
 All project documentation:

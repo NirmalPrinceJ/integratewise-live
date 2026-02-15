@@ -80,7 +80,7 @@ integratewise-live/
 │               │   ├── salesops/          ← SalesOps domain
 │               │   └── personal/          ← Personal domain
 │               ├── hydration/             ← Hydration fabric + Spine
-│               ├── landing/               ← Landing pages
+│               ├── marketing/             ← Marketing ops domain
 │               ├── ui/                    ← Radix UI components
 │               ├── admin/                 ← Admin tools
 │               ├── auth/                  ← Authentication

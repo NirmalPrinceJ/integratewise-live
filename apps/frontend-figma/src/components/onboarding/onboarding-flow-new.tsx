@@ -39,7 +39,7 @@ import {
 } from "lucide-react";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
-import { LogoMark } from "../landing/logo";
+import { LogoMark } from "../ui/logo";
 import type { Domain } from "../workspace/workspace-config";
 
 interface OnboardingFlowProps {

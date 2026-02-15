@@ -61,7 +61,7 @@ import {
   Globe,
   Award,
 } from "lucide-react";
-import { LogoMark } from "../landing/logo";
+import { LogoMark } from "../ui/logo";
 import { CommandPalette } from "../navigation/command-palette";
 import type { Domain } from "./workspace-config";
 import { getDomainConfig, getWorkNavigation, getPersonalNavigation } from "./workspace-config";

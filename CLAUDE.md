@@ -45,7 +45,7 @@ integratewise-live/
 │       │   │   ├── domains/       # Domain-specific (Account Success, RevOps, etc.)
 │       │   │   ├── workspace/     # Workspace shell and routing
 │       │   │   ├── hydration/     # Hydration fabric + Spine integration
-│       │   │   ├── landing/       # Marketing landing pages
+│       │   │   ├── marketing/     # Marketing domain (campaigns, attribution)
 │       │   │   └── ui/            # Radix UI component library
 │       │   ├── imports/           # Figma-exported page components
 │       │   └── utils/             # Utility modules (Supabase client)
@@ -77,7 +77,7 @@ integratewise-live/
   - Personal
   - Marketing
 - **Hydration Fabric** ([apps/frontend-figma/src/components/hydration/](apps/frontend-figma/src/components/hydration/))
-- **Landing Pages** ([apps/frontend-figma/src/components/landing/](apps/frontend-figma/src/components/landing/))
+- **Marketing Domain** ([apps/frontend-figma/src/components/marketing/](apps/frontend-figma/src/components/marketing/))
 
 ## 🔌 Infrastructure
 

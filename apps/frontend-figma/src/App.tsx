@@ -2,9 +2,7 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  useMemo,
 } from "react";
-import { motion, AnimatePresence } from "motion/react";
 import faviconSrc from "figma:asset/bcaf13c3a18bdb4dbfd3ccee1dd81293eb966a9a.png";
 
 // ── Error Boundary ──
@@ -55,25 +53,6 @@ class ErrorBoundary extends React.Component<
   }
 }
 
-// ── Landing Pages ──
-import { Navbar } from "./components/landing/Navbar";
-import { Hero } from "./components/landing/Hero";
-import { Problem } from "./components/landing/Problem";
-import { Pillars } from "./components/landing/Pillars";
-import { Audience } from "./components/landing/Audience";
-import { Comparison } from "./components/landing/Comparison";
-import { Differentiators } from "./components/landing/Differentiators";
-import { Integrations } from "./components/landing/Integrations";
-import { Pricing } from "./components/landing/Pricing";
-import { Footer } from "./components/landing/Footer";
-import { TechnicalPage } from "./components/landing/TechnicalPage";
-import { ProblemPage } from "./components/landing/ProblemPage";
-import { AudiencePage } from "./components/landing/AudiencePage";
-import { PricingPage } from "./components/landing/PricingPage";
-import { GenericPage } from "./components/landing/GenericPage";
-import { FounderStory } from "./components/landing/FounderStory";
-import { FounderStoryPage } from "./components/landing/FounderStoryPage";
-
 // ── Auth ──
 import { LoginPage } from "./components/auth/login-page";
 import { SignUpPage } from "./components/auth/signup-page";
@@ -91,84 +70,7 @@ import { WorkspaceShellNew } from "./components/workspace/workspace-shell-new";
 import type { Domain } from "./components/workspace/workspace-config";
 import { HydrationFabric } from "./components/hydration";
 
-// ── Page types ──
-type Page = string;
-
-const DEDICATED_PAGES = new Set([
-  "home",
-  "technical",
-  "problem",
-  "audience",
-  "pricing",
-  "app",
-]);
-
-const HASH_TO_PAGE: Record<string, string> = {
-  technical: "technical",
-  problem: "problem",
-  audience: "audience",
-  pricing: "pricing",
-  app: "app",
-  // Architecture alias
-  architecture: "technical",
-};
-
-// All valid page hashes (includes both dedicated and generic pages)
-const ALL_PAGES = new Set([
-  "technical",
-  "problem",
-  "audience",
-  "pricing",
-  "app",
-  "founder-story",
-  "platform-overview",
-  "architecture",
-  "features",
-  "security",
-  "enterprise-integration",
-  "connect",
-  "context",
-  "cognition",
-  "action",
-  "memory",
-  "correct",
-  "repeat",
-  "solutions",
-  "use-cases",
-  "customer-data-unification",
-  "automated-revops-billing-sync",
-  "proactive-integration-monitoring",
-  "zero-disruption-integration-upgrades",
-  "ai-assisted-compliance-audit",
-  "contextual-ai",
-  "human-approved-actions",
-  "evidence-backed-executions",
-  "three-worlds-in-one-sync",
-  "by-role",
-  "csm",
-  "revops-role",
-  "founders-executives",
-  "operations",
-  "it-admin-security",
-  "freelancers",
-  "students",
-  "blog",
-  "blog-post",
-  "newsletter",
-  "resources",
-  "guides",
-  "webinars",
-  "documentation",
-  "case-studies",
-  "contact",
-  "legal",
-  "support",
-  "careers",
-]);
-
-const PAGE_TRANSITION = { duration: 0.3 };
-
-// ─── Workspace App (NEW ARCHITECTURE) ──────────────────────────────────────
+// ─── Workspace App ──────────────────────────────────────────────────────────
 
 type WorkspaceStage = "login" | "signup" | "onboarding" | "loading" | "workspace";
 
@@ -403,8 +305,6 @@ function WorkspaceApp() {
 // ─── Main App ────────────────────────────────────────────────────────────────
 
 export default function App() {
-  const [currentPage, setCurrentPage] = useState<Page>("home");
-
   // Set favicon
   useEffect(() => {
     const link =
@@ -417,116 +317,26 @@ export default function App() {
     document.head.appendChild(link);
   }, []);
 
-  // ── Detect OAuth callback and redirect to #app ──
+  // ── Detect OAuth callback ──
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     // PKCE flow returns ?code=xxx after OAuth
     if (params.has("code")) {
-      console.log("[App] OAuth callback detected (PKCE code), redirecting to #app");
-      // Set hash to app so WorkspaceApp renders with AuthProvider
-      if (!window.location.hash || window.location.hash === "#") {
-        window.location.hash = "app";
-      }
+      console.log("[App] OAuth callback detected (PKCE code)");
     }
     // Implicit flow fallback: check for access_token in hash
     if (window.location.hash.includes("access_token=")) {
-      console.log("[App] OAuth callback detected (implicit token in hash), redirecting to #app");
-      // The Supabase client will handle extracting the token
+      console.log("[App] OAuth callback detected (implicit token in hash)");
     }
   }, []);
 
-  // Hash-based routing
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace("#", "");
-      const resolved = HASH_TO_PAGE[hash] || hash;
-      if (ALL_PAGES.has(resolved)) {
-        setCurrentPage(resolved);
-      } else if (hash === "") {
-        setCurrentPage("home");
-      } else {
-        setCurrentPage(hash || "home");
-      }
-      window.scrollTo(0, 0);
-    };
-
-    window.addEventListener("hashchange", handleHashChange);
-    handleHashChange();
-
-    return () =>
-      window.removeEventListener(
-        "hashchange",
-        handleHashChange,
-      );
-  }, []);
-
-  // ── Page content based on route (must be before any conditional returns) ──
-  const pageContent = useMemo(() => {
-    switch (currentPage) {
-      case "technical":
-        return <TechnicalPage />;
-      case "problem":
-        return <ProblemPage />;
-      case "audience":
-        return <AudiencePage />;
-      case "pricing":
-        return <PricingPage />;
-      case "founder-story":
-        return <FounderStoryPage />;
-      case "home":
-        return (
-          <>
-            <Hero />
-            <FounderStory />
-            <Problem />
-            <Pillars />
-            <Audience />
-            <Comparison />
-            <Integrations />
-            <Differentiators />
-            <Pricing />
-          </>
-        );
-      default:
-        // All other routes render a generic page
-        return <GenericPage pageId={currentPage} />;
-    }
-  }, [currentPage]);
-
-  // ── Full Workspace (NEW ARCHITECTURE) ──
-  if (currentPage === "app") {
-    return (
-      <ErrorBoundary>
-        <AuthProvider>
-          <SpineProvider>
-            <WorkspaceApp />
-          </SpineProvider>
-        </AuthProvider>
-      </ErrorBoundary>
-    );
-  }
-
-  // ── Marketing Site ──
   return (
     <ErrorBoundary>
-      <div className="min-h-screen bg-white font-sans text-gray-900 selection:bg-green-500/20">
-        <Navbar
-          onNavigate={setCurrentPage}
-          currentPage={currentPage}
-        />
-        <AnimatePresence mode="wait">
-          <motion.main
-            key={currentPage}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={PAGE_TRANSITION}
-          >
-            {pageContent}
-            <Footer />
-          </motion.main>
-        </AnimatePresence>
-      </div>
+      <AuthProvider>
+        <SpineProvider>
+          <WorkspaceApp />
+        </SpineProvider>
+      </AuthProvider>
     </ErrorBoundary>
   );
 }

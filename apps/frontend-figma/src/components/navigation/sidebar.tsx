@@ -12,7 +12,7 @@ import {
 import { type CTXEnum, type L1Module } from "../spine/types";
 import { useSpine } from "../spine/spine-client";
 import { useGoalsSafe } from "../goal-framework/goal-context";
-import { Logo, LogoMark } from "../landing/logo";
+import { Logo, LogoMark } from "../ui/logo";
 
 interface SidebarProps {
   activeModule: L1Module;

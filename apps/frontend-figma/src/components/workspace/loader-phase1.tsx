@@ -21,7 +21,7 @@ import {
   Calendar,
   Clock,
 } from "lucide-react";
-import { LogoMark } from "../landing/logo";
+import { LogoMark } from "../ui/logo";
 import type { Domain } from "./workspace-config";
 
 interface LoaderPhase1Props {
