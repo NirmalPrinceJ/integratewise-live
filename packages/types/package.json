@@ -1,0 +1,21 @@
+{
+  "name": "@integratewise/types",
+  "version": "1.0.0",
+  "description": "IntegrateWise OS Spine canonical entity types",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "integratewise",
+    "spine",
+    "types"
+  ],
+  "author": "IntegrateWise",
+  "license": "PROPRIETARY",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}

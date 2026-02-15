@@ -1,0 +1,52 @@
+@startuml
+!theme plain
+autonumber
+
+participant "External Tool\n(Slack)" as Ext
+participant "Hub\n(Gateway)" as Hub
+participant "AI Loader" as Loader
+database "Spine\n(DB)" as Spine
+participant "Brain\n(Memory)" as Brain
+participant "Agent\n(Worker)" as Agent
+participant "Render" as Render
+actor "User" as User
+participant "Audit Log" as Audit
+
+Ext -> Hub: Webhook (Message)
+activate Hub
+Hub -> Hub: Auth & Validate Sig
+Hub -> Loader: Route Payload
+deactivate Hub
+activate Loader
+
+Loader -> Loader: Map to Canonical
+Loader -> Spine: Write Task
+activate Spine
+Spine --> Loader: Ack
+deactivate Spine
+Loader -> Audit: Log Ingestion
+deactivate Loader
+
+Spine -> Brain: Sync New Entity
+activate Brain
+Brain -> Brain: Update Vector Index
+Brain --> Spine: Linkages Found
+deactivate Brain
+
+Spine -> Agent: Trigger Event
+activate Agent
+Agent -> Spine: Retrieve Context
+Agent -> Brain: Query History
+Agent -> Agent: Generate Plan
+Agent -> User: Request Approval (Optional)
+User --> Agent: Approve
+Agent -> Ext: Write Back (Optional)
+Agent -> Render: Request Output
+deactivate Agent
+
+activate Render
+Render -> User: Email Notification / Dashboard Update
+Render -> Audit: Log Delivery
+deactivate Render
+
+@enduml
