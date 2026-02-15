@@ -1,77 +1,100 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { checkPermission, checkAllPermissions, checkAnyPermission } from '@integratewise/rbac';
-
 /**
  * POST /api/rbac/check
- * Check if user has specific permission(s)
+ * Check if current user has a specific permission
  */
+
+import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from '@/lib/supabase/server';
+
 export async function POST(request: NextRequest) {
   try {
-    const userId = request.headers.get('x-user-id');
-    const tenantId = request.headers.get('x-tenant-id');
-
-    if (!userId || !tenantId) {
+    const supabase = createClient();
+    
+    // Get current user
+    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    
+    if (authError || !user) {
       return NextResponse.json(
-        { error: 'Unauthorized', message: 'User or tenant information missing' },
+        { error: 'Unauthorized' },
         { status: 401 }
       );
     }
-
-    const dbUrl = process.env.DATABASE_URL;
-    if (!dbUrl) {
+    
+    // Get permission to check
+    const { permission, resource_type, resource_id } = await request.json();
+    
+    if (!permission) {
       return NextResponse.json(
-        { error: 'Configuration error', message: 'Database URL not configured' },
-        { status: 500 }
+        { error: 'Permission required' },
+        { status: 400 }
       );
     }
-
-    const body = await request.json();
-    const { permission, permissions, mode = 'single' } = body;
-
-    let result;
-
-    switch (mode) {
-      case 'all':
-        if (!Array.isArray(permissions)) {
-          return NextResponse.json(
-            { error: 'Bad request', message: 'permissions must be an array for mode "all"' },
-            { status: 400 }
-          );
-        }
-        result = await checkAllPermissions(dbUrl, userId, tenantId, permissions);
-        break;
-
-      case 'any':
-        if (!Array.isArray(permissions)) {
-          return NextResponse.json(
-            { error: 'Bad request', message: 'permissions must be an array for mode "any"' },
-            { status: 400 }
-          );
-        }
-        result = await checkAnyPermission(dbUrl, userId, tenantId, permissions);
-        break;
-
-      case 'single':
-      default:
-        if (!permission) {
-          return NextResponse.json(
-            { error: 'Bad request', message: 'permission is required for mode "single"' },
-            { status: 400 }
-          );
-        }
-        result = await checkPermission(dbUrl, {
-          user_id: userId,
-          tenant_id: tenantId,
-          permission,
-        });
-        break;
+    
+    // Get user profile with role
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('role, tenant_id')
+      .eq('id', user.id)
+      .single();
+    
+    if (profileError || !profile) {
+      return NextResponse.json(
+        { error: 'Profile not found' },
+        { status: 404 }
+      );
     }
-
-    return NextResponse.json(result);
+    
+    // Get role permissions from database
+    const { data: roleData, error: roleError } = await supabase
+      .from('roles')
+      .select('permissions, is_system_role')
+      .eq('name', profile.role)
+      .single();
+    
+    if (roleError) {
+      // Fall back to frontend role config
+      const { getRoleConfig } = await import('@/lib/rbac/roles');
+      const roleConfig = getRoleConfig(profile.role);
+      
+      const hasPermission = roleConfig?.permissions.includes(permission) || 
+                           roleConfig?.permissions.includes('core:admin');
+      
+      return NextResponse.json({
+        allowed: hasPermission,
+        permission,
+        role: profile.role,
+        source: 'frontend-config'
+      });
+    }
+    
+    // Check permission
+    const permissions = roleData?.permissions || [];
+    const hasPermission = permissions.includes(permission) || 
+                         permissions.includes('*:*') ||
+                         permissions.includes('core:admin');
+    
+    // Log permission check
+    await supabase.from('permission_audit_log').insert({
+      tenant_id: profile.tenant_id,
+      user_id: user.id,
+      permission,
+      resource_type,
+      resource_id,
+      allowed: hasPermission,
+      matched_role: profile.role,
+    });
+    
+    return NextResponse.json({
+      allowed: hasPermission,
+      permission,
+      role: profile.role,
+      source: 'database'
+    });
+    
   } catch (error) {
-    console.error('Error checking permission:', error);
+    console.error('Permission check error:', error);
     return NextResponse.json(
-      { error: 'Internal server error', message: 'Failed to check permission' },
+      { error: 'Internal server error' },
       { status: 500 }
     );
   }
