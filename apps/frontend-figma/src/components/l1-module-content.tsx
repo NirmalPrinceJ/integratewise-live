@@ -45,12 +45,6 @@ import { MediaView } from "./website/media";
 import { PagesView } from "./website/pages";
 import { ThemeView } from "./website/theme";
 
-// ── Admin / Governance ──
-import { RBACManager } from "./admin/rbac-manager";
-import { ApprovalWorkflows } from "./admin/approval-workflows";
-import { TenantManager } from "./admin/tenant-manager";
-import { UserManagement } from "./admin/user-management";
-
 // ── Account Success sub-views ──
 import { ProjectsView } from "./domains/account-success/projects-view";
 import { MeetingsView } from "./domains/account-success/meetings-view";
@@ -124,7 +118,7 @@ export function L1ModuleContent({ module, activeCtx }: L1ModuleContentProps) {
   if (module === "Analytics") return <OpsAnalyticsView />;
   if (module === "Projects") return <ProjectsView />;
   if (module === "Meetings") return <MeetingsView />;
-  if (module === "Team") return <UserManagement />;
+  if (module === "Team") return <AccountsView />;
   if (module === "Workflows") return <WorkflowsView />;
 
   // ── Marketing domain routes ──
@@ -141,11 +135,6 @@ export function L1ModuleContent({ module, activeCtx }: L1ModuleContentProps) {
   if (module === "Media Library") return <MediaView />;
   if (module === "Pages") return <PagesView />;
   if (module === "Theme") return <ThemeView />;
-
-  // ── Admin / Governance routes ──
-  if (module === "RBAC") return <RBACManager />;
-  if (module === "Approvals") return <ApprovalWorkflows />;
-  if (module === "Admin") return <TenantManager />;
 
   // ── System module routes ──
   if (module === "Integrations") return <IntegrationsHub />;
