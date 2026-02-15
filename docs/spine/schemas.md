@@ -53,7 +53,7 @@ Represents a data point for customer health.
 
 ### HubSpot Deal → Spine Task
 | HubSpot Field | Spine Task Field | Transformation |
-|Orgin Field|Target Field|Logic|
+|Origin Field|Target Field|Logic|
 |---|---|---|
 | `dealname` | `title` | Direct copy |
 | `dealstage` | `status` | Map: 'closedwon'->'Done', 'qualified'->'In_Progress', else 'Todo' |
