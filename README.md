@@ -16,6 +16,9 @@
 - [Infrastructure Mapping](docs/INFRASTRUCTURE_MAPPING.md)
 - [Implementation Guide](docs/PHASE1_IMPLEMENTATION_GUIDE.md)
 - [UI/UX Audit](docs/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md)
+- [API Reference](docs/api/index.md)
+- [Spine Schemas](docs/spine/schemas.md)
+- [Security](docs/security/index.md)
 
 ---
 
@@ -37,6 +40,19 @@ All project documentation:
 - UI/UX audit reports and design system documentation
 - Implementation guides and deployment configuration
 - Launch signoffs and production readiness checklists
+- **Backend architecture**: API reference, Spine schemas, services packaging
+- **Security**: Security model, RBAC/ABAC documentation
+- **Integrations**: Connector matrix, webhook providers, integration modes
+- **Intelligence**: CS lenses, evidence framework, templates
+
+### `/packages/types/`
+Shared TypeScript type definitions:
+- Spine entity types (task, note, conversation, plan, health-metric)
+- Shared across frontend and backend services
+
+### `/diagrams/`
+Architecture diagrams:
+- `how-it-works.puml` - System architecture (PlantUML)
 
 ### `.github/workflows/`
 CI/CD pipelines:
@@ -51,7 +67,9 @@ CI/CD pipelines:
 This repository represents the **Live** instance of IntegrateWise OS, consolidating:
 
 1. **Frontend UI** - Complete Figma-exported React application
-2. **Infrastructure Documentation** - Deployment guides, schemas, architecture
+2. **Backend Architecture** - Spine schemas, API reference, services documentation
+3. **Shared Types** - TypeScript type definitions (`packages/types/`)
+4. **Infrastructure Documentation** - Deployment guides, schemas, architecture
 
 ## Tech Stack
 
@@ -61,6 +79,12 @@ This repository represents the **Live** instance of IntegrateWise OS, consolidat
 - Vite
 - Radix UI
 - Tailwind CSS (via component library)
+
+**Backend:**
+- Cloudflare Workers (edge compute)
+- Hono framework (HTTP router)
+- Neon PostgreSQL (serverless database + pgvector)
+- Cloudflare D1 (edge databases)
 
 **Infrastructure:**
 - Cloudflare Pages (hosting)

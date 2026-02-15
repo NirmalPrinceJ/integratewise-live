@@ -16,6 +16,19 @@ This is the **IntegrateWise OS Live** monorepo containing:
 - **[docs/ARCHITECTURE_RESTRUCTURE.md](docs/ARCHITECTURE_RESTRUCTURE.md)** - Restructuring plans
 - **[docs/INFRASTRUCTURE_MAPPING.md](docs/INFRASTRUCTURE_MAPPING.md)** - Infrastructure topology
 - **[docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)** - Database schema and relationships
+- **[docs/architecture/how-it-works.md](docs/architecture/how-it-works.md)** - System flow documentation
+- **[docs/architecture/component-contracts.md](docs/architecture/component-contracts.md)** - Component contracts
+
+### Backend Architecture
+- **[docs/api/index.md](docs/api/index.md)** - Hub Controller API reference
+- **[docs/spine/schemas.md](docs/spine/schemas.md)** - Spine entity schemas
+- **[docs/spine/mapping-guides.md](docs/spine/mapping-guides.md)** - Data mapping guides
+- **[docs/services/index.md](docs/services/index.md)** - Services architecture and packaging
+- **[docs/webhooks/index.md](docs/webhooks/index.md)** - Webhook providers (15+)
+- **[docs/security/index.md](docs/security/index.md)** - Security architecture
+- **[docs/security/rbac-abac.md](docs/security/rbac-abac.md)** - Role & attribute-based access control
+- **[docs/integrations/matrix.md](docs/integrations/matrix.md)** - Integration connector matrix
+- **[docs/integrations/compare-modes.md](docs/integrations/compare-modes.md)** - Integration modes comparison
 
 ### Frontend UI/UX
 - **[docs/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md](docs/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md)** - Complete UI/UX audit
@@ -52,7 +65,22 @@ integratewise-live/
 │       ├── tsconfig.json
 │       ├── tsconfig.node.json
 │       └── package.json
-├── docs/                          # All documentation (architecture, audits, guides)
+├── packages/
+│   └── types/                     # Shared TypeScript types
+│       └── src/spine/             # Spine entity type definitions
+├── docs/                          # All documentation
+│   ├── api/                       # API reference
+│   ├── architecture/              # System design docs
+│   ├── content/                   # SSOT content strategy
+│   ├── evidence/                  # Case studies
+│   ├── integrations/              # Connector matrix & modes
+│   ├── lenses/                    # CS intelligence lenses
+│   ├── security/                  # Security & RBAC/ABAC
+│   ├── services/                  # Backend services architecture
+│   ├── spine/                     # Spine schemas & mapping
+│   ├── templates/                 # Workflow templates
+│   └── webhooks/                  # Webhook provider docs
+├── diagrams/                      # Architecture diagrams (PlantUML)
 ├── .github/workflows/             # CI/CD pipelines
 ├── .vscode/                       # VSCode workspace config
 ├── package.json                   # Root monorepo package.json
@@ -99,6 +127,13 @@ See [docs/INFRASTRUCTURE_MAPPING.md](docs/INFRASTRUCTURE_MAPPING.md) for complet
 1. Navigate to `apps/frontend-figma/`
 2. Check [docs/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md](docs/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md)
 3. Review component structure in `src/components/`
+
+### To work on backend:
+1. Read [docs/api/index.md](docs/api/index.md) for API reference
+2. Check [docs/spine/schemas.md](docs/spine/schemas.md) for data model
+3. Review [docs/services/index.md](docs/services/index.md) for services architecture
+4. Check [packages/types/src/spine/](packages/types/src/spine/) for TypeScript types
+5. Review [docs/webhooks/index.md](docs/webhooks/index.md) for webhook integrations
 
 ### To deploy:
 1. Follow [docs/PHASE1_IMPLEMENTATION_GUIDE.md](docs/PHASE1_IMPLEMENTATION_GUIDE.md)

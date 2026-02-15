@@ -18,6 +18,36 @@
 | Architecture Restructure | [docs/ARCHITECTURE_RESTRUCTURE.md](docs/ARCHITECTURE_RESTRUCTURE.md) | Restructuring plans and migration paths |
 | Infrastructure Mapping | [docs/INFRASTRUCTURE_MAPPING.md](docs/INFRASTRUCTURE_MAPPING.md) | Infrastructure topology, services, and deployment architecture |
 | Database Schema | [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md) | Complete database schema, tables, relationships, and migrations |
+| How It Works | [docs/architecture/how-it-works.md](docs/architecture/how-it-works.md) | System flow from data ingestion to display |
+| Component Contracts | [docs/architecture/component-contracts.md](docs/architecture/component-contracts.md) | Component interface contracts and responsibilities |
+
+### 🔌 Backend Architecture (from integratewise-marketing)
+| Document | Location | Description |
+|----------|----------|-------------|
+| API Reference | [docs/api/index.md](docs/api/index.md) | Hub Controller API endpoints and usage |
+| Webhook Providers | [docs/webhooks/index.md](docs/webhooks/index.md) | 15+ webhook providers and ingestion |
+| Spine Schemas | [docs/spine/schemas.md](docs/spine/schemas.md) | Spine entity schemas and data model |
+| Spine Mapping Guides | [docs/spine/mapping-guides.md](docs/spine/mapping-guides.md) | Mapping external data to Spine entities |
+| Security Model | [docs/security/index.md](docs/security/index.md) | Security architecture and threat model |
+| RBAC/ABAC | [docs/security/rbac-abac.md](docs/security/rbac-abac.md) | Role & attribute-based access control |
+| Integration Matrix | [docs/integrations/matrix.md](docs/integrations/matrix.md) | Connector matrix and supported integrations |
+| Integration Modes | [docs/integrations/compare-modes.md](docs/integrations/compare-modes.md) | Integration mode comparison (webhook vs polling vs MCP) |
+| CS Intelligence Lenses | [docs/lenses/index.md](docs/lenses/index.md) | Customer Success intelligence lenses |
+| Services Packaging | [docs/services/index.md](docs/services/index.md) | Backend services architecture and packaging |
+| Evidence Framework | [docs/evidence/index.md](docs/evidence/index.md) | Case studies and evidence-based decision framework |
+| Templates | [docs/templates/index.md](docs/templates/index.md) | Workflow templates and accelerators |
+| Weekly Planning OS | [docs/templates/weekly-planning-os.md](docs/templates/weekly-planning-os.md) | Weekly planning template |
+| SSOT v2 Content | [docs/content/ssot-v2-content.md](docs/content/ssot-v2-content.md) | Single Source of Truth v2 content strategy |
+
+### 📦 Shared Packages
+| Package | Location | Description |
+|---------|----------|-------------|
+| Spine Types | [packages/types/src/spine/](packages/types/src/spine/) | TypeScript type definitions for Spine entities |
+
+### 📐 Diagrams
+| Diagram | Location | Description |
+|---------|----------|-------------|
+| How It Works (PlantUML) | [diagrams/how-it-works.puml](diagrams/how-it-works.puml) | System architecture diagram (PlantUML) |
 
 ### 🎨 UI/UX Design & Audits
 | Document | Location | Description |
@@ -103,7 +133,25 @@ integratewise-live/
 │   ├── LANDING_PAGE_AUDIT_REPORT.md
 │   ├── PHASE1_IMPLEMENTATION_GUIDE.md
 │   ├── PRODUCTION_READY_SIGNOFF.md
-│   └── CHAT_SESSIONS_FEB_7_8_2026.md
+│   ├── CHAT_SESSIONS_FEB_7_8_2026.md
+│   ├── api/                       ← API reference docs
+│   ├── architecture/              ← System design docs
+│   ├── content/                   ← SSOT content strategy
+│   ├── evidence/                  ← Case studies & evidence
+│   ├── integrations/              ← Connector matrix & modes
+│   ├── lenses/                    ← CS intelligence lenses
+│   ├── security/                  ← Security & RBAC/ABAC
+│   ├── services/                  ← Backend services architecture
+│   ├── spine/                     ← Spine schemas & mapping
+│   ├── templates/                 ← Workflow templates
+│   └── webhooks/                  ← Webhook providers docs
+│
+├── packages/
+│   └── types/                     ← Shared TypeScript types
+│       └── src/spine/             ← Spine entity type definitions
+│
+├── diagrams/
+│   └── how-it-works.puml          ← Architecture diagram (PlantUML)
 │
 ├── .github/workflows/
 │   └── ci.yml                     ← CI build workflow
@@ -135,6 +183,15 @@ integratewise-live/
 - **Deployment Guide:** [docs/PHASE1_IMPLEMENTATION_GUIDE.md](docs/PHASE1_IMPLEMENTATION_GUIDE.md)
 - **Cloudflare Config:** [docs/CLOUDFLARE_DEPLOYMENT_STATUS.md](docs/CLOUDFLARE_DEPLOYMENT_STATUS.md)
 - **Database Schema:** [docs/DATABASE_SCHEMA.md](docs/DATABASE_SCHEMA.md)
+
+### For Backend Developers
+- **API Reference:** [docs/api/index.md](docs/api/index.md)
+- **Spine Schemas:** [docs/spine/schemas.md](docs/spine/schemas.md)
+- **Services Architecture:** [docs/services/index.md](docs/services/index.md)
+- **Security Model:** [docs/security/index.md](docs/security/index.md)
+- **Webhook Providers:** [docs/webhooks/index.md](docs/webhooks/index.md)
+- **Integration Matrix:** [docs/integrations/matrix.md](docs/integrations/matrix.md)
+- **Spine Types:** [packages/types/src/spine/](packages/types/src/spine/)
 
 ### For Product/Project Managers
 - **Project Overview:** [README.md](README.md)
