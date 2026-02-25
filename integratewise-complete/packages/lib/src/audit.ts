@@ -1,4 +1,11 @@
-import { neon } from '@neondatabase/serverless';
+/**
+ * Audit Logging Module
+ * 
+ * Migrated from Neon to Supabase
+ * Uses Supabase client for all database operations
+ */
+
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 export interface AuditEvent {
   actor_user_id?: string;
@@ -36,6 +43,20 @@ export interface BillingAuditEvent {
   correlation_id?: string;
 }
 
+// Helper to create Supabase client
+function createDbClient(_dbUrl?: string): SupabaseClient {
+  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  
+  return createClient(url, key, {
+    db: { schema: 'hub' },
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+}
+
 /**
  * Log a general audit event to the audit_logs table
  */
@@ -43,33 +64,27 @@ export async function logAuditEvent(
   dbUrl: string,
   event: AuditEvent
 ): Promise<void> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(dbUrl);
 
-  await sql`
-    INSERT INTO audit_logs (
-      actor_user_id,
-      org_id,
-      workspace_id,
-      action,
-      target_type,
-      target_id,
-      payload,
-      ip_address,
-      user_agent,
-      correlation_id
-    ) VALUES (
-      ${event.actor_user_id || null},
-      ${event.org_id || null},
-      ${event.workspace_id || null},
-      ${event.action},
-      ${event.target_type || null},
-      ${event.target_id || null},
-      ${event.payload ? JSON.stringify(event.payload) : null},
-      ${event.ip_address || null},
-      ${event.user_agent || null},
-      ${event.correlation_id || null}
-    )
-  `;
+  const { error } = await supabase
+    .from('audit_logs')
+    .insert({
+      actor_user_id: event.actor_user_id || null,
+      org_id: event.org_id || null,
+      workspace_id: event.workspace_id || null,
+      action: event.action,
+      target_type: event.target_type || null,
+      target_id: event.target_id || null,
+      payload: event.payload || null,
+      ip_address: event.ip_address || null,
+      user_agent: event.user_agent || null,
+      correlation_id: event.correlation_id || null,
+    });
+
+  if (error) {
+    console.error('Failed to log audit event:', error);
+    throw error;
+  }
 }
 
 /**
@@ -79,37 +94,29 @@ export async function logGovernanceEvent(
   dbUrl: string,
   event: GovernanceAuditEvent
 ): Promise<void> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(dbUrl);
 
-  await sql`
-    INSERT INTO governance_audit_log (
-      tenant_id,
-      action_id,
-      policy_id,
-      user_id,
-      decision,
-      reason,
-      action_type,
-      metadata,
-      correlation_id,
-      event_type,
-      ip_address,
-      user_agent
-    ) VALUES (
-      ${event.tenant_id},
-      ${event.action_id || null},
-      ${event.policy_id || null},
-      ${event.user_id},
-      ${event.decision},
-      ${event.reason || null},
-      ${event.action_type || null},
-      ${event.metadata ? JSON.stringify(event.metadata) : null},
-      ${event.correlation_id || null},
-      ${event.event_type || null},
-      ${event.ip_address || null},
-      ${event.user_agent || null}
-    )
-  `;
+  const { error } = await supabase
+    .from('governance_audit_log')
+    .insert({
+      tenant_id: event.tenant_id,
+      action_id: event.action_id || null,
+      policy_id: event.policy_id || null,
+      user_id: event.user_id,
+      decision: event.decision,
+      reason: event.reason || null,
+      action_type: event.action_type || null,
+      metadata: event.metadata || null,
+      correlation_id: event.correlation_id || null,
+      event_type: event.event_type || null,
+      ip_address: event.ip_address || null,
+      user_agent: event.user_agent || null,
+    });
+
+  if (error) {
+    console.error('Failed to log governance event:', error);
+    throw error;
+  }
 }
 
 /**
@@ -119,23 +126,22 @@ export async function logBillingEvent(
   dbUrl: string,
   event: BillingAuditEvent
 ): Promise<void> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(dbUrl);
 
-  await sql`
-    INSERT INTO billing_audit_log (
-      org_id,
-      event_type,
-      actor_id,
-      metadata,
-      correlation_id
-    ) VALUES (
-      ${event.org_id},
-      ${event.event_type},
-      ${event.actor_id || null},
-      ${event.metadata ? JSON.stringify(event.metadata) : null},
-      ${event.correlation_id || null}
-    )
-  `;
+  const { error } = await supabase
+    .from('billing_audit_log')
+    .insert({
+      org_id: event.org_id,
+      event_type: event.event_type,
+      actor_id: event.actor_id || null,
+      metadata: event.metadata || null,
+      correlation_id: event.correlation_id || null,
+    });
+
+  if (error) {
+    console.error('Failed to log billing event:', error);
+    throw error;
+  }
 }
 
 /**

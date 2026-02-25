@@ -1,0 +1,36 @@
+# Doppler Configuration for IntegrateWise OS
+# https://docs.doppler.com/docs/cli
+
+# Project setup
+doppler.yaml
+setup:
+  project: integratewise
+  # Config is set per-service via CLI flags or DOPPLER_CONFIG env var
+  # Examples:
+  #   - dev_web, stg_web, prd_web
+  #   - dev_spine-v2, stg_spine-v2, prd_spine-v2
+  #   - dev_loader, stg_loader, prd_loader
+
+# Environments:
+#   - dev (Development)
+#   - stg (Staging)
+#   - prd (Production)
+
+# Services with Doppler configs:
+#   web                 - Next.js frontend
+#   spine-v2            - Spine service
+#   loader              - 8-stage pipeline loader
+#   normalizer          - Data normalizer
+#   connector           - Tool connectors
+#   cognitive-brain     - AI cognitive layer
+#   stream-gateway      - API gateway
+#   memory-consolidator - Memory service
+#   workflow            - n8n workflow engine
+#   agents              - AI agents
+
+# Usage:
+#   doppler secrets --config prd_web                    # View secrets
+#   doppler secrets set KEY value --config prd_web      # Set secret
+#   doppler run --config prd_web -- npm run dev         # Run with secrets
+#   doppler run --config prd_web -- vercel --prod       # Deploy frontend
+#   doppler run --config prd_spine-v2 -- wrangler deploy # Deploy worker

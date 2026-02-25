@@ -1,39 +1,53 @@
+/**
+ * @deprecated This module is deprecated. Neon has been replaced with Supabase.
+ * Use @integratewise/db or direct Supabase client instead.
+ */
+
 import type { SpineEvent } from '@integratewise/types';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-// Neon/Postgres database utilities
-// Note: Actual implementation would use @neondatabase/serverless or pg
-
+// Re-export for backward compatibility
 export interface DatabaseConfig {
   connectionString: string;
+  url?: string;
+  serviceRoleKey?: string;
 }
 
-// Placeholder for database client initialization
-export function createDbClient(_config: DatabaseConfig) {
-  // In production, use @neondatabase/serverless or pg
+// Deprecated: Use createAdminClient from @integratewise/db
+export function createDbClient(config: DatabaseConfig) {
+  console.warn('createDbClient from @integratewise/lib/neon is deprecated. Use @integratewise/db');
+  
+  const url = config.url || process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = config.serviceRoleKey || process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  
+  const client = createClient(url, key, {
+    auth: { autoRefreshToken: false, persistSession: false },
+  });
+  
   return {
-    query<T>(_sql: string, _params?: unknown[]): Promise<T[]> {
-      return Promise.reject(new Error('Database client not implemented'));
+    query: async <T>(sql: string, params?: unknown[]): Promise<T[]> => {
+      // Use Supabase RPC for SQL queries
+      const { data, error } = await client.rpc('exec_sql', { sql, params });
+      if (error) throw error;
+      return data || [];
     },
   };
 }
 
-// Save a SpineEvent to the database
-export function saveEvent(event: SpineEvent): Promise<void> {
-  // Implementation would insert into events table
-  console.warn('saveEvent not implemented:', event.id);
+// Deprecated: Use Supabase client directly
+export function saveEvent(_event: SpineEvent): Promise<void> {
+  console.warn('saveEvent is deprecated. Use Supabase client directly.');
   return Promise.resolve();
 }
 
-// Get events by source
-export function getEventsBySource(source: string, limit = 100): Promise<SpineEvent[]> {
-  // Implementation would query events table
-  console.warn('getEventsBySource not implemented:', source, limit);
+// Deprecated: Use Supabase client directly
+export function getEventsBySource(_source: string, _limit = 100): Promise<SpineEvent[]> {
+  console.warn('getEventsBySource is deprecated. Use Supabase client directly.');
   return Promise.resolve([]);
 }
 
-// Get event by ID
-export function getEventById(id: string): Promise<SpineEvent | null> {
-  // Implementation would query events table
-  console.warn('getEventById not implemented:', id);
+// Deprecated: Use Supabase client directly
+export function getEventById(_id: string): Promise<SpineEvent | null> {
+  console.warn('getEventById is deprecated. Use Supabase client directly.');
   return Promise.resolve(null);
 }

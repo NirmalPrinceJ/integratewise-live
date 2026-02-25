@@ -1,4 +1,4 @@
-import { neon } from '@neondatabase/serverless';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 import type {
   Role,
   CreateRole,
@@ -10,6 +10,25 @@ import type {
   Permission,
 } from './types';
 import { DEFAULT_ROLES, DEFAULT_PERMISSIONS, ROLE_DESCRIPTIONS } from './types';
+
+// ============================================================================
+// Supabase Client Helper
+// ============================================================================
+
+function createDbClient(dbUrl: string): SupabaseClient {
+  // For Supabase, we need the service role key
+  // The dbUrl is kept for backward compatibility but we use env vars
+  const url = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY!;
+  
+  return createClient(url, key, {
+    db: { schema: 'hub' },
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false,
+    },
+  });
+}
 
 // ============================================================================
 // Permission Matching Logic
@@ -68,152 +87,153 @@ export function hasAnyPermission(userPermissions: string[], requiredPermissions:
  * List all roles for a tenant (or system roles if tenant_id is null)
  */
 export async function listRoles(
-  dbUrl: string,
+  _dbUrl: string,
   tenant_id?: string
 ): Promise<Role[]> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(_dbUrl);
 
-  const result = tenant_id
-    ? await sql`
-        SELECT id, tenant_id, name, description, permissions, is_system_role, created_at, updated_at
-        FROM roles
-        WHERE tenant_id = ${tenant_id} OR is_system_role = true
-        ORDER BY is_system_role DESC, name ASC
-      `
-    : await sql`
-        SELECT id, tenant_id, name, description, permissions, is_system_role, created_at, updated_at
-        FROM roles
-        WHERE is_system_role = true
-        ORDER BY name ASC
-      `;
+  let query = supabase
+    .from('roles')
+    .select('*')
+    .order('is_system_role', { ascending: false })
+    .order('name');
 
-  return result as Role[];
+  if (tenant_id) {
+    query = query.or(`tenant_id.eq.${tenant_id},is_system_role.eq.true`);
+  } else {
+    query = query.eq('is_system_role', true);
+  }
+
+  const { data, error } = await query;
+  if (error) throw error;
+  return data as Role[];
 }
 
 /**
  * Get a role by ID
  */
 export async function getRole(
-  dbUrl: string,
+  _dbUrl: string,
   role_id: string
 ): Promise<Role | null> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(_dbUrl);
 
-  const result = await sql`
-    SELECT id, tenant_id, name, description, permissions, is_system_role, created_at, updated_at
-    FROM roles
-    WHERE id = ${role_id}
-    LIMIT 1
-  `;
+  const { data, error } = await supabase
+    .from('roles')
+    .select('*')
+    .eq('id', role_id)
+    .single();
 
-  return result[0] as Role | null;
+  if (error) return null;
+  return data as Role;
 }
 
 /**
  * Get a role by name
  */
 export async function getRoleByName(
-  dbUrl: string,
+  _dbUrl: string,
   name: string,
   tenant_id?: string
 ): Promise<Role | null> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(_dbUrl);
 
-  const result = tenant_id
-    ? await sql`
-        SELECT id, tenant_id, name, description, permissions, is_system_role, created_at, updated_at
-        FROM roles
-        WHERE name = ${name} AND (tenant_id = ${tenant_id} OR is_system_role = true)
-        LIMIT 1
-      `
-    : await sql`
-        SELECT id, tenant_id, name, description, permissions, is_system_role, created_at, updated_at
-        FROM roles
-        WHERE name = ${name} AND is_system_role = true
-        LIMIT 1
-      `;
+  let query = supabase
+    .from('roles')
+    .select('*')
+    .eq('name', name);
 
-  return result[0] as Role | null;
+  if (tenant_id) {
+    query = query.or(`tenant_id.eq.${tenant_id},is_system_role.eq.true`);
+  } else {
+    query = query.eq('is_system_role', true);
+  }
+
+  const { data, error } = await query.single();
+  if (error) return null;
+  return data as Role;
 }
 
 /**
  * Create a new role
  */
 export async function createRole(
-  dbUrl: string,
+  _dbUrl: string,
   role: CreateRole
 ): Promise<Role> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(_dbUrl);
 
-  const result = await sql`
-    INSERT INTO roles (
-      tenant_id, name, description, permissions, is_system_role
-    ) VALUES (
-      ${role.tenant_id || null},
-      ${role.name},
-      ${role.description || null},
-      ${JSON.stringify(role.permissions)},
-      ${role.is_system_role}
-    )
-    RETURNING id, tenant_id, name, description, permissions, is_system_role, created_at, updated_at
-  `;
+  const { data, error } = await supabase
+    .from('roles')
+    .insert({
+      tenant_id: role.tenant_id || null,
+      name: role.name,
+      description: role.description || null,
+      permissions: role.permissions,
+      is_system_role: role.is_system_role,
+    })
+    .select()
+    .single();
 
-  return result[0] as Role;
+  if (error) throw error;
+  return data as Role;
 }
 
 /**
  * Update a role (cannot update system roles)
  */
 export async function updateRole(
-  dbUrl: string,
+  _dbUrl: string,
   role_id: string,
   updates: UpdateRole
 ): Promise<Role | null> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(_dbUrl);
 
-  const result = await sql`
-    UPDATE roles
-    SET
-      name = COALESCE(${updates.name}, name),
-      description = COALESCE(${updates.description}, description),
-      permissions = COALESCE(${updates.permissions ? JSON.stringify(updates.permissions) : null}, permissions),
-      updated_at = NOW()
-    WHERE id = ${role_id}
-      AND is_system_role = false
-    RETURNING id, tenant_id, name, description, permissions, is_system_role, created_at, updated_at
-  `;
+  const updateData: any = {};
+  if (updates.name) updateData.name = updates.name;
+  if (updates.description) updateData.description = updates.description;
+  if (updates.permissions) updateData.permissions = updates.permissions;
+  updateData.updated_at = new Date().toISOString();
 
-  return result[0] as Role | null;
+  const { data, error } = await supabase
+    .from('roles')
+    .update(updateData)
+    .eq('id', role_id)
+    .eq('is_system_role', false)
+    .select()
+    .single();
+
+  if (error) return null;
+  return data as Role;
 }
 
 /**
  * Delete a role (cannot delete system roles or roles assigned to users)
  */
 export async function deleteRole(
-  dbUrl: string,
+  _dbUrl: string,
   role_id: string
 ): Promise<boolean> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(_dbUrl);
 
   // Check if role is assigned to any users
-  const assignmentCheck = await sql`
-    SELECT COUNT(*) as count
-    FROM user_roles
-    WHERE role_id = ${role_id}
-  `;
+  const { count, error: countError } = await supabase
+    .from('user_roles')
+    .select('*', { count: 'exact', head: true })
+    .eq('role_id', role_id);
 
-  if (Number(assignmentCheck[0].count) > 0) {
+  if (countError) throw countError;
+  if (count && count > 0) {
     throw new Error('Cannot delete role that is assigned to users');
   }
 
-  const result = await sql`
-    DELETE FROM roles
-    WHERE id = ${role_id}
-      AND is_system_role = false
-    RETURNING id
-  `;
+  const { error } = await supabase
+    .from('roles')
+    .delete()
+    .eq('id', role_id)
+    .eq('is_system_role', false);
 
-  return result.length > 0;
+  return !error;
 }
 
 // ============================================================================
@@ -224,42 +244,34 @@ export async function deleteRole(
  * Get user with all their roles and computed permissions
  */
 export async function getUserWithRoles(
-  dbUrl: string,
+  _dbUrl: string,
   user_id: string,
   tenant_id: string
 ): Promise<UserWithRoles | null> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(_dbUrl);
 
-  const result = await sql`
-    SELECT 
-      u.id as user_id,
-      u.org_id as tenant_id,
-      COALESCE(
-        json_agg(
-          json_build_object(
-            'id', r.id,
-            'tenant_id', r.tenant_id,
-            'name', r.name,
-            'description', r.description,
-            'permissions', r.permissions,
-            'is_system_role', r.is_system_role
-          )
-        ) FILTER (WHERE r.id IS NOT NULL),
-        '[]'
-      ) as roles
-    FROM users u
-    LEFT JOIN user_roles ur ON u.id = ur.user_id
-    LEFT JOIN roles r ON ur.role_id = r.id
-    WHERE u.id = ${user_id}
-      AND u.org_id = ${tenant_id}
-    GROUP BY u.id, u.org_id
-  `;
+  // Get user
+  const { data: user, error: userError } = await supabase
+    .from('users')
+    .select('id, org_id')
+    .eq('id', user_id)
+    .eq('org_id', tenant_id)
+    .single();
 
-  if (result.length === 0) return null;
+  if (userError || !user) return null;
 
-  const row = result[0] as any;
-  const roles = row.roles as Role[];
-  
+  // Get user's roles with a join
+  const { data: roleData, error: rolesError } = await supabase
+    .from('user_roles')
+    .select(`
+      role:roles(*)
+    `)
+    .eq('user_id', user_id);
+
+  if (rolesError) throw rolesError;
+
+  const roles = (roleData?.map((r: any) => r.role) || []) as Role[];
+
   // Compute all permissions from all roles
   const permissionSet = new Set<string>();
   for (const role of roles) {
@@ -269,8 +281,8 @@ export async function getUserWithRoles(
   }
 
   return {
-    user_id: row.user_id,
-    tenant_id: row.tenant_id,
+    user_id: user.id,
+    tenant_id: user.org_id,
     roles,
     permissions: Array.from(permissionSet),
   };
@@ -280,59 +292,65 @@ export async function getUserWithRoles(
  * Assign a role to a user
  */
 export async function assignRole(
-  dbUrl: string,
+  _dbUrl: string,
   assignment: AssignRole
 ): Promise<void> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(_dbUrl);
 
-  await sql`
-    INSERT INTO user_roles (user_id, role_id, assigned_by, assigned_at)
-    VALUES (
-      ${assignment.user_id},
-      ${assignment.role_id},
-      ${assignment.assigned_by || null},
-      NOW()
-    )
-    ON CONFLICT (user_id, role_id) DO NOTHING
-  `;
+  const { error } = await supabase
+    .from('user_roles')
+    .upsert({
+      user_id: assignment.user_id,
+      role_id: assignment.role_id,
+      assigned_by: assignment.assigned_by || null,
+      assigned_at: new Date().toISOString(),
+    }, {
+      onConflict: 'user_id,role_id',
+      ignoreDuplicates: true,
+    });
+
+  if (error) throw error;
 }
 
 /**
  * Revoke a role from a user
  */
 export async function revokeRole(
-  dbUrl: string,
+  _dbUrl: string,
   user_id: string,
   role_id: string
 ): Promise<void> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(_dbUrl);
 
-  await sql`
-    DELETE FROM user_roles
-    WHERE user_id = ${user_id}
-      AND role_id = ${role_id}
-  `;
+  const { error } = await supabase
+    .from('user_roles')
+    .delete()
+    .eq('user_id', user_id)
+    .eq('role_id', role_id);
+
+  if (error) throw error;
 }
 
 /**
  * Get all users with a specific role
  */
 export async function getUsersByRole(
-  dbUrl: string,
+  _dbUrl: string,
   role_id: string,
   tenant_id: string
 ): Promise<string[]> {
-  const sql = neon(dbUrl);
+  const supabase = createDbClient(_dbUrl);
 
-  const result = await sql`
-    SELECT DISTINCT u.id
-    FROM users u
-    INNER JOIN user_roles ur ON u.id = ur.user_id
-    WHERE ur.role_id = ${role_id}
-      AND u.org_id = ${tenant_id}
-  `;
+  const { data, error } = await supabase
+    .from('user_roles')
+    .select(`
+      user:users(id)
+    `)
+    .eq('role_id', role_id)
+    .eq('user.org_id', tenant_id);
 
-  return result.map((row: any) => row.id);
+  if (error) throw error;
+  return data?.map((r: any) => r.user?.id).filter(Boolean) || [];
 }
 
 // ============================================================================
@@ -343,10 +361,10 @@ export async function getUsersByRole(
  * Check if a user has a specific permission
  */
 export async function checkPermission(
-  dbUrl: string,
+  _dbUrl: string,
   check: PermissionCheck
 ): Promise<PermissionCheckResult> {
-  const userWithRoles = await getUserWithRoles(dbUrl, check.user_id, check.tenant_id);
+  const userWithRoles = await getUserWithRoles(_dbUrl, check.user_id, check.tenant_id);
 
   if (!userWithRoles) {
     return {
@@ -387,12 +405,12 @@ export async function checkPermission(
  * Check if a user has multiple permissions (ALL)
  */
 export async function checkAllPermissions(
-  dbUrl: string,
+  _dbUrl: string,
   user_id: string,
   tenant_id: string,
   permissions: string[]
 ): Promise<PermissionCheckResult> {
-  const userWithRoles = await getUserWithRoles(dbUrl, user_id, tenant_id);
+  const userWithRoles = await getUserWithRoles(_dbUrl, user_id, tenant_id);
 
   if (!userWithRoles) {
     return { allowed: false, reason: 'User not found' };
@@ -417,12 +435,12 @@ export async function checkAllPermissions(
  * Check if a user has any of the permissions
  */
 export async function checkAnyPermission(
-  dbUrl: string,
+  _dbUrl: string,
   user_id: string,
   tenant_id: string,
   permissions: string[]
 ): Promise<PermissionCheckResult> {
-  const userWithRoles = await getUserWithRoles(dbUrl, user_id, tenant_id);
+  const userWithRoles = await getUserWithRoles(_dbUrl, user_id, tenant_id);
 
   if (!userWithRoles) {
     return { allowed: false, reason: 'User not found' };
@@ -447,26 +465,22 @@ export async function checkAnyPermission(
 /**
  * Seed default system roles
  */
-export async function seedDefaultRoles(dbUrl: string): Promise<void> {
-  const sql = neon(dbUrl);
+export async function seedDefaultRoles(_dbUrl: string): Promise<void> {
+  const supabase = createDbClient(_dbUrl);
 
   for (const [roleName, permissions] of Object.entries(DEFAULT_PERMISSIONS)) {
     const description = ROLE_DESCRIPTIONS[roleName as keyof typeof ROLE_DESCRIPTIONS];
 
-    await sql`
-      INSERT INTO roles (name, description, permissions, is_system_role, tenant_id)
-      VALUES (
-        ${roleName},
-        ${description},
-        ${JSON.stringify(permissions)},
-        true,
-        NULL
-      )
-      ON CONFLICT (name, COALESCE(tenant_id, '00000000-0000-0000-0000-000000000000'::uuid))
-      DO UPDATE SET
-        description = EXCLUDED.description,
-        permissions = EXCLUDED.permissions,
-        updated_at = NOW()
-    `;
+    await supabase
+      .from('roles')
+      .upsert({
+        name: roleName,
+        description,
+        permissions,
+        is_system_role: true,
+        tenant_id: null,
+      }, {
+        onConflict: 'name',
+      });
   }
 }
