@@ -1,0 +1,19 @@
+# Cloudflare Pages Configuration
+name = "integratewise-web"
+compatibility_date = "2024-01-01"
+
+[build]
+command = "npm run build"
+output_directory = "dist"
+
+[site]
+bucket = "dist"
+
+# Environment variables
+[vars]
+NODE_VERSION = "20"
+
+# Secrets (set via wrangler secret put)
+# VITE_SUPABASE_URL
+# VITE_SUPABASE_ANON_KEY
+# VITE_API_URL

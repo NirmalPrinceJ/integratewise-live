@@ -220,7 +220,9 @@ Processes structured tool data through the continuous intelligence cycle.
 | **DNS / CDN** | Cloudflare | Domain routing, SSL termination, DDoS protection, edge caching. Full proxy mode; WAF rules. |
 | **AI Inference** | OpenRouter | AI calls for Sanity Scan, Think Engine, session summarization. Multi-model routing; fallback chains. |
 | **Auth** | Supabase Auth | User authentication, JWT issuance, social login, MFA. RLS integration with Neon PostgreSQL. |
+| **Secrets Management** | Doppler | Centralized secrets management across all environments. Injects env vars at runtime; no .env files. |
 | **Workflow Automation** | n8n (self-hosted) | Internal operational workflows, email triage, notification routing. Hosted at n8n.integratewise.online. |
+| **Frontend Hosting** | Cloudflare Pages | Static site hosting for Vite React app. Automatic deployments from main branch. |
 
 ---
 
@@ -236,7 +238,7 @@ Security is enforced at every layer, from network edge to database row. Zero-tru
 | **Authorization** | RBAC + RLS | Role-based access control at API layer; Row-Level Security at database layer |
 | **Data Isolation** | Tenant isolation via RLS | Every database query automatically scoped to tenant_id via PostgreSQL RLS policies |
 | **Encryption at Rest** | AES-256 | Neon PostgreSQL encryption; R2 server-side encryption |
-| **Secret Management** | Workers Secrets | OAuth tokens, API keys, HMAC secrets stored as encrypted Worker secrets |
+| **Secret Management** | Doppler | Centralized secrets vault; environment-specific configs; automatic rotation; audit logging |
 | **Audit** | Immutable audit log | Every data access, modification, and action logged to append-only Audit Store |
 | **PII Handling** | Field-level detection | Pipeline Filter stage flags PII fields; configurable masking and retention policies |
 | **Compliance** | GDPR, DPDP Act 2023 | Right to access, erasure, portability. Cascade delete with audit trail. |
@@ -354,6 +356,45 @@ services/
 - Load tests for pipeline throughput (target: 10k events/minute)
 - Security tests for RLS policies
 - Chaos tests for DLQ recovery
+
+### 15.4 Secrets Management (Doppler)
+
+**NO LOCAL .ENV FILES.** All secrets are managed through Doppler.
+
+**Required Doppler Secrets:**
+```
+VITE_SUPABASE_URL          # Supabase project URL
+VITE_SUPABASE_ANON_KEY     # Supabase anonymous key
+SUPABASE_SERVICE_KEY       # Service role key (backend only)
+OPENROUTER_API_KEY         # AI inference API key
+N8N_WEBHOOK_SECRET         # n8n workflow auth
+```
+
+**Development Workflow:**
+```bash
+# Login to Doppler
+doppler login
+
+# Setup project
+doppler setup
+
+# Run dev server with Doppler
+doppler run -- npm run dev
+
+# Build with Doppler
+doppler run -- npm run build
+```
+
+**Environment Structure:**
+- `dev` — Local development
+- `staging` — Pre-production testing
+- `prod` — Production environment
+
+**Security Rules:**
+1. Never commit secrets to git
+2. Never share service keys in Slack/email
+3. Rotate keys quarterly via Doppler
+4. Use separate projects for dev/staging/prod
 
 ---
 

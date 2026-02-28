@@ -1,50 +1,54 @@
-"use client"
+import { useState, useEffect, useCallback } from "react";
+import { getTasks, completeTask, createTask, Task } from "../lib/api";
 
-/**
- * useTasks Hook
- * 
- * Fetches task entities from the Spine Service (L3)
- * Integrates with: services/spine-v2
- */
+export function useTasks(options: {
+  status?: string;
+  priority?: string;
+} = {}) {
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
-import { useEntities } from "./useEntities"
-import { EntityType } from "@/lib/spine/universal-entity-service"
-
-export interface TaskData {
-    title: string
-    description: string
-    status: "todo" | "in_progress" | "done" | "blocked" | "overdue"
-    priority: "low" | "medium" | "high" | "critical"
-    dueDate: string
-    dueDays?: number
-    assignee: string
-    assigneeInitials?: string
-    project?: string
-    projectName?: string
-    accountId?: string
-    accountName?: string
-    labels: string[]
-    subtasks: {
-        completed: number
-        total: number
+  const fetchTasks = useCallback(async () => {
+    try {
+      setLoading(true);
+      const data = await getTasks(options);
+      setTasks(data);
+      setError(null);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
     }
-}
+  }, [options.status, options.priority]);
 
-interface UseTasksOptions {
-    limit?: number
-    status?: string
-    priority?: string
-    search?: string
-    category?: "personal" | "team" | "business"
-}
+  useEffect(() => {
+    fetchTasks();
+  }, [fetchTasks]);
 
-export function useTasks(options: UseTasksOptions = {}) {
-    const { entities, isLoading, error, refresh } = useEntities<TaskData>("task", options)
-
-    return {
-        tasks: entities,
-        isLoading,
-        error,
-        refresh,
+  const complete = useCallback(async (id: string) => {
+    try {
+      await completeTask(id);
+      setTasks((prev) =>
+        prev.map((t) =>
+          t.id === id ? { ...t, status: "completed", completed_at: new Date().toISOString() } : t
+        )
+      );
+    } catch (err) {
+      console.error("Failed to complete task:", err);
     }
+  }, []);
+
+  const addTask = useCallback(async (task: Parameters<typeof createTask>[0]) => {
+    try {
+      const newTask = await createTask(task);
+      setTasks((prev) => [newTask, ...prev]);
+      return newTask;
+    } catch (err) {
+      console.error("Failed to create task:", err);
+      throw err;
+    }
+  }, []);
+
+  return { tasks, loading, error, refetch: fetchTasks, complete, addTask };
 }
