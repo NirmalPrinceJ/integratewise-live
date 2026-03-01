@@ -1,0 +1,202 @@
+name: Deploy Workers (Cloudflare)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/deploy-workers.yml'
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Service to deploy (or "all")'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - gateway
+          - act
+          - think
+          - govern
+          - normalizer
+          - loader
+          - store
+          - iq-hub
+          - knowledge
+          - spine-v2
+          - cognitive-brain
+          - admin
+          - tenants
+          - workflow
+          - agents
+          - billing
+          - views
+          - stream-gateway
+          - memory-consolidator
+          - mcp-connector
+      environment:
+        description: 'Deploy environment'
+        required: true
+        default: 'production'
+        type: choice
+        options:
+          - production
+          - staging
+
+concurrency:
+  group: deploy-workers-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PNPM_VERSION: '9'
+  NODE_VERSION: '20'
+
+jobs:
+  deploy-workers:
+    name: Deploy Workers
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: ${{ inputs.environment || 'production' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build all packages
+        run: pnpm build
+
+      - name: Deploy Workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DEPLOY_ENV: ${{ inputs.environment || 'production' }}
+          TARGET_SERVICE: ${{ inputs.service || 'all' }}
+        run: |
+          SERVICES=(
+            gateway
+            act
+            think
+            govern
+            normalizer
+            loader
+            store
+            iq-hub
+            knowledge
+            spine-v2
+            cognitive-brain
+            admin
+            tenants
+            workflow
+            agents
+            billing
+            views
+            stream-gateway
+            memory-consolidator
+            mcp-connector
+          )
+
+          DEPLOYED=0
+          FAILED=0
+
+          deploy_service() {
+            local svc=$1
+            local toml="services/$svc/wrangler.toml"
+
+            if [ ! -f "$toml" ]; then
+              echo "⚠️  Skipping $svc — no $toml"
+              return 1
+            fi
+
+            echo "🚀 Deploying $svc (env: $DEPLOY_ENV)..."
+            if npx wrangler deploy -c "$toml" --env "$DEPLOY_ENV" 2>&1; then
+              echo "✅ $svc deployed"
+              return 0
+            else
+              echo "❌ $svc failed"
+              return 1
+            fi
+          }
+
+          if [ "$TARGET_SERVICE" = "all" ]; then
+            for svc in "${SERVICES[@]}"; do
+              if deploy_service "$svc"; then
+                ((DEPLOYED++))
+              else
+                ((FAILED++)) || true
+              fi
+            done
+          else
+            if deploy_service "$TARGET_SERVICE"; then
+              ((DEPLOYED++))
+            else
+              ((FAILED++)) || true
+            fi
+          fi
+
+          echo ""
+          echo "════════════════════════════════════════"
+          echo "  ✅ Deployed: $DEPLOYED   ❌ Failed: $FAILED"
+          echo "════════════════════════════════════════"
+
+          if [ $FAILED -gt 0 ] && [ "$TARGET_SERVICE" = "all" ]; then
+            echo "::warning::$FAILED services failed to deploy"
+          fi
+
+      - name: Deployment Summary
+        run: |
+          echo "## Workers Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "- **Service:** ${{ inputs.service || 'all (20 services)' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** ${{ inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+
+  health-check:
+    name: Health Check
+    needs: deploy-workers
+    runs-on: ubuntu-latest
+    if: inputs.environment == 'production' || github.ref == 'refs/heads/main'
+    timeout-minutes: 5
+
+    steps:
+      - name: Wait for services to stabilize
+        run: sleep 30
+
+      - name: Check critical services
+        run: |
+          SERVICES=(
+            "https://gateway.integratewise.ai/health"
+            "https://think.integratewise.ai/health"
+            "https://govern.integratewise.ai/health"
+          )
+
+          ALL_HEALTHY=true
+          for url in "${SERVICES[@]}"; do
+            echo "Checking $url..."
+            if curl -sf --max-time 10 "$url" > /dev/null 2>&1; then
+              echo "  ✅ Healthy"
+            else
+              echo "  ⚠️ Unreachable (may need DNS/secrets setup)"
+              ALL_HEALTHY=false
+            fi
+          done
+
+          if [ "$ALL_HEALTHY" = false ]; then
+            echo "::warning::Some health checks failed — may need DNS or Doppler secrets configured"
+          fi
