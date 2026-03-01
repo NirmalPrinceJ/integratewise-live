@@ -1,0 +1,35 @@
+{
+  "schema_version": "1.0",
+  "organization": {
+    "name": "IntegrateWise LLP",
+    "url": "https://integratewise.ai"
+  },
+  "product": {
+    "name": "IntegrateWise OS",
+    "category": "Universal Cognitive Operating System",
+    "description": "AI-powered Knowledge Workspace — the context-aware layer connecting tools, AI, data, charts, context, and memory into one intelligent system."
+  },
+  "ai_integration": {
+    "mcp_server": "https://n8n.integratewise.online/mcp",
+    "protocols": ["MCP"],
+    "capabilities": [
+      "Multi-system orchestration",
+      "Context-aware tool discovery",
+      "RBAC-gated reads",
+      "Govern-approved writes",
+      "Session summarization"
+    ]
+  },
+  "grounding_files": {
+    "human_readable": "https://integratewise.ai/llm.txt",
+    "structured_context": "https://integratewise.ai/context.json",
+    "discovery": "https://integratewise.ai/.well-known/ai-context.json"
+  },
+  "contact": {
+    "founder": "Nirmal Prince J",
+    "role": "CEO & Founder",
+    "location": "Bengaluru, India"
+  },
+  "architecture_version": "3.6",
+  "last_updated": "2026-02-28"
+}

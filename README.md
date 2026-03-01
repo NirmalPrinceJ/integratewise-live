@@ -1,88 +1,90 @@
-# IntegrateWise Live
+# IntegrateWise
 
-**IntegrateWise OS** - Complete business operations platform monorepo
+Unified business operations platform. Normalize once. Render anywhere.
 
----
+## Live Services
 
-## 🗺️ Navigation & Documentation
+| Service | URL | Platform |
+|---------|-----|----------|
+| Marketing Site | https://integratewise.co | Cloudflare Pages |
+| Hub Dashboard | https://integratewise-hub.vercel.app | Vercel |
+| Webhook Ingress | https://webhooks.integratewise.online | Cloudflare Workers |
+| Hub API | https://hub-controller-api.workers.dev | Cloudflare Workers |
 
-**For AI Agents & Developers:**
-- 🤖 **[agents.md](agents.md)** - Primary AI agent navigation guide with architecture, workflows, and search patterns
-- 📖 **[NAVIGATION.md](NAVIGATION.md)** - Complete file index with all documentation links (no blind zones)
-- 📚 **[README.md](README.md)** - This file (overview and getting started)
+## Monorepo Structure
 
-**Quick Links:**
-- [Architecture Diagram](apps/frontend-figma/src/ARCHITECTURE_DIAGRAM.md)
-- [Infrastructure Mapping](docs/INFRASTRUCTURE_MAPPING.md)
-- [Implementation Guide](docs/PHASE1_IMPLEMENTATION_GUIDE.md)
-- [UI/UX Audit](apps/frontend-figma/src/COMPREHENSIVE_UI_UX_AUDIT_REPORT.md)
+\`\`\`
+packages/
+├── website/      # Marketing site (Cloudflare Pages)
+├── hub/          # Hub Dashboard (Next.js on Vercel)
+├── api/          # Hub API (Hono on Cloudflare Workers)
+└── webhooks/     # Webhook Ingress (Cloudflare Workers)
+\`\`\`
 
----
+## Webhook Providers (15 total)
 
-## Repository Structure
+| Provider | Endpoint | Category |
+|----------|----------|----------|
+| HubSpot | `/webhooks/hubspot` | CRM |
+| Salesforce | `/webhooks/salesforce` | CRM |
+| Pipedrive | `/webhooks/pipedrive` | Sales |
+| LinkedIn | `/webhooks/linkedin` | Marketing |
+| Canva | `/webhooks/canva` | Design |
+| Google Ads | `/webhooks/google-ads` | Marketing |
+| Meta | `/webhooks/meta` | Marketing |
+| WhatsApp | `/webhooks/whatsapp` | Communication |
+| Razorpay | `/webhooks/razorpay` | Payments |
+| Stripe | `/webhooks/stripe` | Payments |
+| GitHub | `/webhooks/github` | Dev |
+| Vercel | `/webhooks/vercel` | Dev |
+| Todoist | `/webhooks/todoist` | Productivity |
+| Notion | `/webhooks/notion` | Productivity |
+| AI Relay | `/webhooks/ai-relay` | Internal |
 
-### `/apps/frontend-figma/`
-Complete Figma frontend export for IntegrateWise Business Operations Design
-- React + Vite + TypeScript
-- Radix UI component library
-- Domain shells (Account Success, RevOps, SalesOps, Personal, Marketing)
-- Hydration fabric and Spine integration
-- Landing pages and marketing site
-- **219 component files** + comprehensive UI/UX documentation
+## Development
 
-### `/docs/`
-Infrastructure and architecture documentation:
-- `CLOUDFLARE_DEPLOYMENT_STATUS.md` - Deployment configuration
-- `DATABASE_SCHEMA.md` - Database schema and relationships
-- `INFRASTRUCTURE_MAPPING.md` - Complete infrastructure architecture
-- `PHASE1_IMPLEMENTATION_GUIDE.md` - Implementation guide
-- `CHAT_SESSIONS_FEB_7_8_2026.md` - Development session notes
+\`\`\`bash
+# Website (static)
+cd packages/website && wrangler dev
 
-### `.vscode/`
-Workspace configuration:
-- MCP (Model Context Protocol) server settings
-- VSCode workspace preferences
+# Hub Dashboard
+cd packages/hub && npm install && npm run dev
 
-### Root Configuration
-- `brainstroming.code-workspace` - Multi-folder VSCode workspace definition
-- `.github/workflows/` - CI/CD workflows
+# API
+cd packages/api && npm install && wrangler dev
 
-## IntegrateWise OS Architecture
+# Webhooks
+cd packages/webhooks && npm install && wrangler dev
+\`\`\`
 
-This repository represents the **Live** instance of IntegrateWise OS, consolidating:
+## Deployment
 
-1. **Frontend UI** - Complete Figma-exported React application
-2. **Infrastructure Documentation** - Deployment guides, schemas, architecture
-3. **Brainstorming Materials** - Session notes, consolidation plans, audit reports
+\`\`\`bash
+# Website
+cd packages/website && wrangler publish
 
-## Tech Stack
+# Hub (auto-deploys via Vercel on push)
 
-**Frontend:**
-- React 18
-- TypeScript
-- Vite
-- Radix UI
-- Tailwind CSS (via component library)
+# API
+cd packages/api && wrangler deploy
 
-**Infrastructure:**
-- Cloudflare Pages (hosting)
-- Supabase (backend services)
-- Doppler (secrets management)
+# Webhooks
+cd packages/webhooks && wrangler deploy
+\`\`\`
 
-## Getting Started
+## Required Secrets
 
-Navigate to the frontend:
-```bash
-cd apps/frontend-figma
-npm install
-npm run dev
-```
+Add via `wrangler secret put SECRET_NAME`:
 
-## Documentation
-
-All architectural decisions, infrastructure mapping, and deployment guides are in [`/docs`](docs/)
-
----
-
-**Last Updated:** February 2026
-**License:** Proprietary - IntegrateWise
+- `NEON_CONNECTION_STRING` - Postgres database
+- `HUBSPOT_CLIENT_SECRET` - HubSpot webhook verification
+- `LINKEDIN_CLIENT_SECRET` - LinkedIn API
+- `CANVA_WEBHOOK_SECRET` - Canva webhook verification
+- `SALESFORCE_SECURITY_TOKEN` - Salesforce API
+- `PIPEDRIVE_WEBHOOK_TOKEN` - Pipedrive API
+- `META_VERIFY_TOKEN` - Meta/Facebook verification
+- `WHATSAPP_VERIFY_TOKEN` - WhatsApp verification
+- `RAZORPAY_WEBHOOK_SECRET` - Razorpay payments
+- `STRIPE_ENDPOINT_SECRET` - Stripe payments
+- `GITHUB_WEBHOOK_SECRET` - GitHub events
+- `VERCEL_WEBHOOK_SECRET` - Vercel deployments

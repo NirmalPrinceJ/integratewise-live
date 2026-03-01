@@ -1,0 +1,80 @@
+# IntegrateWise Billing Service
+# Subscription management, usage tracking, and Stripe integration
+
+name = "integratewise-billing"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
+# Doppler config: {env}_billing  (e.g. prd_billing)
+
+# ============================================================================
+# D1 Database (Edge cache only - v3.6)
+# ============================================================================
+# v3.6: D1 is edge cache only. Supabase PostgreSQL is SINGLE SOURCE OF TRUTH
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-prod"
+database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
+
+# ============================================================================
+# Supabase Bindings (v3.6 - SINGLE SOURCE OF TRUTH)
+# ============================================================================
+# Doppler secrets: SUPABASE_URL, SUPABASE_SERVICE_KEY (synced via scripts/sync-doppler-to-workers.sh)
+
+# ============================================================================
+# Environment Variables
+# ============================================================================
+[vars]
+ENVIRONMENT = "production"
+
+# ============================================================================
+# Production Environment
+# ============================================================================
+[env.production]
+name = "integratewise-billing"
+routes = [
+  { pattern = "billing.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+
+[env.production.vars]
+ENVIRONMENT = "production"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-prod"
+database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
+
+# ============================================================================
+# Staging Environment
+# ============================================================================
+[env.staging]
+name = "integratewise-billing-staging"
+
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+[[env.staging.d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-staging"
+database_id = "6a8b5b3c-18c7-4d0e-aa10-20d0b71a1abc"
+
+# ============================================================================
+# Secrets (set via wrangler secret put --env production)
+# ============================================================================
+# wrangler secret put STRIPE_SECRET_KEY --env production
+# wrangler secret put STRIPE_WEBHOOK_SECRET --env production
+# wrangler secret put RAZORPAY_KEY_ID --env production
+# wrangler secret put RAZORPAY_KEY_SECRET --env production
+# wrangler secret put RAZORPAY_WEBHOOK_SECRET --env production
+
+# ============================================================================
+# Observability
+# ============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1

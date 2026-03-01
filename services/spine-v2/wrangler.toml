@@ -1,0 +1,62 @@
+name = "integratewise-spine-v2"
+main = "src/index.ts"
+compatibility_date = "2026-01-31"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+NODE_ENV = "development"
+VERSION = "2.0.0-beta"
+
+# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
+# Doppler config: {env}_spine-v2  (e.g. prd_spine-v2)
+#
+# Required secrets:
+#   SUPABASE_URL          - Supabase project URL
+#   SUPABASE_SERVICE_KEY  - Supabase service-role key (server-side only)
+#   SUPABASE_ANON_KEY     - Supabase public anon key
+#   JWT_SECRET            - Supabase JWT secret for token verification
+#   NEON_DB_URL           - Neon/Postgres connection string (if direct DB access needed)
+#
+# Optional secrets:
+#   SENTRY_DSN            - Sentry error tracking
+#   POSTHOG_API_KEY       - PostHog analytics (server-side)
+
+# Development
+[env.development]
+vars = { NODE_ENV = "development" }
+
+# Staging
+[env.staging]
+name = "integratewise-spine-v2-staging"
+vars = { NODE_ENV = "staging" }
+
+# Production
+[env.production]
+name = "integratewise-spine-v2"
+vars = { NODE_ENV = "production" }
+routes = [
+  { pattern = "api.integratewise.ai/v2/spine/*", zone_name = "integratewise.ai" }
+]
+
+# D1 Database (for caching)
+[[d1_databases]]
+binding = "CACHE"
+database_name = "integratewise-spine-cache"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
+
+# KV Storage
+[[kv_namespaces]]
+binding = "KV"
+id = "18aa20dfeb304f0ba592d9070964dd31"
+
+# =============================================================================
+# Service Bindings (Worker-to-Worker, zero-latency)
+# v3.6 Section 19.3-19.4: Pipeline needs Knowledge binding for embedding triggers
+# =============================================================================
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+# Analytics (disabled - requires enablement in dashboard)
+# [[analytics_engine_datasets]]
+# binding = "ANALYTICS"

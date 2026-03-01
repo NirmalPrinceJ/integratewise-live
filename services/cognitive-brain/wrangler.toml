@@ -1,0 +1,85 @@
+name = "integratewise-cognitive-brain"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[dev]
+port = 8010
+local_protocol = "http"
+
+# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
+# Doppler config: {env}_cognitive-brain  (e.g. prd_cognitive-brain)
+#
+# Required secrets (v3.6: Truth Database from Supabase):
+#   SUPABASE_URL           - Supabase project URL (primary truth database)
+#   SUPABASE_SERVICE_KEY   - Supabase service-role key (for server-side RLS bypass)
+#
+# Optional secrets:
+#   OPENROUTER_API_KEY    - OpenRouter API key (for /v1/brainstorm streaming via Claude)
+#   OPENAI_API_KEY        - OpenAI API key (for cognitive layer)
+#   SENTRY_DSN            - Sentry error tracking
+#
+# Database:
+#   DB (D1)               - Edge cache only — idempotency keys, sync cursors, cached projections
+
+[env.production]
+name = "integratewise-cognitive-brain"
+routes = [
+  { pattern = "cognitive.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+
+[vars]
+ENVIRONMENT = "production"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-prod"
+database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
+
+[env.staging]
+name = "integratewise-cognitive-brain-staging"
+routes = [
+  { pattern = "cognitive-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+vars = { ENVIRONMENT = "staging" }
+
+[env.development]
+vars = { ENVIRONMENT = "development" }
+
+# =============================================================================
+# Queue Consumer (v3.6 Section 19.7 — DLQ for failed records in Govern mode)
+# =============================================================================
+[[queues.consumers]]
+queue = "integratewise-ops-dlq"
+max_batch_size = 50
+max_batch_timeout = 30
+
+# =============================================================================
+# Service Bindings (Worker-to-Worker, zero-latency)
+# v3.6 Section 19.3-19.4: Intelligence Engine calls Think, Act, Govern, Knowledge, Connector
+# =============================================================================
+[[services]]
+binding = "THINK"
+service = "integratewise-think"
+
+[[services]]
+binding = "ACT"
+service = "integratewise-act"
+
+[[services]]
+binding = "GOVERN"
+service = "integratewise-govern"
+
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+[[services]]
+binding = "CONNECTOR"
+service = "integratewise-mcp-connector"
+
+# ============================================================================
+# Observability & Monitoring
+# ============================================================================
+[observability]
+enabled = true

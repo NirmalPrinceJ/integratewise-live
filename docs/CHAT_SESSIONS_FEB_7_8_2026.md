@@ -183,9 +183,9 @@ Features found in codebase that needed documentation/integration:
 ---
 
 ## Repository Links
-- **GitHub (Current)**: https://github.com/integratewise/Integratewisebusinessoperationsdesign
-- **Bitbucket (Legacy)**: https://bitbucket.org/integratewise/brainstroming
-- **AI Workspace Monorepo (Legacy)**: https://bitbucket.org/integratewise/ai-workspace-monorepo
+- **Bitbucket (Primary)**: https://bitbucket.org/integratewise/brainstroming
+- **GitHub (Reference)**: https://github.com/NirmalPrinceJ/integratewise-ai-workspace
+- **AI Workspace Monorepo**: https://bitbucket.org/integratewise/ai-workspace-monorepo
 
 ---
 

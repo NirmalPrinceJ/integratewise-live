@@ -1,0 +1,94 @@
+name = "integratewise-mcp-connector"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
+# Doppler config: {env}_mcp-connector  (e.g. prd_mcp-connector)
+#
+# Required secrets:
+#   MCP_CONNECTOR_API_KEY   - API key for MCP session capture
+#   FIRESTORE_PROJECT_ID    - Firestore project for session storage
+
+[dev]
+port = 8009
+local_protocol = "http"
+
+# =============================================================================
+# Service Bindings (Worker-to-Worker, zero-latency)
+# =============================================================================
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+# =============================================================================
+# D1 Database (entity linking)
+# =============================================================================
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-prod"
+database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
+
+# =============================================================================
+# KV namespace for idempotency
+# =============================================================================
+[[kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "16510bf2287a45d8b24163ddafd3d302"
+preview_id = "ec565755bde04288a448cbf7c8ba6b69"
+
+# =============================================================================
+# Queue Producer (v3.6 Section 19.7 — MCP session summaries for ingestion)
+# =============================================================================
+[[queues.producers]]
+binding = "KNOWLEDGE_QUEUE"
+queue = "integratewise-knowledge-ingest"
+
+# =============================================================================
+# Environment Variables
+# =============================================================================
+[vars]
+ENVIRONMENT = "development"
+MCP_SERVER_URL = "https://n8n.integratewise.online/mcp"
+
+# =============================================================================
+# Observability & Monitoring
+# =============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+
+# =============================================================================
+# Staging Environment
+# =============================================================================
+[env.staging]
+name = "integratewise-mcp-connector-staging"
+routes = [
+  { pattern = "mcp-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+[env.staging.vars]
+ENVIRONMENT = "staging"
+MCP_SERVER_URL = "https://n8n.integratewise.online/mcp"
+
+[[env.staging.kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "ec565755bde04288a448cbf7c8ba6b69"
+
+# =============================================================================
+# Production Environment
+# =============================================================================
+[env.production]
+name = "integratewise-mcp-connector"
+routes = [
+  { pattern = "mcp.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+[env.production.vars]
+ENVIRONMENT = "production"
+MCP_SERVER_URL = "https://n8n.integratewise.online/mcp"
+
+[[env.production.kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "16510bf2287a45d8b24163ddafd3d302"

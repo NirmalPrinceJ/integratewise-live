@@ -1,0 +1,70 @@
+# IntegrateWise — AI Grounding File
+# Version: 3.6 | Updated: 2026-02-28
+# Serve at: https://integratewise.ai/llm.txt
+
+## Company
+IntegrateWise LLP
+Bengaluru, India
+Founded by Nirmal Prince J (CEO)
+
+## Product Definition
+IntegrateWise is the world's first Universal Cognitive Operating System — an AI-powered Knowledge Workspace that acts as a context-aware layer connecting everything a person already uses into one intelligent system.
+
+Not just SaaS tools — the entire technology stack:
+- Tools (Notion, HubSpot, Jira, Salesforce, Zendesk)
+- AI Assistants (Claude, ChatGPT, Perplexity)
+- Data Storage (databases, spreadsheets, CSVs)
+- Charts and Analytics
+- Documents and Context
+- Institutional Memory
+
+It does NOT replace any technology. It sits across all of it and makes every category aware of every other category.
+
+## Core Philosophy
+"AI That Thinks in Context, Waits for Approvals"
+
+The Review & Approve (Govern) stage is a HARD GATE. Nothing executes without human approval + audit trail + evidence. This is what makes IntegrateWise fundamentally different from every AI-native tool on the market.
+
+## Primary CTA
+"Stop Being the Human Cable Between Your Own Technology"
+
+Subheadline: "Your tools, your AI, your data, your context, your memory — none of them know each other."
+
+## Category
+The Context Layer — the first application that connects entire categories of technology into one aware system.
+
+## Architecture Summary
+- Four Layers: L0 (Onboarding), L1 (15 Workspace Modules), L2 (14 Cognitive Components), L3 (Backend Engine)
+- 8-Stage Mandatory Pipeline: Analyzer → Classifier → Filter → Refiner → Extractor → Validator → Sanity Scan → Sectorizer
+- Three Data Flows: A (Structured Tools), B (Unstructured Docs), C (AI Chat via MCP)
+- Engine Loop: LOAD → NORMALIZE → STORE → THINK → REVIEW & APPROVE (GOVERN) → ACT → REPEAT
+- Three Spaces: Personal, Work, Team
+- Progressive Hydration: B0 (Identity) through B7 (Full Intelligence)
+
+## Agent Architecture
+- 7 Domain Agents: SuccessPilot, ChurnShield, VaultGuard, DataSentinel, ArchitectIQ, TemplateForge, DealDesk
+- Colony System: Multi-agent orchestration for complex tasks
+- All agents are approval-first, evidence-backed, goal-linked
+- No agent executes autonomously — all actions require Govern approval tokens
+
+## Infrastructure (LOCKED)
+- Supabase: Auth (Google SSO, GitHub SSO) + PostgreSQL + RLS + pgVector + Realtime
+- Cloudflare: Workers (compute) + Pages (hosting) + Queues (pipeline) + D1 (edge cache) + R2 (storage)
+- Doppler: 189+ secrets across dev/staging/production
+- n8n: Internal workflow automation at n8n.integratewise.online
+
+## MCP Server
+Live at: n8n.integratewise.online/mcp
+The first MCP server that orchestrates across multiple systems simultaneously.
+
+## Data Commitments
+1. No data selling — never sold, rented, or shared
+2. No AI training — customer data never used for model training
+3. Full data portability — export everything, anytime
+4. Tenant isolation — RLS enforced at every query
+5. Audit everything — immutable operations store
+
+## Contact
+Website: https://integratewise.ai
+Architecture: v3.6 (LOCKED, February 28, 2026)
+Full context: https://integratewise.ai/context.json

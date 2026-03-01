@@ -1,0 +1,134 @@
+name = "integratewise-gateway"
+main = "src/index.ts"
+compatibility_date = "2024-06-10"
+compatibility_flags = ["nodejs_compat"]
+
+# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
+# Doppler config: {env}_gateway  (e.g. prd_gateway)
+#
+# Required secrets:
+#   DATABASE_URL          - Supabase Postgres connection string
+#   SUPABASE_URL          - Supabase project URL
+#   SUPABASE_SERVICE_KEY  - Supabase service-role key
+#   JWT_SECRET            - Supabase JWT secret (for token verification)
+
+[dev]
+port = 8001
+local_protocol = "http"
+
+# =============================================================================
+# Service Bindings (Worker-to-Worker, zero-latency)
+# Architecture v3.6 — Gateway routes to all downstream services
+# =============================================================================
+
+# ─── Core Services (6 Logical) ───
+[[services]]
+binding = "PIPELINE"
+service = "integratewise-spine-v2"
+
+[[services]]
+binding = "INTELLIGENCE"
+service = "integratewise-cognitive-brain"
+
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+[[services]]
+binding = "BFF"
+service = "integratewise-stream-gateway"
+
+[[services]]
+binding = "CONNECTOR"
+service = "integratewise-mcp-connector"
+
+# ─── Support Services ───
+[[services]]
+binding = "THINK"
+service = "integratewise-think"
+
+[[services]]
+binding = "GOVERN"
+service = "integratewise-govern"
+
+[[services]]
+binding = "ACT"
+service = "integratewise-act"
+
+[[services]]
+binding = "NORMALIZER"
+service = "integratewise-normalizer"
+
+[[services]]
+binding = "LOADER"
+service = "integratewise-loader"
+
+[[services]]
+binding = "STORE"
+service = "integratewise-store"
+
+# ─── Admin / Internal ───
+[[services]]
+binding = "ADMIN_SERVICE"
+service = "integratewise-admin"
+
+[[services]]
+binding = "TENANTS"
+service = "integratewise-tenants"
+
+[[services]]
+binding = "BILLING"
+service = "integratewise-billing"
+
+# =============================================================================
+# KV Namespace for rate limiting
+# =============================================================================
+[[kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "8f61d841d2574061ac1d547187d72a58"
+
+# =============================================================================
+# Environment Variables
+# =============================================================================
+[vars]
+ENVIRONMENT = "development"
+
+# =============================================================================
+# Observability & Monitoring
+# =============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+
+# =============================================================================
+# Staging Environment
+# =============================================================================
+[env.staging]
+name = "integratewise-gateway-staging"
+routes = [
+  { pattern = "gateway-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+[[env.staging.kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "8f61d841d2574061ac1d547187d72a58"
+
+# =============================================================================
+# Production Environment
+# =============================================================================
+[env.production]
+name = "integratewise-gateway"
+routes = [
+  { pattern = "gateway.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+[env.production.vars]
+ENVIRONMENT = "production"
+
+[[env.production.kv_namespaces]]
+binding = "RATE_LIMIT"
+id = "8f61d841d2574061ac1d547187d72a58"

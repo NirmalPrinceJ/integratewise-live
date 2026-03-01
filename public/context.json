@@ -1,0 +1,144 @@
+{
+  "$schema": "https://integratewise.ai/schemas/context-v3.6.json",
+  "version": "3.6",
+  "updated": "2026-02-28",
+  "organization": {
+    "name": "IntegrateWise LLP",
+    "location": "Bengaluru, India",
+    "founder": "Nirmal Prince J",
+    "category": "Universal Cognitive Operating System"
+  },
+  "product": {
+    "name": "IntegrateWise OS",
+    "tagline": "Stop Being the Human Cable Between Your Own Technology",
+    "subtitle": "Your tools, your AI, your data, your context, your memory — none of them know each other.",
+    "philosophy": "AI That Thinks in Context, Waits for Approvals"
+  },
+  "architecture": {
+    "layers": [
+      { "id": "L0", "name": "Onboarding", "description": "Entry flow for new tenants. Value before commitment." },
+      { "id": "L1", "name": "Context-Aware Workspace", "modules": 15, "description": "Surfaces end-users interact with daily." },
+      { "id": "L2", "name": "Universal Cognitive Layer", "components": 14, "description": "UI surfaces rendering L3 backend outputs." },
+      { "id": "L3", "name": "Backend Engine", "description": "All processing, storage, reasoning, governance." }
+    ],
+    "pipeline": {
+      "stages": 8,
+      "names": ["Analyzer", "Classifier", "Filter", "Refiner", "Extractor", "Validator", "Sanity Scan", "Sectorizer"],
+      "rule": "Every data object must pass through all 8 stages. No bypass."
+    },
+    "data_flows": [
+      { "id": "A", "name": "Structured Tool Data", "sources": "Webhooks, polling from connected tools" },
+      { "id": "B", "name": "Unstructured Documents", "sources": "Document loaders, chunked + embedded" },
+      { "id": "C", "name": "AI Chat via MCP", "sources": "AI providers (Claude, ChatGPT, Perplexity)", "rule": "ALWAYS requires HITL approval" }
+    ],
+    "engine_loop": ["LOAD", "NORMALIZE", "STORE", "THINK", "REVIEW & APPROVE (GOVERN)", "ACT", "REPEAT"],
+    "govern": {
+      "type": "HARD GATE",
+      "rule": "No token = No execution. No exceptions.",
+      "token_lifecycle": ["ISSUED", "PENDING", "APPROVED", "DENIED", "EXECUTED", "EXPIRED", "ARCHIVED"]
+    }
+  },
+  "spaces": [
+    { "id": "personal", "name": "Personal Space", "description": "Private operating system. Always available from Day 1." },
+    { "id": "work", "name": "Work Space", "description": "Professional execution surface. Domain-scoped and adaptive." },
+    { "id": "team", "name": "Team Space", "description": "Collaborative coordination. Appears when team access is granted." }
+  ],
+  "hydration": {
+    "model": "Progressive",
+    "buckets": [
+      { "id": "B0", "name": "Identity", "trigger": "Account created" },
+      { "id": "B1", "name": "Context", "trigger": "Domain selected" },
+      { "id": "B2", "name": "First Tool", "trigger": "First connector linked" },
+      { "id": "B3", "name": "First Hydration", "trigger": "Pipeline completes first sync" },
+      { "id": "B4", "name": "Multi-Tool", "trigger": "2+ tools connected" },
+      { "id": "B5", "name": "AI Connected", "trigger": "MCP session established" },
+      { "id": "B6", "name": "Team Activated", "trigger": "Second user invited" },
+      { "id": "B7", "name": "Full Intelligence", "trigger": "All flows active" }
+    ],
+    "density_threshold": 0.40,
+    "fixed_home_blocks": 5
+  },
+  "agents": {
+    "domain_agents": [
+      { "key": "success_pilot", "name": "SuccessPilot", "family": "CS", "purpose": "Health scoring and proactive monitoring" },
+      { "key": "churn_shield", "name": "ChurnShield", "family": "CS", "purpose": "Churn risk detection and prevention" },
+      { "key": "vault_guard", "name": "VaultGuard", "family": "SEC", "purpose": "Security and compliance monitoring" },
+      { "key": "data_sentinel", "name": "DataSentinel", "family": "DATA", "purpose": "Data quality scoring and hygiene" },
+      { "key": "architect_iq", "name": "ArchitectIQ", "family": "SVCS", "purpose": "Technical architecture intelligence" },
+      { "key": "template_forge", "name": "TemplateForge", "family": "SVCS", "purpose": "Template generation and optimization" },
+      { "key": "deal_desk", "name": "DealDesk", "family": "REV", "purpose": "Deal analysis and revenue intelligence" }
+    ],
+    "colony": {
+      "type": "Multi-agent orchestration",
+      "roles": ["Orchestrator", "Specialists", "Executor"],
+      "rule": "Executor ALWAYS triggers Govern before execution"
+    },
+    "principles": [
+      "Approval-first always",
+      "Goal-linked signals — no signal without goal_refs[]",
+      "Evidence-backed proposals — every action includes evidence_refs[]",
+      "Colony never bypasses Govern",
+      "No autonomous execution — ever"
+    ]
+  },
+  "spine": {
+    "objects": ["Goal", "Metric", "Outcome", "Intervention"],
+    "rule": "No metric without goal_refs — enabling dual-context vendor/client impact tracking"
+  },
+  "data_stores": [
+    { "name": "Spine", "type": "Supabase PostgreSQL", "purpose": "Single source of truth" },
+    { "name": "Context Store", "type": "Supabase pgVector", "purpose": "Unstructured document embeddings" },
+    { "name": "Knowledge Store", "type": "Supabase PostgreSQL", "purpose": "AI session summaries" },
+    { "name": "Operations Store", "type": "Immutable audit log", "purpose": "All actions + evidence" },
+    { "name": "Object Storage", "type": "Cloudflare R2", "purpose": "Files, documents, exports" },
+    { "name": "Edge State", "type": "Cloudflare D1", "purpose": "Hot cache for fast reads" }
+  ],
+  "infrastructure": {
+    "status": "LOCKED",
+    "auth": "Supabase Auth (Google SSO, GitHub SSO, email/password)",
+    "database": "Supabase PostgreSQL with RLS",
+    "compute": "Cloudflare Workers",
+    "hosting": "Cloudflare Pages",
+    "queues": "Cloudflare Queues",
+    "secrets": "Doppler (189+ secrets)",
+    "workflows": "n8n (self-hosted)"
+  },
+  "api": {
+    "gateway": "https://gateway.integratewise.ai",
+    "routes": {
+      "connector": "/api/v1/connector/*",
+      "pipeline": "/api/v1/pipeline/*",
+      "intelligence": "/api/v1/intelligence/*",
+      "knowledge": "/api/v1/knowledge/*",
+      "workspace": "/api/v1/workspace/*",
+      "brainstorm": "/api/v1/brainstorm",
+      "cognitive": "/api/v1/cognitive/*",
+      "stream": "/stream/*",
+      "admin": "/admin/*"
+    },
+    "auth_headers": {
+      "Authorization": "Bearer JWT (required)",
+      "x-tenant-id": "Tenant isolation (required)",
+      "x-view-context": "Domain context (optional)",
+      "x-idempotency-key": "Write dedup (writes only)",
+      "x-approval-token": "Govern gate (actions only)"
+    }
+  },
+  "mcp": {
+    "server_url": "https://n8n.integratewise.online/mcp",
+    "description": "First MCP server that orchestrates across multiple systems simultaneously",
+    "flow": "AI Chat → MCP discovers tools → Connector reads (RBAC-gated) → AI proposes write → Govern approval → Connector executes → Pipeline normalizes"
+  },
+  "seed_roles": [
+    "Customer Success",
+    "Sales",
+    "RevOps",
+    "Marketing",
+    "Product Engineering"
+  ],
+  "connectors": {
+    "categories": ["CRM", "Project Management", "Communication", "Documents", "Analytics", "Support", "Calendar", "Custom"],
+    "sync_strategies": ["Webhook (real-time)", "Polling (scheduled)", "Manual import"],
+    "auth": "OAuth 2.0 (primary)"
+  }
+}

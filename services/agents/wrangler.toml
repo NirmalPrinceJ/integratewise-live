@@ -1,0 +1,85 @@
+name = "integratewise-agents"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
+# Doppler config: {env}_agents  (e.g. prd_agents)
+#
+# Required secrets (v3.6: Truth Database from Supabase):
+#   SUPABASE_URL           - Supabase project URL (primary truth database)
+#   SUPABASE_SERVICE_KEY   - Supabase service-role key (for server-side RLS bypass)
+#
+# Optional secrets:
+#   SENTRY_DSN            - Sentry error tracking
+#
+# Database:
+#   DB (D1)               - Edge cache only — agent_colony_runs, idempotency keys
+
+[dev]
+port = 8021
+local_protocol = "http"
+
+[env.production]
+name = "integratewise-agents"
+routes = [
+  { pattern = "agents.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+
+[vars]
+ENVIRONMENT = "production"
+SPINE_URL = "https://spine.integratewise.ai"
+KNOWLEDGE_URL = "https://knowledge.integratewise.ai"
+ACT_URL = "https://act.integratewise.ai"
+
+# Workers AI binding
+[ai]
+binding = "AI"
+
+# Workflow for multi-agent orchestration
+[[workflows]]
+name = "agent-colony"
+binding = "AGENT_COLONY"
+class_name = "AgentColonyWorkflow"
+
+# D1 Database for storing runs
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-prod"
+database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
+
+# =============================================================================
+# Service Bindings (Worker-to-Worker, zero-latency)
+# v3.6 Section 19.3-19.4: Agents need Think (reasoning), Govern (approval), Knowledge (context)
+# =============================================================================
+[[services]]
+binding = "THINK"
+service = "integratewise-think"
+
+[[services]]
+binding = "GOVERN"
+service = "integratewise-govern"
+
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+[env.staging]
+name = "integratewise-agents-staging"
+routes = [
+  { pattern = "agents-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+vars = { ENVIRONMENT = "staging", SPINE_URL = "https://spine-staging.integratewise.ai", KNOWLEDGE_URL = "https://knowledge-staging.integratewise.ai", ACT_URL = "https://act-staging.integratewise.ai" }
+
+[env.development]
+vars = { ENVIRONMENT = "development", SPINE_URL = "http://localhost:8000", KNOWLEDGE_URL = "http://localhost:8008", ACT_URL = "http://localhost:8002" }
+
+# ============================================================================
+# Observability & Monitoring
+# ============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1

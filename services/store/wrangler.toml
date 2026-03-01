@@ -1,0 +1,78 @@
+name = "integratewise-store"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
+# Doppler config: {env}_store  (e.g. prd_store)
+
+[dev]
+port = 8007
+local_protocol = "http"
+
+# =============================================================================
+# Service Bindings (Worker-to-Worker, zero-latency)
+# STORE persists data and triggers KNOWLEDGE for embedding
+# =============================================================================
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+# =============================================================================
+# D1 Database (Edge cache only - v3.6)
+# =============================================================================
+# v3.6: D1 is edge cache only. Supabase PostgreSQL is SINGLE SOURCE OF TRUTH
+[[d1_databases]]
+binding = "DB"
+database_name = "integratewise-spine-prod"
+database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
+
+# =============================================================================
+# Supabase Bindings (v3.6 - SINGLE SOURCE OF TRUTH)
+# =============================================================================
+# Doppler secrets: SUPABASE_URL, SUPABASE_SERVICE_KEY (synced via scripts/sync-doppler-to-workers.sh)
+
+# =============================================================================
+# R2 Storage (file/object persistence)
+# =============================================================================
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "integratewise-files-prod"
+
+# =============================================================================
+# Environment Variables
+# =============================================================================
+[vars]
+ENVIRONMENT = "development"
+
+# =============================================================================
+# Observability & Monitoring
+# =============================================================================
+[observability]
+enabled = true
+
+[observability.logs]
+enabled = true
+head_sampling_rate = 1
+
+# =============================================================================
+# Staging Environment
+# =============================================================================
+[env.staging]
+name = "integratewise-store-staging"
+routes = [
+  { pattern = "store-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+[env.staging.vars]
+ENVIRONMENT = "staging"
+
+# =============================================================================
+# Production Environment
+# =============================================================================
+[env.production]
+name = "integratewise-store"
+routes = [
+  { pattern = "store.integratewise.ai/*", zone_name = "integratewise.ai" }
+]
+[env.production.vars]
+ENVIRONMENT = "production"
