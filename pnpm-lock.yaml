@@ -797,31 +797,6 @@ importers:
         specifier: ^4.0.0
         version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
 
-  services/cognitive-brain:
-    dependencies:
-      '@neondatabase/serverless':
-        specifier: ^0.10.4
-        version: 0.10.4
-      hono:
-        specifier: ^4.6.0
-        version: 4.11.7
-      zod:
-        specifier: ^3.24.0
-        version: 3.25.76
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20240117.0
-        version: 4.20260131.0
-      typescript:
-        specifier: ^5.3.3
-        version: 5.9.3
-      vitest:
-        specifier: ^1.2.1
-        version: 1.6.1(@types/node@22.19.7)(happy-dom@20.5.0)(jsdom@28.0.0)(lightningcss@1.31.1)(terser@5.16.9)
-      wrangler:
-        specifier: ^3.24.0
-        version: 3.114.17(@cloudflare/workers-types@4.20260131.0)
-
   services/gateway:
     dependencies:
       '@integratewise/connector-contracts':
@@ -887,40 +862,6 @@ importers:
         specifier: ^4.0.0
         version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
 
-  services/iq-hub:
-    dependencies:
-      '@integratewise/lib':
-        specifier: workspace:*
-        version: link:../../packages/lib
-      '@integratewise/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@neondatabase/serverless':
-        specifier: ^0.10.4
-        version: 0.10.4
-      '@supabase/supabase-js':
-        specifier: ^2.47.0
-        version: 2.93.3
-      hono:
-        specifier: ^4.6.0
-        version: 4.11.7
-      zod:
-        specifier: ^3.24.0
-        version: 3.25.76
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20241205.0
-        version: 4.20260131.0
-      typescript:
-        specifier: ^5.5.0
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.0
-        version: 2.1.9(@types/node@22.19.7)(happy-dom@20.5.0)(jsdom@28.0.0)(lightningcss@1.31.1)(terser@5.16.9)
-      wrangler:
-        specifier: ^4.0.0
-        version: 4.61.0(@cloudflare/workers-types@4.20260131.0)
-
   services/knowledge:
     dependencies:
       '@integratewise/connector-utils':
@@ -966,6 +907,9 @@ importers:
       '@opentelemetry/sdk-metrics':
         specifier: ^2.5.0
         version: 2.5.0(@opentelemetry/api@1.9.0)
+      '@supabase/supabase-js':
+        specifier: ^2.43.0
+        version: 2.93.3
       hono:
         specifier: ^3.12.0
         version: 3.12.12
@@ -1008,33 +952,11 @@ importers:
         specifier: ^4.0.0
         version: 4.61.0(@cloudflare/workers-types@4.20260128.0)
 
-  services/memory-consolidator:
-    dependencies:
-      '@integratewise/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      hono:
-        specifier: ^4.6.0
-        version: 4.11.7
-      zod:
-        specifier: ^3.24.0
-        version: 3.25.76
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20241205.0
-        version: 4.20260131.0
-      typescript:
-        specifier: ^5.5.0
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.0
-        version: 2.1.9(@types/node@22.19.7)(happy-dom@20.5.0)(jsdom@28.0.0)(lightningcss@1.31.1)(terser@5.16.9)
-      wrangler:
-        specifier: ^4.0.0
-        version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
-
   services/normalizer:
     dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.38.0
+        version: 2.93.3
       hono:
         specifier: ^3.12.0
         version: 3.12.12
@@ -1060,6 +982,9 @@ importers:
       '@neondatabase/serverless':
         specifier: ^0.10.4
         version: 0.10.4
+      '@supabase/supabase-js':
+        specifier: ^2.48.0
+        version: 2.93.3
       hono:
         specifier: ^4.6.0
         version: 4.11.7
@@ -1101,31 +1026,6 @@ importers:
       wrangler:
         specifier: ^4.61.1
         version: 4.61.1(@cloudflare/workers-types@4.20260128.0)
-
-  services/stream-gateway:
-    dependencies:
-      '@integratewise/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      hono:
-        specifier: ^4.6.0
-        version: 4.11.7
-      zod:
-        specifier: ^3.24.0
-        version: 3.25.76
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20241205.0
-        version: 4.20260131.0
-      typescript:
-        specifier: ^5.5.0
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.0
-        version: 2.1.9(@types/node@22.19.7)(happy-dom@20.5.0)(jsdom@28.0.0)(lightningcss@1.31.1)(terser@5.16.9)
-      wrangler:
-        specifier: ^4.0.0
-        version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
 
   services/tenants:
     dependencies:
@@ -1183,27 +1083,11 @@ importers:
         specifier: ^4.0.0
         version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
 
-  services/views:
-    dependencies:
-      hono:
-        specifier: ^4.6.14
-        version: 4.11.7
-      zod:
-        specifier: ^3.23.8
-        version: 3.25.76
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20241205.0
-        version: 4.20260131.0
-      typescript:
-        specifier: ^5.3.3
-        version: 5.9.3
-      wrangler:
-        specifier: ^3.99.0
-        version: 3.114.17(@cloudflare/workers-types@4.20260131.0)
-
   services/workflow:
     dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.38.4
+        version: 2.93.3
       hono:
         specifier: ^4.6.0
         version: 4.11.7
