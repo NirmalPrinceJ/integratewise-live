@@ -1,10 +1,26 @@
 /**
  * AppShell — The Authenticated Workspace
  *
- * Lifecycle: Login → Onboarding (L0) → Loader → Workspace (L1 + L2)
- *
- * This is the full app experience from Dir 2 (IntegrateWise Business Operations Design),
- * now wired to Dir 3's backend Workers and properly integrated with React Router.
+ * ┌─────────────────────────────────────────────────────────────────┐
+ * │ L0→L1→L2→L3 WIRING                                            │
+ * ├─────────────┬───────────────────────────────────────────────────┤
+ * │ L0 Onboard  │ OnboardingFlowNew (4-step) → LoaderPhase1        │
+ * │ L1 Workspace│ WorkspaceShellNew → ContentRouter (lazy modules) │
+ * │ L2 Cognitive│ CognitiveLayer (13 panels, event-driven, ⌘J)     │
+ * │ L3 Backend  │ API client → Gateway → Workers (6 services)      │
+ * ├─────────────┴───────────────────────────────────────────────────┤
+ * │ Provider Stack (outermost → innermost):                        │
+ * │   ErrorBoundary → AuthProvider → SpineProvider →               │
+ * │   GoalProvider → HydrationFabric → WorkspaceShellNew           │
+ * ├─────────────────────────────────────────────────────────────────┤
+ * │ Stage Flow:                                                    │
+ * │   login → signup → onboarding (L0) → loading → workspace (L1) │
+ * ├─────────────────────────────────────────────────────────────────┤
+ * │ L2 Events (dispatched → CognitiveLayer listener):              │
+ * │   iw:evidence:open  — open evidence panel                      │
+ * │   iw:cognitive:open — open specific cognitive surface           │
+ * │   open-cognitive-layer — generic open (defaults to signals)     │
+ * └─────────────────────────────────────────────────────────────────┘
  *
  * Auth: Supabase PKCE (Google SSO, GitHub SSO, email/password)
  * Data: Spine SSOT via BFF Worker → Cloudflare → Supabase PostgreSQL
