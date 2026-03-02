@@ -5,7 +5,7 @@ compatibility_flags = ["nodejs_compat"]
 
 # Produces to pipeline queue
 [[queues.producers]]
-queue = "pipeline-process"
+queue = "pipeline.process"
 binding = "PIPELINE_QUEUE"
 
 # KV for idempotency checks

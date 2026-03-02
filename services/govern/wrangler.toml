@@ -5,7 +5,7 @@ compatibility_flags = ["nodejs_compat"]
 
 # Consumes DLQ for governance review
 [[queues.consumers]]
-queue = "ops-dlq"
+queue = "ops.dlq"
 max_batch_size = 10
 max_batch_timeout = 30
 

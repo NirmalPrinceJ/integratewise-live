@@ -44,6 +44,11 @@ service = "integratewise-act"
 binding = "GOVERN"
 service = "integratewise-govern"
 
+# Queue producer — inbound webhook/connector data → pipeline
+[[queues.producers]]
+queue = "connector.inbound"
+binding = "CONNECTOR_QUEUE"
+
 # KV for rate limiting + session cache
 [[kv_namespaces]]
 binding = "RATE_LIMITS"

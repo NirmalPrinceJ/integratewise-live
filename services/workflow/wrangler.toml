@@ -5,7 +5,7 @@ compatibility_flags = ["nodejs_compat"]
 
 # HITL approvals → act queue
 [[queues.producers]]
-queue = "intelligence-act"
+queue = "intelligence.act"
 binding = "ACT_QUEUE"
 
 # Service bindings for view aggregation
@@ -21,9 +21,9 @@ service = "integratewise-knowledge"
 binding = "THINK"
 service = "integratewise-think"
 
-# Durable Objects for real-time streaming
-# [durable_objects]
-# bindings = [{ name = "STREAM", class_name = "StreamSession" }]
+# Durable Objects for real-time streaming (Hot Memory)
+[durable_objects]
+bindings = [{ name = "STREAM", class_name = "StreamSession" }]
 
 [env.staging]
 name = "integratewise-workflow-staging"
