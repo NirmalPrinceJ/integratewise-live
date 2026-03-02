@@ -74,7 +74,7 @@ export class WebflowClient {
       throw new Error(`Webflow API error: ${response.status} ${response.statusText}`);
     }
 
-    const data = await response.json();
+    const data: any = await response.json();
     return data.sites || [];
   }
 
@@ -111,7 +111,7 @@ export class WebflowClient {
       throw new Error(`Webflow API error: ${response.status} ${response.statusText}`);
     }
 
-    const data = await response.json();
+    const data: any = await response.json();
     return data.collections || [];
   }
 

@@ -239,8 +239,8 @@ function createMockContext(toolId: string, args: Record<string, unknown>): Conte
     const mockContext = {
         req: mockRequest,
         env: {
-            CORE_ENGINE_URL: process.env.CORE_ENGINE_URL || 'http://localhost:8000',
-            ENVIRONMENT: process.env.ENVIRONMENT || 'development',
+            CORE_ENGINE_URL: (globalThis as any).process?.env?.CORE_ENGINE_URL || 'http://localhost:8000',
+            ENVIRONMENT: (globalThis as any).process?.env?.ENVIRONMENT || 'development',
             // Add other environment variables as needed
         } as any,
         json: (data: any, status?: number) => {

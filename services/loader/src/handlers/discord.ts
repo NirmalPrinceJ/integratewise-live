@@ -1,6 +1,27 @@
 import type { Context } from 'hono';
-import { DiscordInteractionSchema } from '@integratewise/types/webhooks';
-import { normalizeDiscordEvent } from '@integratewise/lib/normalizers';
+import { z } from 'zod';
+
+// Inline schemas — not yet exported from @integratewise/types
+const DiscordInteractionSchema = z.object({
+  id: z.string(),
+  type: z.number(),
+  data: z.record(z.unknown()).optional(),
+  token: z.string().optional(),
+  guild_id: z.string().optional(),
+  channel_id: z.string().optional(),
+  member: z.record(z.unknown()).optional(),
+  user: z.record(z.unknown()).optional(),
+});
+
+function normalizeDiscordEvent(data: z.infer<typeof DiscordInteractionSchema>) {
+  return {
+    source: 'discord',
+    source_id: data.id,
+    type: `discord.interaction.type_${data.type}`,
+    payload: data,
+    timestamp: new Date().toISOString(),
+  };
+}
 
 type Log = {
   info: (message: string, data?: Record<string, unknown>) => void;
@@ -42,7 +63,7 @@ async function verifyDiscordSignature(
     // Import the public key for Ed25519 verification
     const key = await crypto.subtle.importKey(
       'raw',
-      keyBytes,
+      keyBytes as unknown as BufferSource,
       { name: 'Ed25519', namedCurve: 'Ed25519' } as any,
       false,
       ['verify'],
@@ -52,8 +73,8 @@ async function verifyDiscordSignature(
     const isValid = await crypto.subtle.verify(
       'Ed25519' as any,
       key,
-      sigBytes,
-      message,
+      sigBytes as unknown as BufferSource,
+      message as unknown as BufferSource,
     );
 
     return isValid;

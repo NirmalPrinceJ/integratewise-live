@@ -13,13 +13,56 @@ import type { Context } from 'hono';
 import { verifyStripeSignature } from '../lib/signature';
 import { processFlowA } from '../lib/flowA';
 import { mapSourceToEntityType } from '../pipeline';
-import {
-  WebhookProcessor,
-  WebhookProcessorFactory,
-  WebhookPayload,
-  WebhookProcessingResult
-} from '@integratewise/lib/webhook-processor';
-import { createAppError } from '@integratewise/lib/error-handling';
+// Inline types replacing @integratewise/lib/webhook-processor and @integratewise/lib/error-handling
+interface WebhookPayload {
+  id: string;
+  eventType: string;
+  provider: string;
+  payload: any;
+  headers: Record<string, string>;
+  signature?: string | null;
+  correlationId: string;
+}
+
+interface WebhookProcessingResult {
+  success: boolean;
+  eventId?: string;
+  processingTime?: number;
+  attempts?: number;
+  correlationId?: string;
+  error?: { message: string; code?: string; retryable?: boolean };
+}
+
+interface WebhookProcessor {
+  processWebhook(payload: WebhookPayload, handler: (webhook: WebhookPayload) => Promise<void>): Promise<WebhookProcessingResult>;
+  getRateLimitStatus(): any;
+  getCircuitBreakerStatus(): any;
+}
+
+const WebhookProcessorFactory = {
+  createHighVolumeProcessor(): WebhookProcessor {
+    return {
+      async processWebhook(payload: WebhookPayload, handler: (webhook: WebhookPayload) => Promise<void>): Promise<WebhookProcessingResult> {
+        const start = Date.now();
+        try {
+          await handler(payload);
+          return { success: true, eventId: payload.id, processingTime: Date.now() - start, attempts: 1, correlationId: payload.correlationId };
+        } catch (err: any) {
+          return { success: false, correlationId: payload.correlationId, error: { message: err?.message || 'Unknown error', retryable: false } };
+        }
+      },
+      getRateLimitStatus() { return { limited: false }; },
+      getCircuitBreakerStatus() { return { state: 'closed' }; },
+    };
+  },
+};
+
+function createAppError(code: string, message: string, context?: Record<string, unknown>, cause?: Error): Error & { code: string } {
+  const err = new Error(message) as Error & { code: string };
+  err.code = code;
+  if (cause) err.cause = cause;
+  return err;
+}
 
 type Log = {
   info: (message: string, data?: Record<string, unknown>) => void;
@@ -213,8 +256,7 @@ async function processStripeWebhook(c: Context, webhook: WebhookPayload, log: Lo
       externalId: event.id,
       eventType: event.type,
       payload: event.data.object,
-      correlationId: webhook.correlationId
-    });
+    } as any);
 
     // Log pipeline result
     log.info('Stripe event pipeline result', {

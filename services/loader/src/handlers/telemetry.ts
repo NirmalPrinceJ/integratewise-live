@@ -44,7 +44,7 @@ export async function telemetryMetricsHandler(c: Context) {
     const metrics = {
       service: 'integratewise-loader',
       version: '1.0.0',
-      uptime: process.uptime ? process.uptime() : 0,
+      uptime: typeof globalThis !== 'undefined' && (globalThis as any).process?.uptime ? (globalThis as any).process.uptime() : 0,
       timestamp: new Date().toISOString(),
       environment: c.env.ENVIRONMENT,
       metrics: {
