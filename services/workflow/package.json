@@ -7,12 +7,13 @@
     "deploy": "wrangler deploy"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.38.4",
     "hono": "^4.6.0",
-    "@supabase/supabase-js": "^2.38.4"
+    "zod": "^4.3.6"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240117.0",
-    "wrangler": "^3.24.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "wrangler": "^3.24.0"
   }
 }

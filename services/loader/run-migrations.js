@@ -9,7 +9,13 @@ import { neon } from '@neondatabase/serverless';
 import { readFileSync, readdirSync } from 'fs';
 import { join } from 'path';
 
-const NEON_CONNECTION_STRING = "postgresql://neondb_owner:npg_lPt4jLcO5dei@ep-broad-waterfall-ahejsgy6-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require";
+const NEON_CONNECTION_STRING = process.env.DATABASE_URL;
+
+if (!NEON_CONNECTION_STRING) {
+  console.error('❌ DATABASE_URL environment variable is required');
+  console.error('Usage: DATABASE_URL="postgresql://..." node services/loader/run-migrations.js');
+  process.exit(1);
+}
 const MIGRATIONS_DIR = join(process.cwd(), '..', '..', 'sql-migrations');
 
 async function runMigrations() {

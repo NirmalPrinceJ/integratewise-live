@@ -1,6 +1,30 @@
 import type { Context } from 'hono';
-import { AIRelayWebhookSchema } from '@integratewise/types/webhooks';
-import { normalizeAIRelayEvent } from '@integratewise/lib/normalizers';
+import { z } from 'zod';
+
+// TODO: Move AIRelayWebhookSchema to @integratewise/types/webhooks and normalizeAIRelayEvent
+// to @integratewise/lib/normalizers once those module exports are available.
+// Inline schema — not yet exported from @integratewise/types
+const AIRelayWebhookSchema = z.object({
+  id: z.string(),
+  type: z.string(),
+  workspace_id: z.string().optional(),
+  model: z.string().optional(),
+  data: z.record(z.unknown()).optional(),
+  created_at: z.string().optional(),
+});
+
+// Inline normalizer — not yet exported from @integratewise/lib
+function normalizeAIRelayEvent(event: z.infer<typeof AIRelayWebhookSchema>) {
+  return {
+    source: 'ai-relay',
+    event_type: event.type,
+    event_id: event.id,
+    workspace_id: event.workspace_id,
+    model: event.model,
+    data: event.data ?? {},
+    timestamp: event.created_at ?? new Date().toISOString(),
+  };
+}
 
 type Log = {
   info: (message: string, data?: Record<string, unknown>) => void;

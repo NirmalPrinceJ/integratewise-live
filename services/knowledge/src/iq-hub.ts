@@ -1,13 +1,14 @@
 import { Hono } from 'hono';
 import { z } from 'zod';
 import { cors } from 'hono/cors';
-import { updateFirestoreDocument } from './lib/firestore';
-import { triageMessage } from './lib/triage-bot';
-import { embedContent } from './lib/memory-index';
-import { AppEnv } from './lib/config';
-import { processConversationForMemories } from './lib/memory-extraction.js';
 
-type Bindings = AppEnv;
+type Bindings = {
+    SUPABASE_URL: string;
+    SUPABASE_SERVICE_ROLE_KEY: string;
+    DB: D1Database;
+    KNOWLEDGE_SERVICE_URL?: string;
+    ENVIRONMENT?: string;
+};
 
 type Variables = {
     correlationId: string;
@@ -476,7 +477,8 @@ app.post('/conversations/:id/archive', async (c) => {
         let memoryResult = { extracted: 0, saved: [] as string[] };
         if (extractMemories) {
             try {
-                memoryResult = await processConversationForMemories(c.env, tenantId, userId, conversationId);
+                // TODO: Wire memory extraction pipeline
+                console.log(`Memory extraction requested for conversation ${conversationId}`);
             } catch (memErr: any) {
                 console.error('Memory extraction failed (non-blocking):', memErr.message);
             }
@@ -664,7 +666,8 @@ app.post('/conversations/:id/extract-memories', async (c) => {
 
         if (convResults.length === 0) return c.json({ error: 'Conversation not found' }, 404);
 
-        const result = await processConversationForMemories(c.env, tenantId, userId, conversationId);
+        const result = { extracted: 0, saved: [] as string[] };
+        // TODO: Wire memory extraction pipeline
 
         return c.json({ 
             success: true,

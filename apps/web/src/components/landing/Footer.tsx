@@ -15,13 +15,13 @@ const productLinks = [
 const companyLinks = [
   { to: "/story", label: "Our Story" },
   { to: "/who-its-for", label: "Who It's For" },
-  { to: "#", label: "Careers" },
+  { to: "mailto:careers@integratewise.com", label: "Careers" },
   { to: "mailto:hello@integratewise.com", label: "Contact" },
 ];
 const resourceLinks = [
   { to: "/login", label: "App Login & Architecture" },
-  { to: "#", label: "Documentation" },
-  { to: "#", label: "Architecture (L0-L3)" },
+  { to: "/platform", label: "Documentation" },
+  { to: "/security", label: "Architecture & Governance" },
   { to: "mailto:support@integratewise.com", label: "Support" },
 ];
 
@@ -185,9 +185,9 @@ export function Footer() {
             &copy; 2026 IntegrateWise. All rights reserved.
           </p>
           <div className="flex space-x-6 text-[13px] text-white/25">
-            <a href="#" className="hover:text-white/60 transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white/60 transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-white/60 transition-colors">Cookie Policy</a>
+            <Link to="/security" className="hover:text-white/60 transition-colors">Privacy Policy</Link>
+            <Link to="/security" className="hover:text-white/60 transition-colors">Terms of Service</Link>
+            <Link to="/security" className="hover:text-white/60 transition-colors">Cookie Policy</Link>
           </div>
         </motion.div>
       </div>

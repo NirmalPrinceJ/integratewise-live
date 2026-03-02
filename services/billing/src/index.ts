@@ -361,11 +361,45 @@ app.post('/webhooks/stripe', async (c) => {
   const signature = c.req.header('stripe-signature')
   const body = await c.req.text()
   
-  // Verify signature (simplified - use stripe library in production)
   if (!signature || !c.env.STRIPE_WEBHOOK_SECRET) {
     return c.json({ error: 'Missing signature or secret' }, 400)
   }
-  
+
+  // Parse Stripe signature header: t=timestamp,v1=signature
+  const sigParts: Record<string, string> = {}
+  for (const part of signature.split(',')) {
+    const [key, value] = part.split('=')
+    if (key && value) sigParts[key] = value
+  }
+
+  const timestamp = sigParts['t']
+  const expectedSig = sigParts['v1']
+  if (!timestamp || !expectedSig) {
+    return c.json({ error: 'Invalid signature format' }, 400)
+  }
+
+  // Reject timestamps older than 5 minutes (replay protection)
+  const ts = parseInt(timestamp, 10)
+  if (Math.abs(Math.floor(Date.now() / 1000) - ts) > 300) {
+    return c.json({ error: 'Webhook timestamp expired' }, 400)
+  }
+
+  // Verify HMAC-SHA256 signature using Web Crypto API
+  const encoder = new TextEncoder()
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(c.env.STRIPE_WEBHOOK_SECRET),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  )
+  const signed = await crypto.subtle.sign('HMAC', key, encoder.encode(`${timestamp}.${body}`))
+  const computedSig = Array.from(new Uint8Array(signed)).map(b => b.toString(16).padStart(2, '0')).join('')
+
+  if (computedSig !== expectedSig) {
+    return c.json({ error: 'Invalid webhook signature' }, 401)
+  }
+
   try {
     const event = JSON.parse(body)
     
@@ -405,7 +439,23 @@ app.post('/webhooks/razorpay', async (c) => {
   if (!signature || !c.env.RAZORPAY_WEBHOOK_SECRET) {
     return c.json({ error: 'Missing signature or secret' }, 400)
   }
-  
+
+  // Verify HMAC-SHA256 signature using Web Crypto API
+  const encoder = new TextEncoder()
+  const key = await crypto.subtle.importKey(
+    'raw',
+    encoder.encode(c.env.RAZORPAY_WEBHOOK_SECRET),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign']
+  )
+  const signed = await crypto.subtle.sign('HMAC', key, encoder.encode(body))
+  const computedSig = Array.from(new Uint8Array(signed)).map(b => b.toString(16).padStart(2, '0')).join('')
+
+  if (computedSig !== signature) {
+    return c.json({ error: 'Invalid webhook signature' }, 401)
+  }
+
   try {
     const event = JSON.parse(body)
     
@@ -659,6 +709,47 @@ app.get('/v1/billing/subscription', async (c) => {
 app.post('/v1/billing/webhooks/stripe', async (c) => {
   try {
     const rawBody = await c.req.text()
+    const signature = c.req.header('stripe-signature')
+
+    if (!signature || !c.env.STRIPE_WEBHOOK_SECRET) {
+      return c.json({ error: 'Missing signature or secret' }, 400)
+    }
+
+    // Parse Stripe signature header: t=timestamp,v1=signature
+    const sigParts: Record<string, string> = {}
+    for (const part of signature.split(',')) {
+      const [key, value] = part.split('=')
+      if (key && value) sigParts[key] = value
+    }
+
+    const timestamp = sigParts['t']
+    const expectedSig = sigParts['v1']
+    if (!timestamp || !expectedSig) {
+      return c.json({ error: 'Invalid signature format' }, 400)
+    }
+
+    // Reject timestamps older than 5 minutes (replay protection)
+    const ts = parseInt(timestamp, 10)
+    if (Math.abs(Math.floor(Date.now() / 1000) - ts) > 300) {
+      return c.json({ error: 'Webhook timestamp expired' }, 400)
+    }
+
+    // Verify HMAC-SHA256 signature using Web Crypto API
+    const encoder = new TextEncoder()
+    const key = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(c.env.STRIPE_WEBHOOK_SECRET),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    )
+    const signed = await crypto.subtle.sign('HMAC', key, encoder.encode(`${timestamp}.${rawBody}`))
+    const computedSig = Array.from(new Uint8Array(signed)).map(b => b.toString(16).padStart(2, '0')).join('')
+
+    if (computedSig !== expectedSig) {
+      return c.json({ error: 'Invalid webhook signature' }, 401)
+    }
+
     const event = JSON.parse(rawBody)
 
     switch (event.type) {
@@ -738,6 +829,28 @@ app.post('/v1/billing/webhooks/stripe', async (c) => {
 app.post('/v1/billing/webhooks/razorpay', async (c) => {
   try {
     const rawBody = await c.req.text()
+    const signature = c.req.header('x-razorpay-signature')
+
+    if (!signature || !c.env.RAZORPAY_WEBHOOK_SECRET) {
+      return c.json({ error: 'Missing signature or secret' }, 400)
+    }
+
+    // Verify HMAC-SHA256 signature using Web Crypto API
+    const encoder = new TextEncoder()
+    const key = await crypto.subtle.importKey(
+      'raw',
+      encoder.encode(c.env.RAZORPAY_WEBHOOK_SECRET),
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    )
+    const signed = await crypto.subtle.sign('HMAC', key, encoder.encode(rawBody))
+    const computedSig = Array.from(new Uint8Array(signed)).map(b => b.toString(16).padStart(2, '0')).join('')
+
+    if (computedSig !== signature) {
+      return c.json({ error: 'Invalid webhook signature' }, 401)
+    }
+
     const event = JSON.parse(rawBody)
 
     if (event.event === 'payment.captured') {

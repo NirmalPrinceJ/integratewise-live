@@ -13,9 +13,10 @@ export interface ToolConfig {
   methods: string[];
   requiresAuth: boolean;
   requiresIdempotency: boolean;
-  handler: string; // Handler function name
-  healthCheck?: string; // Optional health check endpoint
+  handler: string;
+  healthCheck?: string;
   metadata?: Record<string, unknown>;
+  schema?: Record<string, unknown>;
 }
 
 export const TOOL_REGISTRY: ToolConfig[] = [

@@ -497,6 +497,9 @@ importers:
 
   packages/connector-utils:
     dependencies:
+      '@neondatabase/serverless':
+        specifier: ^0.10.4
+        version: 0.10.4
       '@supabase/supabase-js':
         specifier: ^2.47.0
         version: 2.89.0
@@ -797,31 +800,6 @@ importers:
         specifier: ^4.0.0
         version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
 
-  services/cognitive-brain:
-    dependencies:
-      '@neondatabase/serverless':
-        specifier: ^0.10.4
-        version: 0.10.4
-      hono:
-        specifier: ^4.6.0
-        version: 4.11.7
-      zod:
-        specifier: ^3.24.0
-        version: 3.25.76
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20240117.0
-        version: 4.20260131.0
-      typescript:
-        specifier: ^5.3.3
-        version: 5.9.3
-      vitest:
-        specifier: ^1.2.1
-        version: 1.6.1(@types/node@22.19.7)(happy-dom@20.5.0)(jsdom@28.0.0)(lightningcss@1.31.1)(terser@5.16.9)
-      wrangler:
-        specifier: ^3.24.0
-        version: 3.114.17(@cloudflare/workers-types@4.20260131.0)
-
   services/gateway:
     dependencies:
       '@integratewise/connector-contracts':
@@ -887,40 +865,6 @@ importers:
         specifier: ^4.0.0
         version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
 
-  services/iq-hub:
-    dependencies:
-      '@integratewise/lib':
-        specifier: workspace:*
-        version: link:../../packages/lib
-      '@integratewise/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      '@neondatabase/serverless':
-        specifier: ^0.10.4
-        version: 0.10.4
-      '@supabase/supabase-js':
-        specifier: ^2.47.0
-        version: 2.93.3
-      hono:
-        specifier: ^4.6.0
-        version: 4.11.7
-      zod:
-        specifier: ^3.24.0
-        version: 3.25.76
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20241205.0
-        version: 4.20260131.0
-      typescript:
-        specifier: ^5.5.0
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.0
-        version: 2.1.9(@types/node@22.19.7)(happy-dom@20.5.0)(jsdom@28.0.0)(lightningcss@1.31.1)(terser@5.16.9)
-      wrangler:
-        specifier: ^4.0.0
-        version: 4.61.0(@cloudflare/workers-types@4.20260131.0)
-
   services/knowledge:
     dependencies:
       '@integratewise/connector-utils':
@@ -966,6 +910,9 @@ importers:
       '@opentelemetry/sdk-metrics':
         specifier: ^2.5.0
         version: 2.5.0(@opentelemetry/api@1.9.0)
+      '@supabase/supabase-js':
+        specifier: ^2.43.0
+        version: 2.93.3
       hono:
         specifier: ^3.12.0
         version: 3.12.12
@@ -1008,33 +955,11 @@ importers:
         specifier: ^4.0.0
         version: 4.61.0(@cloudflare/workers-types@4.20260128.0)
 
-  services/memory-consolidator:
-    dependencies:
-      '@integratewise/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      hono:
-        specifier: ^4.6.0
-        version: 4.11.7
-      zod:
-        specifier: ^3.24.0
-        version: 3.25.76
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20241205.0
-        version: 4.20260131.0
-      typescript:
-        specifier: ^5.5.0
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.0
-        version: 2.1.9(@types/node@22.19.7)(happy-dom@20.5.0)(jsdom@28.0.0)(lightningcss@1.31.1)(terser@5.16.9)
-      wrangler:
-        specifier: ^4.0.0
-        version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
-
   services/normalizer:
     dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.38.0
+        version: 2.93.3
       hono:
         specifier: ^3.12.0
         version: 3.12.12
@@ -1060,6 +985,9 @@ importers:
       '@neondatabase/serverless':
         specifier: ^0.10.4
         version: 0.10.4
+      '@supabase/supabase-js':
+        specifier: ^2.48.0
+        version: 2.93.3
       hono:
         specifier: ^4.6.0
         version: 4.11.7
@@ -1101,31 +1029,6 @@ importers:
       wrangler:
         specifier: ^4.61.1
         version: 4.61.1(@cloudflare/workers-types@4.20260128.0)
-
-  services/stream-gateway:
-    dependencies:
-      '@integratewise/types':
-        specifier: workspace:*
-        version: link:../../packages/types
-      hono:
-        specifier: ^4.6.0
-        version: 4.11.7
-      zod:
-        specifier: ^3.24.0
-        version: 3.25.76
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20241205.0
-        version: 4.20260131.0
-      typescript:
-        specifier: ^5.5.0
-        version: 5.9.3
-      vitest:
-        specifier: ^2.1.0
-        version: 2.1.9(@types/node@22.19.7)(happy-dom@20.5.0)(jsdom@28.0.0)(lightningcss@1.31.1)(terser@5.16.9)
-      wrangler:
-        specifier: ^4.0.0
-        version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
 
   services/tenants:
     dependencies:
@@ -1183,30 +1086,17 @@ importers:
         specifier: ^4.0.0
         version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
 
-  services/views:
-    dependencies:
-      hono:
-        specifier: ^4.6.14
-        version: 4.11.7
-      zod:
-        specifier: ^3.23.8
-        version: 3.25.76
-    devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20241205.0
-        version: 4.20260131.0
-      typescript:
-        specifier: ^5.3.3
-        version: 5.9.3
-      wrangler:
-        specifier: ^3.99.0
-        version: 3.114.17(@cloudflare/workers-types@4.20260131.0)
-
   services/workflow:
     dependencies:
+      '@supabase/supabase-js':
+        specifier: ^2.38.4
+        version: 2.93.3
       hono:
         specifier: ^4.6.0
         version: 4.11.7
+      zod:
+        specifier: ^4.3.6
+        version: 4.3.6
     devDependencies:
       '@cloudflare/workers-types':
         specifier: ^4.20240117.0
@@ -2981,7 +2871,7 @@ packages:
 
   '@expo/bunyan@4.0.1':
     resolution: {integrity: sha512-+Lla7nYSiHZirgK+U/uYzsLv/X+HaJienbD5AKX1UQZHYfWaP+9uuQluRB4GrEVWF0GZ7vEVp/jzaOT9k/SQlg==}
-    engines: {'0': node >=0.10.0}
+    engines: {node: '>=0.10.0'}
 
   '@expo/cli@0.22.28':
     resolution: {integrity: sha512-lvt72KNitGuixYD2l3SZmRKVu2G4zJpmg5V7WfUBNpmUU5oODBw/6qmiJ6kSLAlfDozscUk+BBGknBBzxUrwrA==}
@@ -6699,7 +6589,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Glob versions prior to v9 are no longer supported
+    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
 
   global-agent@3.0.0:
     resolution: {integrity: sha512-PT6XReJ+D07JvGoxQMkT6qji/jVNfX/h364XHZOWeRzy64sSFr+xJ5OX7LI3b4MPQzdL4H8Y8M0xzPpsVMwA8Q==}

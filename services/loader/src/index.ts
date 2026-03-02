@@ -93,7 +93,7 @@ async function handleWebhook(request: Request, env: Env, tool: string, tenantId:
 
   // Resolve tenant from webhook (tool-specific mapping)
   // For now, use the tenantId from gateway header or webhook config
-  const resolvedTenant = tenantId || body.portalId || 'default';
+  const resolvedTenant = tenantId || (body as any).portalId || 'default';
 
   // Send to pipeline
   const records = Array.isArray(body) ? body : [body];

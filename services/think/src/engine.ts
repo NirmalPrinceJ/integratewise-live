@@ -91,7 +91,7 @@ export class SignalEngine {
         for (const rule of rules) {
             const r = rule as any;
             const signalId = crypto.randomUUID();
-            const band = rule.severity_score > 70 ? 'critical' : rule.severity_score > 40 ? 'warning' : 'good';
+            const band = (rule as any).severity_score > 70 ? 'critical' : (rule as any).severity_score > 40 ? 'warning' : 'good';
             const evidenceRefs = JSON.stringify([event.id]);
 
             // 2. Create Signal (Structured Intelligence) - SQLite compatible
@@ -228,10 +228,10 @@ export class SignalEngine {
                 `).bind(
                     situationId,
                     tenant_id,
-                    rule.situation_key,
-                    'Alert: ' + rule.situation_key.replace('.', ' '),
+                    (rule as any).situation_key,
+                    'Alert: ' + (rule as any).situation_key.replace('.', ' '),
                     'Detected complex signal pattern',
-                    rule.min_severity_threshold > 80 ? 'critical' : 'high',
+                    (rule as any).min_severity_threshold > 80 ? 'critical' : 'high',
                     signalIds,
                     JSON.stringify(evidenceRefIds),
                     entity_type,
@@ -242,13 +242,13 @@ export class SignalEngine {
 
                 if (situation) {
                     const narrative = generateNarrative(
-                        { id: situation.id as string, situation_key: rule.situation_key, entity_type, entity_id, tenant_id },
+                        { id: situation.id as string, situation_key: (rule as any).situation_key, entity_type, entity_id, tenant_id },
                         sources
                     );
 
                     const actions = await createProposedActions(this.db, {
                         id: situation.id as string,
-                        situation_key: rule.situation_key,
+                        situation_key: (rule as any).situation_key,
                         entity_type, entity_id, tenant_id
                     }, sources, evidenceRefIds);
 

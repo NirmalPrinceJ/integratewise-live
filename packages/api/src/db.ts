@@ -101,7 +101,14 @@ export async function listEntities(
   if (filters.source) { query += ' AND source = ?'; values.push(filters.source); }
 
   query += ' ORDER BY updated_at DESC';
-  query += ` LIMIT ${filters.limit || 100} OFFSET ${filters.offset || 0}`;
+  const limit = Number(filters.limit) || 100;
+  const offset = Number(filters.offset) || 0;
+  if (!Number.isFinite(limit) || !Number.isFinite(offset)) {
+    throw new Error('Invalid limit or offset value');
+  }
+  const safeLimit = Math.max(1, Math.min(limit, 1000));
+  const safeOffset = Math.max(0, offset);
+  query += ` LIMIT ${safeLimit} OFFSET ${safeOffset}`;
 
   const result = await db.prepare(query).bind(...values).all();
   return (result.results || []).map(parseEntity);

@@ -21,10 +21,10 @@ import { cors } from 'hono/cors';
 import { secureHeaders } from 'hono/secure-headers';
 
 // Route modules
-import { decisionMemoryRoutes } from './routes/decision-memory';
-import { trustScoreRoutes } from './routes/trust-score';
-import { simulationRoutes } from './routes/simulation';
-import { driftDetectionRoutes } from './routes/drift-detection';
+import { decisionMemoryRoutes } from './cognitive-routes/decision-memory';
+import { trustScoreRoutes } from './cognitive-routes/trust-score';
+import { simulationRoutes } from './cognitive-routes/simulation';
+import { driftDetectionRoutes } from './cognitive-routes/drift-detection';
 
 type Bindings = {
     // Primary data source (truth database)

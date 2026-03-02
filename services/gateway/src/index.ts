@@ -13,6 +13,7 @@ export interface Env {
   SESSIONS: KVNamespace;
   SUPABASE_URL: string;
   SUPABASE_SERVICE_ROLE_KEY: string;
+  ALLOWED_ORIGINS?: string;
 }
 
 const ROUTES: [string, keyof Env][] = [
@@ -38,11 +39,17 @@ const ROUTES: [string, keyof Env][] = [
 
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
+    const allowedOrigins = env.ALLOWED_ORIGINS
+      ? env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+      : [];
+    const requestOrigin = request.headers.get('Origin') || '';
+    const corsOrigin = allowedOrigins.includes(requestOrigin) ? requestOrigin : allowedOrigins[0] || '';
+
     // CORS preflight
     if (request.method === 'OPTIONS') {
       return new Response(null, {
         headers: {
-          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Origin': corsOrigin,
           'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
           'Access-Control-Allow-Headers': 'Authorization, Content-Type, x-tenant-id, x-idempotency-key, x-view-context, x-approval-token',
           'Access-Control-Max-Age': '86400',
@@ -96,7 +103,18 @@ export default {
     }
 
     const user = await userResponse.json() as { id: string; user_metadata?: { tenant_id?: string; role?: string } };
-    const tenantId = request.headers.get('x-tenant-id') || user.user_metadata?.tenant_id;
+    const headerTenantId = request.headers.get('x-tenant-id');
+    const jwtTenantId = user.user_metadata?.tenant_id;
+
+    // Validate tenant isolation: if both header and JWT have tenant_id, they must match
+    if (headerTenantId && jwtTenantId && headerTenantId !== jwtTenantId) {
+      return new Response(JSON.stringify({ error: 'Tenant mismatch' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const tenantId = headerTenantId || jwtTenantId;
 
     if (!tenantId) {
       return new Response(JSON.stringify({ error: 'No tenant context' }), {
@@ -133,7 +151,7 @@ export default {
 
         // Add CORS headers to response
         const corsResponse = new Response(response.body, response);
-        corsResponse.headers.set('Access-Control-Allow-Origin', '*');
+        corsResponse.headers.set('Access-Control-Allow-Origin', corsOrigin);
         return corsResponse;
       }
     }

@@ -1,19 +1,47 @@
 /**
  * IntegrateWise Unified Router
  *
- * Route Architecture:
- *   /                    → Marketing site (Dir 1: Anti-Gravity design)
- *   /platform            → Platform deep-dive
- *   /who-its-for         → Audience segmentation
- *   /pricing             → Pricing tiers
- *   /security            → Security & governance
- *   /story               → Founder story
- *   /integrations        → 200+ tool integrations
- *   /app                 → Authenticated workspace (Dir 2: workspace shell)
- *   /app/login            → Login page
- *   /app/signup           → Signup page
- *   /app/onboarding       → 4-step onboarding
- *   /app/workspace        → Main workspace (post-auth)
+ * ┌─────────────────────────────────────────────────────────────────┐
+ * │ COMPLETE ROUTING TABLE                                         │
+ * ├──────────────────────────┬──────────────────────────────────────┤
+ * │ Route                    │ Component / Purpose                  │
+ * ├──────────────────────────┼──────────────────────────────────────┤
+ * │ MARKETING (Public)       │                                      │
+ * │ /                        │ HomePage — landing hero + CTAs       │
+ * │ /platform                │ PlatformPage — product deep-dive     │
+ * │ /who-its-for             │ WhoItsForPage — audience segments    │
+ * │ /pricing                 │ PricingPage — tiers + CTAs           │
+ * │ /security                │ SecurityPage — security & governance │
+ * │ /story                   │ StoryPage — founder story            │
+ * │ /integrations            │ IntegrationsPage — 200+ tools        │
+ * │ /login                   │ MarketingLoginPage — public login    │
+ * ├──────────────────────────┼──────────────────────────────────────┤
+ * │ APP (Authenticated)      │ Lazy-loaded AppShell                 │
+ * │ /app/*                   │ AppShell (stages below)              │
+ * │  → stage: login          │ LoginPage — email/SSO                │
+ * │  → stage: signup         │ SignUpPage — registration            │
+ * │  → stage: onboarding     │ OnboardingFlowNew — 4-step setup     │
+ * │  → stage: loading        │ LoaderPhase1 — data hydration        │
+ * │  → stage: workspace      │ WorkspaceShellNew — main workspace   │
+ * ├──────────────────────────┼──────────────────────────────────────┤
+ * │ OAUTH                    │                                      │
+ * │ /oauth/callback/:provider│ OAuthCallbackPage — provider redirect│
+ * ├──────────────────────────┼──────────────────────────────────────┤
+ * │ CATCH-ALL                │                                      │
+ * │ *                        │ NotFound — 404 page                  │
+ * └──────────────────────────┴──────────────────────────────────────┘
+ *
+ * CTA Routing:
+ *   All "Start Free" / "Sign In" CTAs → /app
+ *   Pricing tier CTAs → /app?plan={tier} or /app?intent=contact_sales
+ *   OAuth success → /app/workspace?tab=integrations&connected={provider}
+ *   OAuth error → /app/workspace?tab=integrations&error={error}
+ *   404 "Back to Home" → /
+ *   404 "Explore Platform" → /platform
+ *
+ * Navigation:
+ *   Header: / /platform /who-its-for /pricing /integrations /security /story
+ *   Footer: /platform /integrations /pricing /security /story /who-its-for /login
  *
  * Infrastructure:
  *   Frontend: Cloudflare Pages (Vite static build)

@@ -23,6 +23,8 @@ interface Env {
   ROOM: DurableObjectNamespace;
   CONNECTION_META: KVNamespace;
   RATE_LIMIT: KVNamespace;
+  PIPELINE: Fetcher;
+  GOVERN: Fetcher;
   THINK: Fetcher;
   TENANTS: Fetcher;
   IQ_HUB: Fetcher;
@@ -56,7 +58,7 @@ interface PresenceUser {
 }
 
 interface StreamMessage {
-  type: 'signal' | 'presence' | 'update' | 'notification' | 'cursor' | 'typing';
+  type: 'signal' | 'presence' | 'update' | 'notification' | 'cursor' | 'typing' | 'subscribe' | 'unsubscribe' | 'ping';
   channel: string;
   payload: unknown;
   sender_id?: string;
@@ -71,12 +73,14 @@ export class SignalStreamDO extends DurableObject {
   private sessions: Map<WebSocket, { tenantId: string; userId: string; channels: Set<string> }> = new Map();
   private recentSignals: Signal[] = [];
   private readonly MAX_RECENT_SIGNALS = 100;
+  private doState: DurableObjectState;
 
   constructor(state: DurableObjectState, env: Env) {
     super(state, env);
+    this.doState = state;
     // Load recent signals from storage on startup
-    this.state.blockConcurrencyWhile(async () => {
-      const stored = await this.state.storage.get<Signal[]>('recentSignals');
+    this.doState.blockConcurrencyWhile(async () => {
+      const stored = await this.doState.storage.get<Signal[]>('recentSignals');
       if (stored) this.recentSignals = stored;
     });
   }
@@ -119,7 +123,7 @@ export class SignalStreamDO extends DurableObject {
     const [client, server] = Object.values(pair);
 
     // Accept the WebSocket with hibernation support
-    this.state.acceptWebSocket(server);
+    this.doState.acceptWebSocket(server);
 
     // Store session metadata
     this.sessions.set(server, {
@@ -194,7 +198,7 @@ export class SignalStreamDO extends DurableObject {
     if (this.recentSignals.length > this.MAX_RECENT_SIGNALS) {
       this.recentSignals.pop();
     }
-    await this.state.storage.put('recentSignals', this.recentSignals);
+    await this.doState.storage.put('recentSignals', this.recentSignals);
 
     // Broadcast to matching sessions
     let delivered = 0;
@@ -290,7 +294,7 @@ export class PresenceDO extends DurableObject {
     const pair = new WebSocketPair();
     const [client, server] = Object.values(pair);
 
-    this.state.acceptWebSocket(server);
+    this.ctx.acceptWebSocket(server);
     this.sockets.set(server, userId);
 
     // Add user to presence
@@ -387,11 +391,13 @@ export class PresenceDO extends DurableObject {
 export class RoomDO extends DurableObject {
   private participants: Map<WebSocket, { userId: string; name: string }> = new Map();
   private roomState: Record<string, unknown> = {};
+  private doState: DurableObjectState;
 
   constructor(state: DurableObjectState, env: Env) {
     super(state, env);
-    this.state.blockConcurrencyWhile(async () => {
-      const stored = await this.state.storage.get<Record<string, unknown>>('roomState');
+    this.doState = state;
+    this.doState.blockConcurrencyWhile(async () => {
+      const stored = await this.doState.storage.get<Record<string, unknown>>('roomState');
       if (stored) this.roomState = stored;
     });
   }
@@ -410,7 +416,7 @@ export class RoomDO extends DurableObject {
         if (request.method === 'POST') {
           const update = await request.json() as { key: string; value: unknown };
           this.roomState[update.key] = update.value;
-          await this.state.storage.put('roomState', this.roomState);
+          await this.doState.storage.put('roomState', this.roomState);
           this.broadcastUpdate(update);
           return Response.json({ status: 'updated' });
         }
@@ -432,7 +438,7 @@ export class RoomDO extends DurableObject {
     const pair = new WebSocketPair();
     const [client, server] = Object.values(pair);
 
-    this.state.acceptWebSocket(server);
+    this.doState.acceptWebSocket(server);
     this.participants.set(server, { userId, name: userName });
 
     // Send current state
@@ -464,7 +470,7 @@ export class RoomDO extends DurableObject {
       switch (data.type) {
         case 'update':
           this.roomState[data.key] = data.value;
-          await this.state.storage.put('roomState', this.roomState);
+          await this.doState.storage.put('roomState', this.roomState);
           this.broadcastUpdate({ key: data.key, value: data.value, sender: participant.userId }, ws);
           break;
         case 'cursor':
@@ -796,13 +802,13 @@ app.get('/v1/workspace/dashboard', async (c) => {
   const [pipelineResult, thinkResult, governResult] = await Promise.allSettled([
     c.env.PIPELINE.fetch(new Request('http://pipeline/v1/spine/summary', {
       headers: { 'x-tenant-id': tenantId }
-    })).then(r => r.ok ? r.json() : null),
+    })).then((r: Response) => r.ok ? r.json() : null),
     c.env.THINK.fetch(new Request('http://think/v1/think/signals/summary', {
       headers: { 'x-tenant-id': tenantId }
-    })).then(r => r.ok ? r.json() : null),
+    })).then((r: Response) => r.ok ? r.json() : null),
     c.env.GOVERN.fetch(new Request('http://govern/v1/govern/pending', {
       headers: { 'x-tenant-id': tenantId }
-    })).then(r => r.ok ? r.json() : null),
+    })).then((r: Response) => r.ok ? r.json() : null),
   ]);
 
   // Extract with safe defaults

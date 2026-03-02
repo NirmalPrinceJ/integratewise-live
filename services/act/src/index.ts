@@ -82,35 +82,37 @@ app.post('/execute', async (c) => {
         }
 
         // 1.5. MANDATORY GOVERNANCE CHECK (Service Binding)
-        if (c.env.GOVERN) {
-            const govCheck = await c.env.GOVERN.fetch('http://internal/v1/check', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'x-tenant-id': tenantId,
-                    'x-user-id': 'system-agent',
-                    'x-correlation-id': correlationId,
-                    'x-service-auth': c.env.SERVICE_SECRET || 'internal-default'
-                },
-                body: JSON.stringify({
-                    action_type: proposal.action_type,
-                    priority: proposal.priority || 'medium',
-                    parameters: typeof proposal.parameters === 'string' ? JSON.parse(proposal.parameters) : proposal.parameters
-                })
-            });
+        if (!c.env.GOVERN) {
+            return c.json({ error: 'Governance service unavailable — execution denied (fail-safe)' }, 503);
+        }
 
-            if (govCheck.ok) {
-                const checkResult = await govCheck.json() as any;
-                if (!checkResult.data?.allowed) {
-                    return c.json({
-                        error: 'Governance Denied',
-                        reason: checkResult.data?.reason || 'Policy violation'
-                    }, 403);
-                }
-            } else {
-                // If governance service is down/failing, we fail-safe (deny) in production
-                return c.json({ error: 'Governance Check Failed' }, 503);
+        const govCheck = await c.env.GOVERN.fetch('http://internal/v1/check', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'x-tenant-id': tenantId,
+                'x-user-id': 'system-agent',
+                'x-correlation-id': correlationId,
+                'x-service-auth': c.env.SERVICE_SECRET || 'internal-default'
+            },
+            body: JSON.stringify({
+                action_type: proposal.action_type,
+                priority: proposal.priority || 'medium',
+                parameters: typeof proposal.parameters === 'string' ? JSON.parse(proposal.parameters) : proposal.parameters
+            })
+        });
+
+        if (govCheck.ok) {
+            const checkResult = await govCheck.json() as any;
+            if (!checkResult.data?.allowed) {
+                return c.json({
+                    error: 'Governance Denied',
+                    reason: checkResult.data?.reason || 'Policy violation'
+                }, 403);
             }
+        } else {
+            // If governance service is down/failing, we fail-safe (deny) in production
+            return c.json({ error: 'Governance Check Failed' }, 503);
         }
 
         // 2. Log "Execution Attempt" to Spine

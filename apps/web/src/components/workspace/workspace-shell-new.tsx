@@ -66,6 +66,7 @@ import { CommandPalette } from "../navigation/command-palette";
 import type { Domain } from "./workspace-config";
 import { getDomainConfig, getWorkNavigation, getPersonalNavigation } from "./workspace-config";
 import { ContentRouter } from "./content-router";
+import { CognitiveLayer } from "../cognitive/CognitiveLayer";
 import { useFabricStatus, useScopedSlots } from "../hydration";
 
 export type WorkspaceView = "PERSONAL" | "WORK";
@@ -416,6 +417,9 @@ export function WorkspaceShellNew({ domain, userName, onLogout }: WorkspaceShell
         onClose={() => setCommandPaletteOpen(false)}
         onNavigate={handleNavigate}
       />
+
+      {/* L2 Cognitive Layer — event-driven sliding panel (⌘J to toggle) */}
+      <CognitiveLayer />
     </div>
   );
 }
