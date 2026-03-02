@@ -1,69 +1,13 @@
 name = "integratewise-govern"
 main = "src/index.ts"
-compatibility_date = "2024-05-29"
+compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
-# Doppler config: {env}_govern  (e.g. prd_govern)
-
-[dev]
-port = 8004
-local_protocol = "http"
-
-[env.production]
-name = "integratewise-govern"
-routes = [
-  { pattern = "govern.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-
-[vars]
-ENVIRONMENT = "production"
-
-# =============================================================================
-# Supabase Bindings (v3.6 - SINGLE SOURCE OF TRUTH)
-# =============================================================================
-# Doppler secrets: SUPABASE_URL, SUPABASE_SERVICE_KEY (synced via scripts/sync-doppler-to-workers.sh)
-# Note: Internal govern modules (policies.ts, audit.ts, workflow.ts) require separate migration
-# For now, bindings are added for future refactoring
-
-[[kv_namespaces]]
-binding = "CACHE"
-id = "18aa20dfeb304f0ba592d9070964dd31"
-
-# =============================================================================
-# Service Bindings (Worker-to-Worker, zero-latency)
-# v3.6 Section 19.3-19.4: Govern needs Act (to issue execution tokens) and BFF (for HITL)
-# =============================================================================
-[[services]]
-binding = "ACT"
-service = "integratewise-act"
-
-[[services]]
-binding = "BFF"
-service = "integratewise-stream-gateway"
+# Consumes DLQ for governance review
+[[queues.consumers]]
+queue = "ops-dlq"
+max_batch_size = 10
+max_batch_timeout = 30
 
 [env.staging]
 name = "integratewise-govern-staging"
-routes = [
-  { pattern = "govern-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-vars = { ENVIRONMENT = "staging" }
-
-# ============================================================================
-# Observability & Monitoring
-# ============================================================================
-[observability]
-enabled = true
-
-[observability.logs]
-enabled = true
-head_sampling_rate = 1
-
-
-# ============================================================================
-# Alerting (configured in Cloudflare Dashboard)
-# - High error rate (>5% 5xx responses)
-# - High latency (>2s p95 response time)
-# - High CPU usage (>80% sustained)
-# - Function cold starts (>100/minute)
-# ============================================================================

@@ -3,90 +3,25 @@ main = "src/index.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
-# Doppler config: {env}_act  (e.g. prd_act)
-#
-# Required secrets (v3.6: Truth Database from Supabase):
-#   SUPABASE_URL           - Supabase project URL (primary truth database)
-#   SUPABASE_SERVICE_KEY   - Supabase service-role key (for server-side RLS bypass)
-#
-# Optional secrets:
-#   SENTRY_DSN            - Sentry error tracking
-#
-# Database:
-#   DB (D1)               - Edge cache only — idempotency keys, sync cursors, cached projections
+# Consumes approved actions
+[[queues.consumers]]
+queue = "intelligence-act"
+max_batch_size = 10
+max_batch_timeout = 30
 
-[dev]
-port = 8002
-local_protocol = "http"
+# Needs connector for tool write-back
+[[services]]
+binding = "LOADER"
+service = "integratewise-loader"
 
-# =============================================================================
-# Service Bindings (Worker-to-Worker, zero-latency)
-# Engine Loop: ACT executes after GOVERN approval, stores via STORE
-# v3.6 Section 19.3-19.4: ACT also needs CONNECTOR (for tool write-backs) and PIPELINE (to re-ingest results)
-# =============================================================================
 [[services]]
 binding = "GOVERN"
 service = "integratewise-govern"
 
-[[services]]
-binding = "THINK"
-service = "integratewise-think"
+# Produces pipeline re-ingestion after write-back
+[[queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
 
-[[services]]
-binding = "STORE"
-service = "integratewise-store"
-
-[[services]]
-binding = "CONNECTOR"
-service = "integratewise-mcp-connector"
-
-[[services]]
-binding = "PIPELINE"
-service = "integratewise-spine-v2"
-
-# =============================================================================
-# D1 Database
-# =============================================================================
-[[d1_databases]]
-binding = "DB"
-database_name = "integratewise-spine-prod"
-database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
-
-# =============================================================================
-# Environment Variables
-# =============================================================================
-[vars]
-ENVIRONMENT = "development"
-
-# =============================================================================
-# Observability & Monitoring
-# =============================================================================
-[observability]
-enabled = true
-
-[observability.logs]
-enabled = true
-head_sampling_rate = 1
-
-# =============================================================================
-# Staging Environment
-# =============================================================================
 [env.staging]
 name = "integratewise-act-staging"
-routes = [
-  { pattern = "act-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-[env.staging.vars]
-ENVIRONMENT = "staging"
-
-# =============================================================================
-# Production Environment
-# =============================================================================
-[env.production]
-name = "integratewise-act"
-routes = [
-  { pattern = "act.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-[env.production.vars]
-ENVIRONMENT = "production"

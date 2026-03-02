@@ -1,356 +1,183 @@
-import { Hono } from 'hono';
-import { WorkflowEntrypoint, WorkflowEvent, WorkflowStep } from 'cloudflare:workers';
-
-// ============================================================================
-// Types
-// ============================================================================
-interface Env {
-  DB: D1Database;
-  // v3.6: D1 is edge cache only. Supabase PostgreSQL is SINGLE SOURCE OF TRUTH
+export interface Env {
+  SPINE: Fetcher;
+  KNOWLEDGE: Fetcher;
+  THINK: Fetcher;
+  ACT_QUEUE: Queue;
   SUPABASE_URL: string;
-  SUPABASE_SERVICE_KEY: string;
-  ACT_URL: string;
-  GOVERN_URL: string;
-  APPROVAL_WORKFLOW: Workflow;
+  SUPABASE_SERVICE_ROLE_KEY: string;
 }
 
-interface RecommendationPayload {
-  signalId: string;
-  tenantId: string;
-  userId: string;
-  recommendation: {
-    type: 'action' | 'insight' | 'alert';
-    title: string;
-    description: string;
-    action?: {
-      type: string;
-      target: string;
-      params: Record<string, unknown>;
-    };
-    confidence: number;
-    evidence: Array<{
-      source: string;
-      data: unknown;
-      timestamp: string;
-    }>;
-  };
-  expiresAt?: string;
-}
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const url = new URL(request.url);
+    const tenantId = request.headers.get('x-tenant-id') || '';
 
-interface ApprovalPayload {
-  approved: boolean;
-  approvedBy: string;
-  comments?: string;
-  modifiedAction?: Record<string, unknown>;
-}
-
-// ============================================================================
-// Approval Workflow - Human-in-the-Loop
-// ============================================================================
-export class ApprovalWorkflow extends WorkflowEntrypoint<Env, RecommendationPayload> {
-  async run(event: WorkflowEvent<RecommendationPayload>, step: WorkflowStep) {
-    const { signalId, tenantId, userId, recommendation, expiresAt } = event.payload;
-    const instanceId = event.instanceId;
-
-    // Step 1: Store recommendation in pending state (v3.6: Supabase is SINGLE SOURCE OF TRUTH)
-    await step.do('store-recommendation', async () => {
-      // Note: This uses REST API pattern - workflow steps need SUPABASE_URL and SUPABASE_SERVICE_KEY from env
-      // For now, keeping D1 for workflow internal storage, but marked for future migration
-      await this.env.DB.prepare(`
-        INSERT INTO workflow_recommendations (
-          id, instance_id, tenant_id, user_id, signal_id,
-          type, title, description, action_data, confidence,
-          evidence, status, created_at, expires_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending', datetime('now'), ?)
-      `).bind(
-        crypto.randomUUID(),
-        instanceId,
-        tenantId,
-        userId,
-        signalId,
-        recommendation.type,
-        recommendation.title,
-        recommendation.description,
-        JSON.stringify(recommendation.action || {}),
-        recommendation.confidence,
-        JSON.stringify(recommendation.evidence),
-        expiresAt || null
-      ).run();
-    });
-
-    // Step 2: Check governance rules (auto-approve low-risk actions)
-    const governanceCheck = await step.do('check-governance', async () => {
-      const response = await fetch(`${this.env.GOVERN_URL}/check`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          tenantId,
-          userId,
-          action: recommendation.action,
-          confidence: recommendation.confidence,
-        }),
+    // Health check
+    if (url.pathname === '/health') {
+      return new Response(JSON.stringify({ status: 'ok', service: 'workflow' }), {
+        headers: { 'Content-Type': 'application/json' }
       });
-      return response.json() as Promise<{ autoApprove: boolean; reason?: string }>;
-    });
-
-    // If governance auto-approves, skip human approval
-    if (governanceCheck.autoApprove) {
-      await step.do('auto-approve-update', async () => {
-        await this.env.DB.prepare(`
-          UPDATE workflow_recommendations 
-          SET status = 'auto-approved', approved_at = datetime('now'), approved_by = 'system'
-          WHERE instance_id = ?
-        `).bind(instanceId).run();
-      });
-
-      // Execute the action
-      await step.do('execute-auto-approved', async () => {
-        await fetch(`${this.env.ACT_URL}/execute`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            signalId,
-            tenantId,
-            action: recommendation.action,
-            approvalType: 'auto',
-          }),
-        });
-      });
-
-      return { status: 'auto-approved', instanceId };
     }
 
-    // Step 3: Wait for human approval (default 7 days timeout)
-    const timeout = expiresAt || '7 days';
-    const approvalEvent = await step.waitForEvent<ApprovalPayload>(
-      'wait-for-approval',
-      {
-        type: 'recommendation-approval',
-        timeout,
-      }
-    );
-
-    // Step 4: Handle approval decision
-    if (approvalEvent.payload?.approved) {
-      // Update status to approved
-      await step.do('update-approved', async () => {
-        await this.env.DB.prepare(`
-          UPDATE workflow_recommendations 
-          SET status = 'approved', 
-              approved_at = datetime('now'), 
-              approved_by = ?,
-              comments = ?
-          WHERE instance_id = ?
-        `).bind(
-          approvalEvent.payload.approvedBy,
-          approvalEvent.payload.comments || null,
-          instanceId
-        ).run();
-      });
-
-      // Execute the action (possibly modified)
-      const actionToExecute = approvalEvent.payload.modifiedAction || recommendation.action;
-      
-      await step.do('execute-approved', async () => {
-        await fetch(`${this.env.ACT_URL}/execute`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            signalId,
-            tenantId,
-            action: actionToExecute,
-            approvalType: 'manual',
-            approvedBy: approvalEvent.payload.approvedBy,
-          }),
-        });
-      });
-
-      return { status: 'approved', instanceId, approvedBy: approvalEvent.payload.approvedBy };
-    } else {
-      // Update status to rejected
-      await step.do('update-rejected', async () => {
-        await this.env.DB.prepare(`
-          UPDATE workflow_recommendations 
-          SET status = 'rejected', 
-              rejected_at = datetime('now'), 
-              rejected_by = ?,
-              comments = ?
-          WHERE instance_id = ?
-        `).bind(
-          approvalEvent.payload?.approvedBy || 'timeout',
-          approvalEvent.payload?.comments || 'Rejected or timed out',
-          instanceId
-        ).run();
-      });
-
-      return { status: 'rejected', instanceId };
+    // Dashboard — aggregated view for Home
+    if (url.pathname === '/api/v1/workspace/dashboard') {
+      return getDashboard(env, tenantId);
     }
+
+    // Entity list (proxied from Spine)
+    if (url.pathname === '/api/v1/workspace/entities') {
+      return env.SPINE.fetch(new Request(
+        `https://spine/api/entities?${url.searchParams.toString()}`,
+        { headers: request.headers }
+      ));
+    }
+
+    // HITL approval queue
+    if (url.pathname === '/api/v1/cognitive/hitl/queue' && request.method === 'GET') {
+      return getApprovalQueue(env, tenantId);
+    }
+
+    // HITL approve/deny
+    if (url.pathname === '/api/v1/cognitive/hitl/queue' && request.method === 'POST') {
+      const body = await request.json() as { action_id: string; decision: 'approve' | 'deny' };
+      return handleApproval(body, env, tenantId, request.headers.get('x-user-id') || '');
+    }
+
+    // Audit trail
+    if (url.pathname === '/api/v1/cognitive/audit') {
+      return getAuditLog(env, tenantId, url.searchParams);
+    }
+
+    // SSE stream for real-time events
+    if (url.pathname === '/stream/events') {
+      return streamEvents(env, tenantId);
+    }
+
+    return new Response('BFF service', { status: 200 });
   }
+};
+
+async function getDashboard(env: Env, tenantId: string): Promise<Response> {
+  // Call Spine for dashboard stats
+  const dashResponse = await env.SPINE.fetch(new Request('https://spine/api/dashboard', {
+    headers: { 'x-tenant-id': tenantId },
+  }));
+  const dashData = await dashResponse.json();
+
+  // Call Think for active signals
+  const signalsResponse = await env.SPINE.fetch(new Request('https://spine/api/signals', {
+    headers: { 'x-tenant-id': tenantId },
+  }));
+  const signalsData = await signalsResponse.json();
+
+  return new Response(JSON.stringify({
+    ...dashData,
+    signals: signalsData.signals || [],
+  }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
 }
 
-// ============================================================================
-// v3.6: Supabase REST API Helpers
-// ============================================================================
+async function getApprovalQueue(env: Env, tenantId: string): Promise<Response> {
+  const { createClient } = await import('@supabase/supabase-js');
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 
-async function supabaseQuery(
-  url: string,
-  key: string,
-  table: string,
-  query: string
-): Promise<any[]> {
-  try {
-    const res = await fetch(`${url}/rest/v1/${table}?${query}`, {
-      headers: {
-        'apikey': key,
-        'Authorization': `Bearer ${key}`,
-        'Content-Type': 'application/json',
-      },
+  const { data } = await supabase
+    .from('actions')
+    .select('*, signals(*)')
+    .eq('tenant_id', tenantId)
+    .eq('status', 'pending_approval')
+    .order('created_at', { ascending: false });
+
+  return new Response(JSON.stringify({ approvals: data || [] }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
+
+async function handleApproval(
+  body: { action_id: string; decision: 'approve' | 'deny' },
+  env: Env, tenantId: string, userId: string
+): Promise<Response> {
+  const { createClient } = await import('@supabase/supabase-js');
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
+
+  const newStatus = body.decision === 'approve' ? 'approved' : 'denied';
+
+  const { data, error } = await supabase
+    .from('actions')
+    .update({
+      status: newStatus,
+      approved_by: userId,
+      approved_at: new Date().toISOString(),
+      approval_token: body.decision === 'approve' ? crypto.randomUUID() : null,
     })
-    if (!res.ok) return []
-    return res.json()
-  } catch {
-    return []
+    .eq('id', body.action_id)
+    .eq('tenant_id', tenantId)
+    .select()
+    .single();
+
+  if (error) return new Response(JSON.stringify({ error: error.message }), { status: 500 });
+
+  // If approved, send to Act queue for execution
+  if (body.decision === 'approve' && data) {
+    await env.ACT_QUEUE.send({
+      action_id: data.id,
+      tenant_id: tenantId,
+      action_type: data.action_type,
+      target_tool: data.target_tool,
+      payload: data.payload,
+      approval_token: data.approval_token,
+    });
   }
+
+  // Audit log
+  await supabase.from('audit_log').insert({
+    tenant_id: tenantId,
+    user_id: userId,
+    action: `action.${body.decision}`,
+    entity_id: body.action_id,
+    details: { action_type: data?.action_type },
+    source: 'user',
+  });
+
+  return new Response(JSON.stringify({ status: newStatus, action: data }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
 }
 
-async function supabaseMutate(
-  url: string,
-  key: string,
-  table: string,
-  method: string,
-  body?: any,
-  query?: string
-): Promise<any> {
-  try {
-    const endpoint = query
-      ? `${url}/rest/v1/${table}?${query}`
-      : `${url}/rest/v1/${table}`
-    const res = await fetch(endpoint, {
-      method,
-      headers: {
-        'apikey': key,
-        'Authorization': `Bearer ${key}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=representation',
-      },
-      body: body ? JSON.stringify(body) : undefined,
-    })
-    if (!res.ok) return null
-    return res.json()
-  } catch {
-    return null
-  }
+async function getAuditLog(env: Env, tenantId: string, params: URLSearchParams): Promise<Response> {
+  const { createClient } = await import('@supabase/supabase-js');
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
+
+  const limit = parseInt(params.get('limit') || '50');
+  const { data } = await supabase
+    .from('audit_log')
+    .select('*')
+    .eq('tenant_id', tenantId)
+    .order('created_at', { ascending: false })
+    .limit(limit);
+
+  return new Response(JSON.stringify({ entries: data || [] }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
 }
 
-// ============================================================================
-// Hono API for Workflow Management
-// ============================================================================
-const app = new Hono<{ Bindings: Env }>();
-
-// Health check
-app.get('/health', (c) => {
-  return c.json({
-    status: 'ok',
-    service: 'Workflow Engine',
-    version: '1.0.0',
-    features: ['approval-workflow', 'waitForEvent', 'governance-check'],
-  });
-});
-
-// Create a new approval workflow
-app.post('/workflows/approval', async (c) => {
-  const body = await c.req.json<RecommendationPayload>();
-  
-  const instance = await c.env.APPROVAL_WORKFLOW.create({
-    params: body,
+async function streamEvents(env: Env, tenantId: string): Promise<Response> {
+  // SSE stream — minimal implementation
+  // In production, use Durable Objects for persistent connections
+  const encoder = new TextEncoder();
+  const stream = new ReadableStream({
+    start(controller) {
+      controller.enqueue(encoder.encode(`data: ${JSON.stringify({ type: 'connected', tenant_id: tenantId })}\n\n`));
+      // TODO: Connect to Supabase Realtime and forward events
+    }
   });
 
-  return c.json({
-    success: true,
-    instanceId: instance.id,
-    status: await instance.status(),
+  return new Response(stream, {
+    headers: {
+      'Content-Type': 'text/event-stream',
+      'Cache-Control': 'no-cache',
+      'Connection': 'keep-alive',
+    },
   });
-});
-
-// Get workflow status
-app.get('/workflows/:instanceId', async (c) => {
-  const instanceId = c.req.param('instanceId');
-  
-  const instance = await c.env.APPROVAL_WORKFLOW.get(instanceId);
-  const status = await instance.status();
-
-  return c.json({
-    instanceId,
-    status,
-  });
-});
-
-// Send approval event to workflow
-app.post('/workflows/:instanceId/approve', async (c) => {
-  const instanceId = c.req.param('instanceId');
-  const body = await c.req.json<{
-    approved: boolean;
-    approvedBy: string;
-    comments?: string;
-    modifiedAction?: Record<string, unknown>;
-  }>();
-
-  const instance = await c.env.APPROVAL_WORKFLOW.get(instanceId);
-  
-  await instance.sendEvent({
-    type: 'recommendation-approval',
-    payload: body,
-  });
-
-  return c.json({
-    success: true,
-    instanceId,
-    action: body.approved ? 'approved' : 'rejected',
-  });
-});
-
-// List pending recommendations for a user
-app.get('/recommendations/pending', async (c) => {
-  const tenantId = c.req.query('tenantId');
-  const userId = c.req.query('userId');
-
-  // v3.6: Query Supabase (SINGLE SOURCE OF TRUTH)
-  const recommendations = await supabaseQuery(
-    c.env.SUPABASE_URL,
-    c.env.SUPABASE_SERVICE_KEY,
-    'workflow_recommendations',
-    `tenant_id=eq.${tenantId}&user_id=in.(${userId},null)&status=eq.pending&order=created_at.desc&limit=50`
-  );
-
-  return c.json({
-    recommendations: recommendations || [],
-    count: recommendations?.length || 0,
-  });
-});
-
-// Get recommendation history
-app.get('/recommendations/history', async (c) => {
-  const tenantId = c.req.query('tenantId');
-  const status = c.req.query('status'); // approved, rejected, auto-approved
-
-  // v3.6: Query Supabase (SINGLE SOURCE OF TRUTH)
-  let queryStr = `tenant_id=eq.${tenantId}&order=created_at.desc&limit=100`;
-
-  if (status) {
-    queryStr += `&status=eq.${status}`;
-  }
-
-  const recommendations = await supabaseQuery(
-    c.env.SUPABASE_URL,
-    c.env.SUPABASE_SERVICE_KEY,
-    'workflow_recommendations',
-    queryStr
-  );
-
-  return c.json({
-    recommendations: recommendations || [],
-    count: recommendations?.length || 0,
-  });
-});
-
-export default app;
+}

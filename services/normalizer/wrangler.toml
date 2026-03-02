@@ -3,102 +3,43 @@ main = "src/index.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
-# Doppler config: {env}_normalizer  (e.g. prd_normalizer)
+# Consumes pipeline messages
+[[queues.consumers]]
+queue = "pipeline-process"
+max_batch_size = 10
+max_batch_timeout = 30
 
-[dev]
-port = 8005
-local_protocol = "http"
+# Consumes accelerator triggers (recalculation)
+[[queues.consumers]]
+queue = "accelerator-trigger"
+max_batch_size = 10
+max_batch_timeout = 30
 
-# =============================================================================
-# Service Bindings (Worker-to-Worker, zero-latency)
-# Pipeline: NORMALIZER normalizes data, stores via PIPELINE (Spine) + KNOWLEDGE
-# =============================================================================
+# Produces to multiple queues
+[[queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[queues.producers]]
+queue = "knowledge-ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+[[queues.producers]]
+queue = "accelerator-trigger"
+binding = "ACCELERATOR_QUEUE"
+
+[[queues.producers]]
+queue = "intelligence-events"
+binding = "INTELLIGENCE_QUEUE"
+
+[[queues.producers]]
+queue = "ops-dlq"
+binding = "DLQ_QUEUE"
+
+# Service binding — ONLY service allowed to call Spine writes
 [[services]]
-binding = "PIPELINE"
+binding = "SPINE"
 service = "integratewise-spine-v2"
 
-[[services]]
-binding = "KNOWLEDGE"
-service = "integratewise-knowledge"
-
-# =============================================================================
-# R2 Storage (file processing)
-# =============================================================================
-[[r2_buckets]]
-binding = "FILES"
-bucket_name = "integratewise-files-prod"
-
-# =============================================================================
-# D1 Database
-# =============================================================================
-[[d1_databases]]
-binding = "DB"
-database_name = "integratewise-spine-prod"
-database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
-
-# =============================================================================
-# Queue Consumer (v3.6 Section 19.7 — receives from loader/connector)
-# Handles all 8-stage pipeline processing
-# =============================================================================
-[[queues.consumers]]
-queue = "integratewise-pipeline-process"
-max_batch_size = 25
-max_batch_timeout = 10
-
-# =============================================================================
-# Queue Producers (v3.6 Section 19.7)
-# =============================================================================
-[[queues.producers]]
-binding = "KNOWLEDGE_QUEUE"
-queue = "integratewise-knowledge-ingest"
-
-[[queues.producers]]
-binding = "ACCELERATOR_QUEUE"
-queue = "integratewise-accelerator-trigger"
-
-[[queues.producers]]
-binding = "INTELLIGENCE_QUEUE"
-queue = "integratewise-intelligence-events"
-
-[[queues.producers]]
-binding = "DLQ"
-queue = "integratewise-ops-dlq"
-
-# =============================================================================
-# Environment Variables
-# =============================================================================
-[vars]
-ENVIRONMENT = "development"
-
-# =============================================================================
-# Observability & Monitoring
-# =============================================================================
-[observability]
-enabled = true
-
-[observability.logs]
-enabled = true
-head_sampling_rate = 1
-
-# =============================================================================
-# Staging Environment
-# =============================================================================
 [env.staging]
 name = "integratewise-normalizer-staging"
-routes = [
-  { pattern = "normalizer-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-[env.staging.vars]
-ENVIRONMENT = "staging"
-
-# =============================================================================
-# Production Environment
-# =============================================================================
-[env.production]
-name = "integratewise-normalizer"
-routes = [
-  { pattern = "normalizer.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-[env.production.vars]
-ENVIRONMENT = "production"

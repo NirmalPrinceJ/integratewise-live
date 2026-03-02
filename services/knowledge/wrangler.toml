@@ -3,48 +3,20 @@ main = "src/index.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
-# Doppler config: {env}_knowledge  (e.g. prd_knowledge)
-
-# =============================================================================
-# Queue Consumer (v3.6 Section 19.7 — document chunks, embeddings, summaries)
-# =============================================================================
+# Consumes knowledge ingestion
 [[queues.consumers]]
-queue = "integratewise-knowledge-ingest"
-max_batch_size = 50
-max_batch_timeout = 15
+queue = "knowledge-ingest"
+max_batch_size = 10
+max_batch_timeout = 30
 
-[env.production]
-name = "integratewise-knowledge"
-routes = [
-  { pattern = "knowledge.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-
-[vars]
-ENVIRONMENT = "production"
+# R2 for file storage
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-prod"
 
 [env.staging]
 name = "integratewise-knowledge-staging"
-routes = [
-  { pattern = "knowledge-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-vars = { ENVIRONMENT = "staging" }
 
-# ============================================================================
-# Observability & Monitoring
-# ============================================================================
-[observability]
-enabled = true
-
-[observability.logs]
-enabled = true
-head_sampling_rate = 1
-
-
-# ============================================================================
-# Alerting (configured in Cloudflare Dashboard)
-# - High error rate (>5% 5xx responses)
-# - High latency (>2s p95 response time)
-# - High CPU usage (>80% sustained)
-# - Function cold starts (>100/minute)
-# ============================================================================
+[[env.staging.r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-staging"

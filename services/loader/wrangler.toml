@@ -3,96 +3,25 @@ main = "src/index.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
-# Doppler config: {env}_loader  (e.g. prd_loader)
-
-[dev]
-port = 8006
-local_protocol = "http"
-
-# =============================================================================
-# Service Bindings (Worker-to-Worker, zero-latency)
-# Pipeline: LOADER ingests → NORMALIZER normalizes → STORE persists
-# =============================================================================
-[[services]]
-binding = "NORMALIZER"
-service = "integratewise-normalizer"
-
-[[services]]
-binding = "STORE"
-service = "integratewise-store"
-
-[[services]]
-binding = "KNOWLEDGE"
-service = "integratewise-knowledge"
-
-# =============================================================================
-# Durable Objects (MCP Session Management)
-# =============================================================================
-[[durable_objects.bindings]]
-name = "MCP_SESSION"
-class_name = "McpSessionDO"
-
-[[migrations]]
-tag = "v1"
-new_classes = ["McpSessionDO"]
-
-# =============================================================================
-# D1 Database
-# =============================================================================
-[[d1_databases]]
-binding = "DB"
-database_name = "integratewise-spine-prod"
-database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
-
-# =============================================================================
-# R2 Storage (raw file intake)
-# =============================================================================
-[[r2_buckets]]
-binding = "FILES"
-bucket_name = "integratewise-files-prod"
-
-# =============================================================================
-# Queue Producer (v3.6 Section 19.7 — 8-stage pipeline processing)
-# =============================================================================
+# Produces to pipeline queue
 [[queues.producers]]
+queue = "pipeline-process"
 binding = "PIPELINE_QUEUE"
-queue = "integratewise-pipeline-process"
 
-# =============================================================================
-# Environment Variables
-# =============================================================================
-[vars]
-ENVIRONMENT = "development"
+# KV for idempotency checks
+[[kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "placeholder-mcp-idempotency"
 
-# =============================================================================
-# Observability & Monitoring
-# =============================================================================
-[observability]
-enabled = true
+# D1 for connector cursors + dedup
+[[d1_databases]]
+binding = "EDGE_DB"
+database_name = "integratewise-spine-cache"
+database_id = "placeholder-d1-id"
 
-[observability.logs]
-enabled = true
-head_sampling_rate = 1
+# Cron trigger for polling connectors
+[triggers]
+crons = ["*/5 * * * *"]
 
-# =============================================================================
-# Staging Environment
-# =============================================================================
 [env.staging]
 name = "integratewise-loader-staging"
-routes = [
-  { pattern = "loader-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-[env.staging.vars]
-ENVIRONMENT = "staging"
-
-# =============================================================================
-# Production Environment
-# =============================================================================
-[env.production]
-name = "integratewise-loader"
-routes = [
-  { pattern = "loader.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-[env.production.vars]
-ENVIRONMENT = "production"

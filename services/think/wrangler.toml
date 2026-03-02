@@ -3,96 +3,24 @@ main = "src/index.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
-# Doppler config: {env}_think  (e.g. prd_think)
-#
-# Required secrets (v3.6: Truth Database from Supabase):
-#   SUPABASE_URL           - Supabase project URL (primary truth database)
-#   SUPABASE_SERVICE_KEY   - Supabase service-role key (for server-side RLS bypass)
-#
-# Optional secrets:
-#   OPENAI_API_KEY        - OpenAI API key (for reasoning)
-#   SENTRY_DSN            - Sentry error tracking
-#
-# Database:
-#   DB (D1)               - Edge cache only — idempotency keys, sync cursors, cached projections
+# Consumes intelligence events from pipeline
+[[queues.consumers]]
+queue = "intelligence-events"
+max_batch_size = 10
+max_batch_timeout = 30
 
-[dev]
-port = 8003
-local_protocol = "http"
-
-# =============================================================================
-# Service Bindings (Worker-to-Worker, zero-latency)
-# Engine Loop: THINK → GOVERN (approval gate) → ACT (execution)
-# =============================================================================
+# Cross-bindings to intelligence peers
 [[services]]
-binding = "KNOWLEDGE"
-service = "integratewise-knowledge"
+binding = "ACT"
+service = "integratewise-act"
 
 [[services]]
 binding = "GOVERN"
 service = "integratewise-govern"
 
 [[services]]
-binding = "ACT"
-service = "integratewise-act"
+binding = "AGENTS"
+service = "integratewise-agents"
 
-# =============================================================================
-# D1 Database
-# =============================================================================
-[[d1_databases]]
-binding = "DB"
-database_name = "integratewise-spine-prod"
-database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
-
-# =============================================================================
-# Queue Consumers (v3.6 Section 19.7)
-# Think mode receives data change events and approved actions
-# =============================================================================
-[[queues.consumers]]
-queue = "integratewise-intelligence-events"
-max_batch_size = 20
-max_batch_timeout = 5
-
-[[queues.consumers]]
-queue = "integratewise-intelligence-act"
-max_batch_size = 10
-max_batch_timeout = 5
-
-# =============================================================================
-# Environment Variables
-# =============================================================================
-[vars]
-ENVIRONMENT = "development"
-
-# =============================================================================
-# Observability & Monitoring
-# =============================================================================
-[observability]
-enabled = true
-
-[observability.logs]
-enabled = true
-head_sampling_rate = 1
-
-# =============================================================================
-# Staging Environment
-# =============================================================================
 [env.staging]
 name = "integratewise-think-staging"
-routes = [
-  { pattern = "think-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-[env.staging.vars]
-ENVIRONMENT = "staging"
-
-# =============================================================================
-# Production Environment
-# =============================================================================
-[env.production]
-name = "integratewise-think"
-routes = [
-  { pattern = "think.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-[env.production.vars]
-ENVIRONMENT = "production"

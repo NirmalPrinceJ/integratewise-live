@@ -1,260 +1,215 @@
-import { Hono } from 'hono'
-import { runAiSessionSync } from './jobs/ai-session-sync'
-import { processIncoming, processBatch, type PipelineResult } from './pipeline'
-import { telemetryMiddleware } from './handlers/telemetry'
-import { telemetryMetricsHandler, telemetryHealthHandler } from './handlers/telemetry'
-import { httpConnectivityHandler, dnsResolutionHandler, serviceConnectivityHandler, networkDiagnosticsHandler, nettoolsInfoHandler } from './handlers/nettools'
-import { McpSessionDO } from './durable-objects/mcp-session'
-
-type Bindings = {
-    FIREBASE_PROJECT_ID: string;
-    DB: D1Database; // Day 2: D1 Database
-    ENVIRONMENT: string;
-    NORMALIZER_URL: string;
-    STORE_URL: string;
-    FILES: R2Bucket;
-    PIPELINE_QUEUE: Queue; // v3.6 Section 19.7 — 8-stage pipeline processing
-    KNOWLEDGE?: Fetcher; // Service binding to integratewise-knowledge for embeddings
-    COGNITIVE_EVENTS_URL: string;
-    DISCORD_PUBLIC_KEY?: string; // Discord webhook public key for Ed25519 signature verification
-    MCP_SESSION: DurableObjectNamespace; // Durable Object for MCP session management
+export interface Env {
+  PIPELINE_QUEUE: Queue;
+  MCP_IDEMPOTENCY: KVNamespace;
+  EDGE_DB: D1Database;
+  SUPABASE_URL: string;
+  SUPABASE_SERVICE_ROLE_KEY: string;
 }
 
-type Variables = {
-    requestId: string;
-    tenantId: string;
+export default {
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const url = new URL(request.url);
+    const tenantId = request.headers.get('x-tenant-id') || '';
+
+    // Health check
+    if (url.pathname === '/health') {
+      return new Response(JSON.stringify({ status: 'ok', service: 'loader' }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    // Inbound webhook from external tools
+    if (url.pathname.startsWith('/webhooks/') && request.method === 'POST') {
+      const tool = url.pathname.split('/webhooks/')[1]?.split('/')[0]; // e.g., hubspot, stripe
+      return handleWebhook(request, env, tool, tenantId);
+    }
+
+    // Manual data ingestion (CSV/JSON upload trigger)
+    if (url.pathname === '/api/v1/connector/ingest' && request.method === 'POST') {
+      const body = await request.json() as { source: string; data: any[] };
+      return handleManualIngestion(body, env, tenantId);
+    }
+
+    // List connected tools
+    if (url.pathname === '/api/v1/connector/list' && request.method === 'GET') {
+      return listConnectors(env, tenantId);
+    }
+
+    // OAuth initiation
+    if (url.pathname.startsWith('/api/v1/connector/oauth/init/') && request.method === 'POST') {
+      const tool = url.pathname.split('/').pop()!;
+      return initiateOAuth(tool, env, tenantId);
+    }
+
+    // OAuth callback
+    if (url.pathname === '/api/v1/connector/oauth/callback') {
+      return handleOAuthCallback(request, env);
+    }
+
+    return new Response('Connector service', { status: 200 });
+  },
+
+  // Cron trigger for polling connectors
+  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+    // Fetch all active connectors that use polling
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
+    
+    const { data: connectors } = await supabase
+      .from('connectors')
+      .select('*')
+      .eq('status', 'active')
+      .in('auth_type', ['oauth2', 'api_key']);
+
+    if (!connectors) return;
+
+    for (const connector of connectors) {
+      try {
+        // TODO: Implement per-tool polling logic
+        // For each connector, fetch new data since last_sync_at
+        // Send each record to pipeline queue
+        console.log(`Polling ${connector.tool_name} for tenant ${connector.tenant_id}`);
+      } catch (error) {
+        console.error(`Polling failed for ${connector.tool_name}:`, error);
+      }
+    }
+  }
+};
+
+async function handleWebhook(request: Request, env: Env, tool: string, tenantId: string): Promise<Response> {
+  const body = await request.json();
+  const traceId = crypto.randomUUID();
+
+  // Idempotency check
+  const idempotencyKey = `${tool}:${JSON.stringify(body).slice(0, 100)}`;
+  const existing = await env.MCP_IDEMPOTENCY.get(idempotencyKey);
+  if (existing) {
+    return new Response(JSON.stringify({ status: 'duplicate' }), { status: 200 });
+  }
+  await env.MCP_IDEMPOTENCY.put(idempotencyKey, 'processed', { expirationTtl: 86400 });
+
+  // TODO: Signature verification per tool
+  // if (tool === 'hubspot') verifyHubSpotSignature(request, body);
+
+  // Resolve tenant from webhook (tool-specific mapping)
+  // For now, use the tenantId from gateway header or webhook config
+  const resolvedTenant = tenantId || body.portalId || 'default';
+
+  // Send to pipeline
+  const records = Array.isArray(body) ? body : [body];
+  for (const record of records) {
+    await env.PIPELINE_QUEUE.send({
+      stage: 'analyze',
+      tenant_id: resolvedTenant,
+      source: tool,
+      source_type: 'webhook',
+      payload: record,
+      metadata: {
+        trace_id: traceId,
+        attempt: 0,
+        received_at: new Date().toISOString(),
+      },
+    });
+  }
+
+  return new Response(JSON.stringify({ 
+    status: 'accepted', 
+    trace_id: traceId,
+    records: records.length 
+  }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
 }
 
-const app = new Hono<{ Bindings: Bindings, Variables: Variables }>()
-
-// Add telemetry middleware for observability
-app.use('*', telemetryMiddleware())
-
-app.get('/', (c) => c.json({ service: 'loader', status: 'operational' }))
-
-// ✅ Add health check route
-app.get('/health', async (c) => {
-    return c.json({
-        service: 'IntegrateWise Loader',
-        status: 'healthy',
-        environment: c.env?.ENVIRONMENT ?? 'unknown',
-        ts: new Date().toISOString(),
+async function handleManualIngestion(
+  body: { source: string; data: any[] }, 
+  env: Env, 
+  tenantId: string
+): Promise<Response> {
+  const traceId = crypto.randomUUID();
+  
+  for (const record of body.data) {
+    await env.PIPELINE_QUEUE.send({
+      stage: 'analyze',
+      tenant_id: tenantId,
+      source: body.source || 'manual',
+      source_type: 'manual',
+      payload: record,
+      metadata: {
+        trace_id: traceId,
+        attempt: 0,
+        received_at: new Date().toISOString(),
+      },
     });
-});
+  }
 
-app.post('/jobs/sync-ai-sessions', async (c) => {
-    // Basic auth check for internal job trigger
-    const auth = c.req.header('Authorization');
-    if (auth !== `Bearer ${c.env.ENVIRONMENT === 'production' ? 'prod-secret' : 'dev-secret'}`) {
-        return c.json({ error: 'Unauthorized' }, 401);
-    }
+  return new Response(JSON.stringify({ 
+    status: 'accepted',
+    trace_id: traceId,
+    records: body.data.length
+  }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
 
-    try {
-        await runAiSessionSync(c.env, {
-            info: (msg: string, data?: any) => console.log(msg, data),
-            error: (msg: string, data?: any) => console.error(msg, data)
-        });
-        return c.json({ status: 'completed' });
-    } catch (error: any) {
-        return c.json({ status: 'failed', error: error.message }, 500);
-    }
-})
+async function listConnectors(env: Env, tenantId: string): Promise<Response> {
+  const { createClient } = await import('@supabase/supabase-js');
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
+  
+  const { data, error } = await supabase
+    .from('connectors')
+    .select('*')
+    .eq('tenant_id', tenantId);
 
-app.post('/jobs', async (c) => {
-    // Logic to load data from external sources (ETL)
-    return c.json({ status: 'job_started', details: 'Loading data...' })
-})
+  return new Response(JSON.stringify({ connectors: data || [] }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
 
-// Pipeline endpoints for direct normalization
-app.post('/v1/pipeline/process', async (c) => {
-    const body = await c.req.json() as {
-        entity_type: string;
-        data: any;
-        tenant_id: string;
-        source_system: string;
-        category?: string;
-        user_id?: string;
-        account_id?: string;
-        team_id?: string;
-        user_role?: string;
-    };
+async function initiateOAuth(tool: string, env: Env, tenantId: string): Promise<Response> {
+  // TODO: Generate OAuth URL per tool with state parameter
+  // State encodes: tenant_id + tool + timestamp
+  const state = btoa(JSON.stringify({ tenant_id: tenantId, tool, ts: Date.now() }));
+  
+  const oauthUrls: Record<string, string> = {
+    hubspot: `https://app.hubspot.com/oauth/authorize?client_id=CLIENT_ID&redirect_uri=CALLBACK&scope=contacts%20deals&state=${state}`,
+    // Add more tools as needed
+  };
 
-    if (!body.entity_type || !body.data || !body.tenant_id || !body.source_system) {
-        return c.json({
-            error: 'Missing required fields: entity_type, data, tenant_id, source_system'
-        }, 400);
-    }
+  const url = oauthUrls[tool];
+  if (!url) {
+    return new Response(JSON.stringify({ error: `Unknown tool: ${tool}` }), { status: 400 });
+  }
 
-    const correlationId = c.get('requestId') || crypto.randomUUID();
+  return new Response(JSON.stringify({ oauth_url: url }), {
+    headers: { 'Content-Type': 'application/json' }
+  });
+}
 
-    const result = await processIncoming(
-        body.entity_type,
-        body.data,
-        body.tenant_id,
-        body.source_system,
-        {
-            env: {
-                NORMALIZER_URL: c.env.NORMALIZER_URL,
-                STORE_URL: c.env.STORE_URL,
-                COGNITIVE_EVENTS_URL: c.env.COGNITIVE_EVENTS_URL,
-            },
-            requestId: correlationId,
-            tenant_id: body.tenant_id,
-            category: body.category,
-            user_id: body.user_id,
-            account_id: body.account_id,
-            team_id: body.team_id,
-            user_role: body.user_role,
-            log: {
-                info: (msg: string, data?: any) => console.log(msg, data),
-                warn: (msg: string, data?: any) => console.warn(msg, data),
-                error: (msg: string, data?: any) => console.error(msg, data),
-            },
-        }
-    );
+async function handleOAuthCallback(request: Request, env: Env): Promise<Response> {
+  const url = new URL(request.url);
+  const code = url.searchParams.get('code');
+  const state = url.searchParams.get('state');
+  
+  if (!code || !state) {
+    return new Response('Missing code or state', { status: 400 });
+  }
 
-    // Send to PIPELINE_QUEUE for async 8-stage pipeline processing
-    if (result.success) {
-        try {
-            await c.env.PIPELINE_QUEUE.send({
-                entity_type: body.entity_type,
-                data: body.data,
-                tenant_id: body.tenant_id,
-                source_system: body.source_system,
-                category: body.category,
-                user_id: body.user_id,
-                account_id: body.account_id,
-                team_id: body.team_id,
-                user_role: body.user_role,
-                correlation_id: correlationId,
-            });
-            console.log(`[Loader] Enqueued to PIPELINE_QUEUE: ${body.entity_type} for tenant ${body.tenant_id}`);
-        } catch (queue_err: any) {
-            console.error(`[Loader] Failed to enqueue to PIPELINE_QUEUE: ${queue_err.message}`);
-            // Non-blocking — HTTP response already sent successfully
-        }
-    }
+  const { tenant_id, tool } = JSON.parse(atob(state));
 
-    return c.json(result, result.success ? 200 : 422);
-})
+  // TODO: Exchange code for token per tool
+  // Store connector record in Supabase
+  const { createClient } = await import('@supabase/supabase-js');
+  const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
 
-app.post('/v1/pipeline/batch', async (c) => {
-    const body = await c.req.json() as {
-        items: Array<{
-            entity_type: string;
-            data: any;
-            event_type?: string;
-            category?: string;
-            user_id?: string;
-            account_id?: string;
-            team_id?: string;
-            user_role?: string;
-        }>;
-        tenant_id: string;
-        source_system: string;
-        category?: string;
-        user_id?: string;
-        account_id?: string;
-        team_id?: string;
-        user_role?: string;
-    };
+  await supabase.from('connectors').insert({
+    tenant_id,
+    tool_name: tool,
+    auth_type: 'oauth2',
+    status: 'active',
+    config: { connected_at: new Date().toISOString() },
+  });
 
-    if (!body.items || !body.tenant_id || !body.source_system) {
-        return c.json({
-            error: 'Missing required fields: items, tenant_id, source_system'
-        }, 400);
-    }
-
-    const correlationId = c.get('requestId') || crypto.randomUUID();
-
-    const results = await processBatch(
-        body.items,
-        body.tenant_id,
-        body.source_system,
-        {
-            env: {
-                NORMALIZER_URL: c.env.NORMALIZER_URL,
-                STORE_URL: c.env.STORE_URL,
-                COGNITIVE_EVENTS_URL: c.env.COGNITIVE_EVENTS_URL,
-            },
-            requestId: correlationId,
-            tenant_id: body.tenant_id,
-            category: body.category,
-            user_id: body.user_id,
-            account_id: body.account_id,
-            team_id: body.team_id,
-            user_role: body.user_role,
-            log: {
-                info: (msg: string, data?: any) => console.log(msg, data),
-                warn: (msg: string, data?: any) => console.warn(msg, data),
-                error: (msg: string, data?: any) => console.error(msg, data),
-            },
-        }
-    );
-
-    // Send successful items to PIPELINE_QUEUE for async 8-stage pipeline processing
-    const successCount = results.filter(r => r.success).length;
-    if (successCount > 0) {
-        try {
-            for (let i = 0; i < body.items.length; i++) {
-                if (results[i].success) {
-                    await c.env.PIPELINE_QUEUE.send({
-                        entity_type: body.items[i].entity_type,
-                        data: body.items[i].data,
-                        tenant_id: body.tenant_id,
-                        source_system: body.source_system,
-                        category: body.items[i].category || body.category,
-                        user_id: body.items[i].user_id || body.user_id,
-                        account_id: body.items[i].account_id || body.account_id,
-                        team_id: body.items[i].team_id || body.team_id,
-                        user_role: body.items[i].user_role || body.user_role,
-                        correlation_id: correlationId,
-                    });
-                }
-            }
-            console.log(`[Loader] Enqueued ${successCount} items to PIPELINE_QUEUE for tenant ${body.tenant_id}`);
-        } catch (queue_err: any) {
-            console.error(`[Loader] Failed to enqueue batch to PIPELINE_QUEUE: ${queue_err.message}`);
-            // Non-blocking — HTTP response already sent successfully
-        }
-    }
-
-    return c.json({
-        results,
-        summary: {
-            total: results.length,
-            success: successCount,
-            failed: results.length - successCount,
-        }
-    });
-})
-
-// ============================================================================
-// TELEMETRY & OBSERVABILITY ENDPOINTS
-// ============================================================================
-
-app.get('/telemetry/metrics', telemetryMetricsHandler)
-app.get('/telemetry/health', telemetryHealthHandler)
-
-// ============================================================================
-// NETWORK TOOLS & DIAGNOSTICS ENDPOINTS
-// ============================================================================
-
-app.get('/nettools', nettoolsInfoHandler)
-app.get('/nettools/http-connectivity', httpConnectivityHandler)
-app.get('/nettools/dns-resolution', dnsResolutionHandler)
-app.get('/nettools/service-connectivity', serviceConnectivityHandler)
-app.get('/nettools/diagnostics', networkDiagnosticsHandler)
-
-// ============================================================================
-// Queue Producer (v3.6 Section 19.7)
-// The loader enqueues items to PIPELINE_QUEUE in HTTP endpoints above
-// This export ensures proper Cloudflare Workers queue producer binding
-// ============================================================================
-// No separate queue consumer — Loader is producer-only
-// Normalizer service consumes from PIPELINE_QUEUE
-
-export default app
-
-// Export Durable Object class
-export { McpSessionDO }
+  // Redirect back to app
+  return Response.redirect('https://app.integratewise.ai/settings/connectors?connected=' + tool);
+}

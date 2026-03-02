@@ -3,59 +3,27 @@ main = "src/index.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
-# Doppler config: {env}_workflow  (e.g. prd_workflow)
+# HITL approvals → act queue
+[[queues.producers]]
+queue = "intelligence-act"
+binding = "ACT_QUEUE"
 
-[dev]
-port = 8020
-local_protocol = "http"
+# Service bindings for view aggregation
+[[services]]
+binding = "SPINE"
+service = "integratewise-spine-v2"
 
-[env.production]
-name = "integratewise-workflow"
-routes = [
-  { pattern = "workflow.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
 
-[vars]
-ENVIRONMENT = "production"
-ACT_URL = "https://act.integratewise.ai"
-GOVERN_URL = "https://govern.integratewise.ai"
+[[services]]
+binding = "THINK"
+service = "integratewise-think"
 
-[[workflows]]
-name = "approval-workflow"
-binding = "APPROVAL_WORKFLOW"
-class_name = "ApprovalWorkflow"
-
-# =============================================================================
-# D1 Database (Edge cache only - v3.6)
-# =============================================================================
-# v3.6: D1 is edge cache only. Supabase PostgreSQL is SINGLE SOURCE OF TRUTH
-[[d1_databases]]
-binding = "DB"
-database_name = "integratewise-spine-prod"
-database_id = "08d9f306-0f89-435a-8141-45097e3a0769"
-
-# =============================================================================
-# Supabase Bindings (v3.6 - SINGLE SOURCE OF TRUTH)
-# =============================================================================
-# Doppler secrets: SUPABASE_URL, SUPABASE_SERVICE_KEY (synced via scripts/sync-doppler-to-workers.sh)
+# Durable Objects for real-time streaming
+# [durable_objects]
+# bindings = [{ name = "STREAM", class_name = "StreamSession" }]
 
 [env.staging]
 name = "integratewise-workflow-staging"
-routes = [
-  { pattern = "workflow-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-vars = { ENVIRONMENT = "staging", ACT_URL = "https://act-staging.integratewise.ai", GOVERN_URL = "https://govern-staging.integratewise.ai" }
-
-[env.development]
-vars = { ENVIRONMENT = "development", ACT_URL = "http://localhost:8002", GOVERN_URL = "http://localhost:8004" }
-
-# ============================================================================
-# Observability & Monitoring
-# ============================================================================
-[observability]
-enabled = true
-
-[observability.logs]
-enabled = true
-head_sampling_rate = 1

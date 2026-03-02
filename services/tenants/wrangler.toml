@@ -3,28 +3,5 @@ main = "src/index.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# ─── Secrets (managed by Doppler → synced via scripts/sync-doppler-to-workers.sh) ───
-# Doppler config: {env}_tenants  (e.g. prd_tenants)
-
-[env.production]
-name = "integratewise-tenants"
-routes = [
-  { pattern = "tenants.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-
-[vars]
-ENVIRONMENT = "production"
-
 [env.staging]
 name = "integratewise-tenants-staging"
-routes = [
-  { pattern = "tenants-staging.integratewise.ai/*", zone_name = "integratewise.ai" }
-]
-vars = { ENVIRONMENT = "staging" }
-
-[observability]
-enabled = true
-
-[observability.logs]
-enabled = true
-head_sampling_rate = 1

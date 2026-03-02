@@ -17,26 +17,21 @@ on:
         type: choice
         options:
           - all
-          - gateway
-          - act
-          - think
-          - govern
+          - spine-v2
           - normalizer
           - loader
           - store
-          - iq-hub
-          - knowledge
-          - spine-v2
-          - cognitive-brain
-          - admin
-          - tenants
-          - workflow
-          - agents
-          - billing
-          - views
-          - stream-gateway
-          - memory-consolidator
           - mcp-connector
+          - govern
+          - act
+          - agents
+          - think
+          - knowledge
+          - workflow
+          - admin
+          - billing
+          - tenants
+          - gateway
       environment:
         description: 'Deploy environment'
         required: true
@@ -84,27 +79,31 @@ jobs:
           DEPLOY_ENV: ${{ inputs.environment || 'production' }}
           TARGET_SERVICE: ${{ inputs.service || 'all' }}
         run: |
+          # Deploy order matters — downstream services first, gateway LAST
+          # Layer 1: Data stores
+          # Layer 2: Pipeline
+          # Layer 3: Connectors
+          # Layer 4: Intelligence
+          # Layer 5: Knowledge
+          # Layer 6: BFF
+          # Layer 7: Admin
+          # Layer 8: Gateway (LAST — needs all service bindings ready)
           SERVICES=(
-            gateway
-            act
-            think
-            govern
+            spine-v2
             normalizer
             loader
             store
-            iq-hub
-            knowledge
-            spine-v2
-            cognitive-brain
-            admin
-            tenants
-            workflow
-            agents
-            billing
-            views
-            stream-gateway
-            memory-consolidator
             mcp-connector
+            govern
+            act
+            agents
+            think
+            knowledge
+            workflow
+            admin
+            billing
+            tenants
+            gateway
           )
 
           DEPLOYED=0
@@ -120,7 +119,7 @@ jobs:
             fi
 
             echo "🚀 Deploying $svc (env: $DEPLOY_ENV)..."
-            if npx wrangler deploy -c "$toml" --env "$DEPLOY_ENV" 2>&1; then
+            if npx wrangler deploy -c "$toml" 2>&1; then
               echo "✅ $svc deployed"
               return 0
             else
@@ -157,7 +156,7 @@ jobs:
       - name: Deployment Summary
         run: |
           echo "## Workers Deployment" >> $GITHUB_STEP_SUMMARY
-          echo "- **Service:** ${{ inputs.service || 'all (20 services)' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Service:** ${{ inputs.service || 'all (15 services)' }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Environment:** ${{ inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
 

@@ -1,233 +1,250 @@
-/**
- * IntegrateWise Normalizer Service (D1 Aligned)
- */
-
-import { Hono } from 'hono';
-import { cors } from 'hono/cors';
-import { logger } from 'hono/logger';
-
-import { normalize, normalizeBatch, validate } from './normalize';
-import { getAllSchemaInfos, getSchemaInfo, schemas } from './schemas';
-import { runNormalizerAccelerator, type NormalizerContext } from './normalizer-accelerator';
-import { checkIdempotency, generateKeyFromData, registerIdempotencyKey } from './idempotency';
-import type { Env, EntityType, NormalizeRequest, BatchNormalizeRequest, ValidateRequest } from './types';
-
-// ============================================================================
-// Extended Env type to include Queue bindings
-// ============================================================================
-type NormalizerEnv = Env & {
+export interface Env {
+  PIPELINE_QUEUE: Queue;
   KNOWLEDGE_QUEUE: Queue;
   ACCELERATOR_QUEUE: Queue;
   INTELLIGENCE_QUEUE: Queue;
-  DLQ: Queue;
-};
+  DLQ_QUEUE: Queue;
+  SPINE: Fetcher;
+  SUPABASE_URL: string;
+  SUPABASE_SERVICE_ROLE_KEY: string;
+}
 
-const app = new Hono<{ Bindings: NormalizerEnv }>();
+type Stage = 'analyze' | 'classify' | 'filter' | 'refine' | 'extract' | 'validate' | 'sanity' | 'sectorize';
 
-app.use('*', cors());
-app.use('*', logger());
+const STAGES: Stage[] = ['analyze', 'classify', 'filter', 'refine', 'extract', 'validate', 'sanity', 'sectorize'];
 
-app.get('/', (c) => c.json({ service: 'Normalizer Service', status: 'operational', database: 'D1' }));
+interface PipelineMessage {
+  stage: Stage;
+  tenant_id: string;
+  source: string;
+  source_type: string;
+  payload: Record<string, any>;
+  metadata: { trace_id: string; attempt: number; received_at: string; };
+}
 
-app.get('/health', (c) => c.json({ status: 'healthy', service: 'normalizer', timestamp: new Date().toISOString() }));
-
-/**
- * POST /normalize - Normalize a single entity
- */
-app.post('/normalize', async (c) => {
-  const correlationId = c.req.header('x-correlation-id') || crypto.randomUUID();
-
-  try {
-    const body = await c.req.json<NormalizeRequest>();
-    const tenantId = body.tenant_id || (body.raw_data?.tenant_id as string);
-
-    if (!tenantId) {
-      return c.json({ success: false, error: 'Missing tenant_id', correlation_id: correlationId }, 400);
-    }
-
-    // 1. Idempotency Check
-    const idempotencyKey = generateKeyFromData(body.entity_type, tenantId, body.raw_data);
-    const idempCheck = await checkIdempotency(idempotencyKey, tenantId, body.entity_type, c.env.DB);
-
-    if (idempCheck.isDuplicate) {
-      return c.json({
-        success: true,
-        is_duplicate: true,
-        entity_id: idempCheck.existingEntityId,
-        correlation_id: correlationId
+export default {
+  // HTTP handler for status/monitoring
+  async fetch(request: Request, env: Env): Promise<Response> {
+    const url = new URL(request.url);
+    
+    if (url.pathname === '/health') {
+      return new Response(JSON.stringify({ status: 'ok', service: 'normalizer' }), {
+        headers: { 'Content-Type': 'application/json' }
       });
     }
 
-    // 2. Normalize with Context
-    const context: Partial<NormalizerContext> = {
-      tenant_id: tenantId,
-      category: body.category,
-      user_id: body.user_id,
-      account_id: body.account_id,
-      team_id: body.team_id,
-      user_role: body.user_role
-    };
-
-    const result = await normalize(body.entity_type, body.raw_data, c.env.DB, c.env, context);
-
-    if (result.success && result.normalized_data) {
-      // 3. Register Idempotency
-      const entityId = (result.normalized_data.id as string) || idempotencyKey;
-      await registerIdempotencyKey(idempotencyKey, tenantId, body.entity_type, entityId, c.env.DB);
+    if (url.pathname === '/api/v1/pipeline/status') {
+      return new Response(JSON.stringify({ status: 'operational', stages: STAGES }), {
+        headers: { 'Content-Type': 'application/json' }
+      });
     }
 
-    return c.json({ ...result, correlation_id: correlationId }, result.success ? 200 : 422);
+    return new Response('Pipeline service', { status: 200 });
+  },
 
-  } catch (error: any) {
-    return c.json({ success: false, error: error.message, correlation_id: correlationId }, 500);
-  }
-});
-
-/**
- * POST /normalize/batch
- */
-app.post('/normalize/batch', async (c) => {
-  const body = await c.req.json<BatchNormalizeRequest>();
-  const tenantId = body.tenant_id;
-
-  const context: Partial<NormalizerContext> = {
-    tenant_id: tenantId,
-    category: body.category,
-    user_id: body.user_id,
-    account_id: body.account_id,
-    team_id: body.team_id,
-    user_role: body.user_role
-  };
-
-  const results = await normalizeBatch(body.entity_type, body.items, c.env.DB, c.env, context);
-  return c.json({ success: true, total: results.length, results });
-});
-
-/**
- * GET /schemas
- */
-app.get('/schemas', (c) => c.json({ schemas: getAllSchemaInfos() }));
-
-// ============================================================================
-// Queue Handler (v3.6 Section 19.7)
-// Consumes: integratewise-pipeline-process
-// Produces to: KNOWLEDGE_QUEUE, ACCELERATOR_QUEUE, INTELLIGENCE_QUEUE, DLQ
-// ============================================================================
-export const queue = {
-  async queue(batch: MessageBatch<any>, env: NormalizerEnv): Promise<void> {
-    const correlationId = crypto.randomUUID();
-
-    for (const message of batch.messages) {
-      const { entity_type, data, tenant_id, source_system, category, user_id, account_id, team_id, user_role, correlation_id: msg_correlation_id } = message.body;
-      const trace_id = msg_correlation_id || correlationId;
+  // Queue consumer — this is where pipeline processing happens
+  async queue(batch: MessageBatch<PipelineMessage>, env: Env): Promise<void> {
+    for (const msg of batch.messages) {
+      const payload = msg.body;
+      const startTime = Date.now();
 
       try {
-        if (!entity_type || !data || !tenant_id || !source_system) {
-          throw new Error('Missing required fields: entity_type, data, tenant_id, source_system');
-        }
-
-        console.log(`[Normalizer Queue] Processing ${entity_type} for tenant ${tenant_id} - Correlation: ${trace_id}`);
-
-        // Create D1 database instance from env
-        const db = env.DB;
-
-        // 1. Normalize data using existing normalization logic
-        const context: Partial<NormalizerContext> = {
-          tenant_id,
-          category,
-          user_id,
-          account_id,
-          team_id,
-          user_role
-        };
-
-        const result = await normalize(entity_type as EntityType, data, db, env as any, context);
-
-        if (!result.success) {
-          console.error(`[Normalizer Queue] Normalization failed for ${entity_type}: ${JSON.stringify(result.errors)}`);
-
-          // Send to DLQ on validation failure
-          await env.DLQ.send({
-            tenant_id,
-            entity_type,
-            raw_data: data,
-            source_system,
-            error: 'Normalization validation failed',
-            errors: result.errors,
-            timestamp: new Date().toISOString(),
-            correlation_id: trace_id,
-          });
-
-          message.ack();
+        const result = await processStage(payload, env);
+        
+        if (result === null) {
+          // Filtered out (Stage 3)
+          msg.ack();
           continue;
         }
 
-        // 2. Route normalized data based on entity type
-        const normalized_entity = result.normalized_data;
+        // Advance to next stage
+        const currentIdx = STAGES.indexOf(payload.stage);
+        const nextIdx = currentIdx + 1;
 
-        // Send to KNOWLEDGE_QUEUE if it's a knowledge/documentation entity
-        if (['runbook', 'icp', 'technical_manual', 'qbr', 'contract', 'meeting_notes'].includes(entity_type)) {
-          await env.KNOWLEDGE_QUEUE.send({
-            tenant_id,
-            entity_type,
-            normalized_data,
-            entity_id: normalized_entity?.id,
-            source_system,
-            correlation_id: trace_id,
+        if (nextIdx < STAGES.length) {
+          await env.PIPELINE_QUEUE.send({
+            ...result,
+            stage: STAGES[nextIdx],
+            metadata: { ...result.metadata, attempt: 0 },
           });
-          console.log(`[Normalizer Queue] Sent to KNOWLEDGE_QUEUE: ${entity_type}/${normalized_entity?.id}`);
+        } else {
+          // Final stage complete — write to Spine
+          await sectorize(result, env);
         }
 
-        // Send to INTELLIGENCE_QUEUE for think engine analysis
-        await env.INTELLIGENCE_QUEUE.send({
-          tenant_id,
-          entity_type,
-          entity_id: normalized_entity?.id,
-          normalized_data,
-          source_system,
-          correlation_id: trace_id,
-        });
-        console.log(`[Normalizer Queue] Sent to INTELLIGENCE_QUEUE: ${entity_type}/${normalized_entity?.id}`);
+        // Log success
+        await logPipelineStep(env, payload, 'completed', Date.now() - startTime);
+        msg.ack();
 
-        // Send to ACCELERATOR_QUEUE for high-priority entities
-        if (['deal', 'strategic_objective', 'risk_register'].includes(entity_type)) {
-          await env.ACCELERATOR_QUEUE.send({
-            tenant_id,
-            entity_type,
-            entity_id: normalized_entity?.id,
-            normalized_data,
-            priority: 'high',
-            correlation_id: trace_id,
+      } catch (error) {
+        const errMsg = error instanceof Error ? error.message : 'Unknown error';
+        console.error(`Pipeline ${payload.stage} failed:`, errMsg);
+
+        // Log failure
+        await logPipelineStep(env, payload, 'failed', Date.now() - startTime, errMsg);
+
+        if (payload.metadata.attempt < 3) {
+          msg.retry({ delaySeconds: 30 * (payload.metadata.attempt + 1) });
+        } else {
+          // Max retries — send to DLQ
+          await env.DLQ_QUEUE.send({
+            ...payload,
+            error: errMsg,
+            failed_at: new Date().toISOString(),
           });
-          console.log(`[Normalizer Queue] Sent to ACCELERATOR_QUEUE: ${entity_type}/${normalized_entity?.id}`);
+          msg.ack();
         }
-
-        message.ack();
-      } catch (error: any) {
-        console.error(`[Normalizer Queue] Error processing message: ${error.message}`);
-
-        // Send to DLQ on system error
-        await env.DLQ.send({
-          tenant_id,
-          entity_type,
-          raw_data: data,
-          source_system,
-          error: error.message,
-          error_type: 'system_error',
-          timestamp: new Date().toISOString(),
-          correlation_id: trace_id,
-        }).catch((dlq_err) => {
-          console.error(`[Normalizer Queue] Failed to send to DLQ: ${dlq_err.message}`);
-        });
-
-        // Retry on system errors
-        message.retry();
       }
     }
   }
 };
 
-export default {
-  fetch: app.fetch,
-  queue: queue.queue
-};
+async function processStage(msg: PipelineMessage, env: Env): Promise<PipelineMessage | null> {
+  switch (msg.stage) {
+    case 'analyze': {
+      // Stage 1: Detect source, identify object type, extract metadata
+      const entityType = detectEntityType(msg.payload);
+      return { ...msg, payload: { ...msg.payload, _entity_type: entityType, _analyzed_at: Date.now() } };
+    }
+    case 'classify': {
+      // Stage 2: Assign category, priority
+      const priority = msg.payload._entity_type === 'deal' ? 'high' : 'normal';
+      return { ...msg, payload: { ...msg.payload, _priority: priority, _classified_at: Date.now() } };
+    }
+    case 'filter': {
+      // Stage 3: Scope enforcement, freshness check
+      // Drop if data is older than 90 days and not a core entity
+      const dataAge = msg.payload.updated_at ? Date.now() - new Date(msg.payload.updated_at).getTime() : 0;
+      if (dataAge > 90 * 24 * 60 * 60 * 1000 && !['account', 'contact'].includes(msg.payload._entity_type)) {
+        return null; // Filtered
+      }
+      return msg;
+    }
+    case 'refine': {
+      // Stage 4: Normalize field names, currency conversion, field mapping
+      const normalized = normalizeFields(msg.payload, msg.source);
+      return { ...msg, payload: normalized };
+    }
+    case 'extract': {
+      // Stage 5: Relationship extraction, change deltas
+      // TODO: Generate embeddings and send to knowledge queue
+      return msg;
+    }
+    case 'validate': {
+      // Stage 6: Dedup check, business rule enforcement
+      return msg;
+    }
+    case 'sanity': {
+      // Stage 7: Anomaly detection
+      // TODO: Call OpenRouter for AI-powered anomaly check on high-value entities
+      return msg;
+    }
+    case 'sectorize': {
+      // Stage 8: Handled by sectorize() function after this returns
+      return msg;
+    }
+    default:
+      throw new Error(`Unknown stage: ${msg.stage}`);
+  }
+}
+
+async function sectorize(msg: PipelineMessage, env: Env): Promise<void> {
+  // Build entity objects for Spine write
+  const entities = [{
+    entity_type: msg.payload._entity_type || msg.payload.type || 'unknown',
+    name: msg.payload.name || msg.payload.title || msg.payload.email || 'Unnamed',
+    source: msg.source,
+    source_id: msg.payload.id || msg.payload.source_id || crypto.randomUUID(),
+    data: msg.payload,
+  }];
+
+  // Write to Spine via service binding
+  const writeResponse = await env.SPINE.fetch(new Request('https://spine/api/write', {
+    method: 'POST',
+    headers: { 
+      'Content-Type': 'application/json',
+      'x-tenant-id': msg.tenant_id,
+    },
+    body: JSON.stringify({
+      tenant_id: msg.tenant_id,
+      entities,
+      trace_id: msg.metadata.trace_id,
+    }),
+  }));
+
+  if (!writeResponse.ok) {
+    throw new Error(`Spine write failed: ${writeResponse.status} ${await writeResponse.text()}`);
+  }
+
+  // Emit intelligence event
+  await env.INTELLIGENCE_QUEUE.send({
+    type: 'data_change',
+    tenant_id: msg.tenant_id,
+    entities,
+    source: msg.source,
+    trace_id: msg.metadata.trace_id,
+    timestamp: new Date().toISOString(),
+  });
+
+  // Emit accelerator trigger
+  await env.ACCELERATOR_QUEUE.send({
+    type: 'spine_write',
+    tenant_id: msg.tenant_id,
+    entity_count: entities.length,
+    trace_id: msg.metadata.trace_id,
+  });
+}
+
+function detectEntityType(payload: Record<string, any>): string {
+  // Simple heuristic — improve later with ML
+  if (payload.email && payload.firstname) return 'contact';
+  if (payload.dealname || payload.amount) return 'deal';
+  if (payload.company || payload.domain) return 'account';
+  if (payload.subject && payload.due_date) return 'task';
+  if (payload.title && payload.start_time) return 'meeting';
+  return 'entity';
+}
+
+function normalizeFields(payload: Record<string, any>, source: string): Record<string, any> {
+  // Normalize common fields across tools
+  const normalized = { ...payload };
+  
+  // HubSpot-specific normalization
+  if (source === 'hubspot') {
+    if (payload.properties) {
+      Object.assign(normalized, payload.properties);
+      delete normalized.properties;
+    }
+    if (payload.firstname) normalized.name = `${payload.firstname} ${payload.lastname || ''}`.trim();
+    if (payload.dealname) normalized.name = payload.dealname;
+    if (payload.company) normalized.name = payload.company;
+  }
+  
+  // Salesforce-specific normalization
+  if (source === 'salesforce') {
+    if (payload.Name) normalized.name = payload.Name;
+    if (payload.Amount) normalized.amount = payload.Amount;
+  }
+
+  return normalized;
+}
+
+async function logPipelineStep(
+  env: Env, msg: PipelineMessage, status: string, durationMs: number, error?: string
+): Promise<void> {
+  try {
+    const { createClient } = await import('@supabase/supabase-js');
+    const supabase = createClient(env.SUPABASE_URL, env.SUPABASE_SERVICE_ROLE_KEY);
+    await supabase.from('pipeline_log').insert({
+      tenant_id: msg.tenant_id,
+      trace_id: msg.metadata.trace_id,
+      stage: msg.stage,
+      status,
+      source: msg.source,
+      error_message: error,
+      duration_ms: durationMs,
+    });
+  } catch (e) {
+    console.error('Failed to log pipeline step:', e);
+  }
+}
