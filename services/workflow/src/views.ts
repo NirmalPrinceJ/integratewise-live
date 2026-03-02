@@ -64,7 +64,7 @@ const ViewRequestSchema = z.object({
     scope: z.enum(['personal', 'csm', 'tam', 'business']).default('personal'),
     role: z.string().default('practitioner'),
   }),
-  filters: z.record(z.unknown()).optional(),
+  filters: z.record(z.string(), z.unknown()).optional(),
   pagination: z.object({
     page: z.number().default(1),
     limit: z.number().default(50),
@@ -159,7 +159,7 @@ app.post('/view/:view_id', async (c) => {
     return c.json(view);
   } catch (error) {
     if (error instanceof z.ZodError) {
-      return c.json({ error: 'Invalid request', details: error.errors }, 400);
+      return c.json({ error: 'Invalid request', details: error.issues }, 400);
     }
     console.error(`Error building view ${viewId}:`, error);
     return c.json({ error: 'Failed to build view', details: String(error) }, 500);
@@ -750,7 +750,7 @@ async function getMissingTools(env: Env, tenantId: string): Promise<string[]> {
       return [];
     }
 
-    const tenantData = await tenantRes.json();
+    const tenantData = await tenantRes.json() as Record<string, any>;
     const connectedTools = tenantData.connected_tools || [];
 
     // Return tools that are not connected
@@ -774,7 +774,7 @@ async function enrichAccountsWithHealth(env: Env, context: ViewContext, accounts
       return accounts;
     }
 
-    const healthData = await healthRes.json();
+    const healthData = await healthRes.json() as Record<string, any>;
     const healthScores = new Map(
       (healthData.items || []).map((item: any) => [item.account_id, item])
     );
@@ -782,8 +782,8 @@ async function enrichAccountsWithHealth(env: Env, context: ViewContext, accounts
     // Enrich accounts with health information
     return accounts.map((account: any) => ({
       ...account,
-      health_status: healthScores.get(account.id)?.status || 'unknown',
-      health_score: healthScores.get(account.id)?.score || 0,
+      health_status: (healthScores.get(account.id) as any)?.status || 'unknown',
+      health_score: (healthScores.get(account.id) as any)?.score || 0,
     }));
   } catch (error) {
     console.error('Error enriching accounts with health:', error);

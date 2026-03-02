@@ -62,16 +62,16 @@ async function getDashboard(env: Env, tenantId: string): Promise<Response> {
   const dashResponse = await env.SPINE.fetch(new Request('https://spine/api/dashboard', {
     headers: { 'x-tenant-id': tenantId },
   }));
-  const dashData = await dashResponse.json();
+  const dashData = await dashResponse.json() as Record<string, unknown>;
 
   // Call Think for active signals
   const signalsResponse = await env.SPINE.fetch(new Request('https://spine/api/signals', {
     headers: { 'x-tenant-id': tenantId },
   }));
-  const signalsData = await signalsResponse.json();
+  const signalsData = await signalsResponse.json() as { signals?: unknown[] };
 
   return new Response(JSON.stringify({
-    ...dashData,
+    ...(dashData as object),
     signals: signalsData.signals || [],
   }), {
     headers: { 'Content-Type': 'application/json' }

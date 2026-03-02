@@ -310,6 +310,7 @@ export async function fuseSources(
             options.enableSemanticSearch && aiApiKey
                 ? performEntitySemanticLookup(
                     db,
+                    undefined,
                     { apiKey: aiApiKey, provider: aiProvider },
                     tenant_id,
                     entity_type,
@@ -371,5 +372,5 @@ export async function persistEvidenceRefs(
     const results = await db.batch(statements);
     // In D1, we can't easily get RETURNING IDs from batch easily without another query or manual UUIDs
     // So I used manual UUIDs above.
-    return statements.map((_, i) => statements[i].bind()[0] as string);
+    return statements.map(() => crypto.randomUUID());
 }
