@@ -2,7 +2,7 @@
     "name": "integratewise-mcp-tool-connector",
     "version": "1.0.0",
     "description": "MCP server for direct AI access to IntegrateWise OS D1 database",
-    "main": "dist/index.js",
+    "main": "src/index.ts",
     "type": "module",
     "scripts": {
         "build": "tsc",
