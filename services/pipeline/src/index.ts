@@ -29,11 +29,11 @@ export default {
     }
 
     // Spine routes: entity reads, dashboard, signals
-    if (url.pathname.startsWith('/api/write') ||
-        url.pathname.startsWith('/api/entity') ||
-        url.pathname.startsWith('/api/signals') ||
-        url.pathname.startsWith('/api/dashboard') ||
-        url.pathname.startsWith('/spine')) {
+    if (url.pathname === '/api/write' || url.pathname.startsWith('/api/write/') ||
+        url.pathname === '/api/entity' || url.pathname.startsWith('/api/entity/') ||
+        url.pathname === '/api/signals' || url.pathname.startsWith('/api/signals/') ||
+        url.pathname === '/api/dashboard' || url.pathname.startsWith('/api/dashboard/') ||
+        url.pathname === '/spine' || url.pathname.startsWith('/spine/')) {
       return spineWorker.fetch(request, env);
     }
 

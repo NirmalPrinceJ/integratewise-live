@@ -28,14 +28,15 @@ export default {
     }
 
     // MCP routes: /mcp/*, /tools/*, /sessions/*
-    if (url.pathname.startsWith('/mcp') ||
-        url.pathname.startsWith('/tools') ||
-        url.pathname.startsWith('/sessions')) {
+    if (url.pathname === '/mcp' || url.pathname.startsWith('/mcp/') ||
+        url.pathname === '/tools' || url.pathname.startsWith('/tools/') ||
+        url.pathname === '/sessions' || url.pathname.startsWith('/sessions/')) {
       return mcpApp.fetch(request, env, ctx);
     }
 
     // Store routes: /files/*, /upload/*
-    if (url.pathname.startsWith('/files') || url.pathname.startsWith('/upload')) {
+    if (url.pathname === '/files' || url.pathname.startsWith('/files/') ||
+        url.pathname === '/upload' || url.pathname.startsWith('/upload/')) {
       return storeApp.fetch(request, env, ctx);
     }
 

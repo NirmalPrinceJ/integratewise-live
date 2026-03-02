@@ -31,20 +31,22 @@ export default {
 
     // Route to sub-service based on URL path
     // Act routes: /act/*, /proposals/*
-    if (url.pathname.startsWith('/act') || url.pathname.startsWith('/proposals')) {
+    if (url.pathname === '/act' || url.pathname.startsWith('/act/') ||
+        url.pathname === '/proposals' || url.pathname.startsWith('/proposals/')) {
       return actApp.fetch(request, env, ctx);
     }
 
     // Govern routes: /policies/*, /approve/*, /audit/*, /govern/*
-    if (url.pathname.startsWith('/policies') ||
-        url.pathname.startsWith('/approve') ||
-        url.pathname.startsWith('/audit') ||
-        url.pathname.startsWith('/govern')) {
+    if (url.pathname === '/policies' || url.pathname.startsWith('/policies/') ||
+        url.pathname === '/approve' || url.pathname.startsWith('/approve/') ||
+        url.pathname === '/audit' || url.pathname.startsWith('/audit/') ||
+        url.pathname === '/govern' || url.pathname.startsWith('/govern/')) {
       return governApp.fetch(request, env, ctx);
     }
 
     // Agent routes: /colony/*, /agents/*
-    if (url.pathname.startsWith('/colony') || url.pathname.startsWith('/agents')) {
+    if (url.pathname === '/colony' || url.pathname.startsWith('/colony/') ||
+        url.pathname === '/agents' || url.pathname.startsWith('/agents/')) {
       return agentsApp.fetch(request, env, ctx);
     }
 
