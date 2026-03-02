@@ -1,4 +1,4 @@
-name = "integratewise-workflow"
+name = "integratewise-bff"
 main = "src/index.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
@@ -8,10 +8,10 @@ compatibility_flags = ["nodejs_compat"]
 queue = "intelligence.act"
 binding = "ACT_QUEUE"
 
-# Service bindings for view aggregation
+# Service bindings for view aggregation (v3.6 consolidated names)
 [[services]]
 binding = "SPINE"
-service = "integratewise-spine-v2"
+service = "integratewise-pipeline"
 
 [[services]]
 binding = "KNOWLEDGE"
@@ -19,11 +19,11 @@ service = "integratewise-knowledge"
 
 [[services]]
 binding = "THINK"
-service = "integratewise-think"
+service = "integratewise-intelligence"
 
 # Durable Objects for real-time streaming (Hot Memory)
 [durable_objects]
 bindings = [{ name = "STREAM", class_name = "StreamSession" }]
 
 [env.staging]
-name = "integratewise-workflow-staging"
+name = "integratewise-bff-staging"

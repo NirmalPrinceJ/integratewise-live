@@ -1,0 +1,60 @@
+# Consolidated Connector Worker (v3.6 Architecture)
+# Merges: loader + mcp-connector + store
+name = "integratewise-connector"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# --- Queue Producers ---
+
+# From loader: data → pipeline
+[[queues.producers]]
+queue = "pipeline.process"
+binding = "PIPELINE_QUEUE"
+
+# From mcp-connector: sessions → knowledge
+[[queues.producers]]
+queue = "knowledge.ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+# --- KV Namespaces ---
+
+# From loader/mcp-connector: idempotency checks
+[[kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "placeholder-mcp-idempotency"
+
+# --- D1 for connector cursors + dedup ---
+
+[[d1_databases]]
+binding = "EDGE_DB"
+database_name = "integratewise-spine-cache"
+database_id = "placeholder-d1-id"
+
+# --- R2 for file storage (from store) ---
+
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-prod"
+
+# --- Cron trigger for polling connectors (from loader) ---
+
+[triggers]
+crons = ["*/5 * * * *"]
+
+# --- Service bindings (external) ---
+
+# Store triggers knowledge ingestion
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+[env.staging]
+name = "integratewise-connector-staging"
+
+[[env.staging.r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-staging"
+
+[env.production]
+name = "integratewise-connector"

@@ -1,0 +1,60 @@
+# Consolidated Pipeline Worker (v3.6 Architecture)
+# Merges: normalizer + spine-v2
+# SECURITY: This is the ONLY service with Spine write credentials
+name = "integratewise-pipeline"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# --- Queue Consumers (from normalizer) ---
+
+[[queues.consumers]]
+queue = "pipeline.process"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[[queues.consumers]]
+queue = "accelerator.trigger"
+max_batch_size = 10
+max_batch_timeout = 30
+
+# --- Queue Producers (from normalizer) ---
+
+[[queues.producers]]
+queue = "pipeline.process"
+binding = "PIPELINE_QUEUE"
+
+[[queues.producers]]
+queue = "knowledge.ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+[[queues.producers]]
+queue = "accelerator.trigger"
+binding = "ACCELERATOR_QUEUE"
+
+[[queues.producers]]
+queue = "intelligence.events"
+binding = "INTELLIGENCE_QUEUE"
+
+[[queues.producers]]
+queue = "ops.dlq"
+binding = "DLQ_QUEUE"
+
+# --- D1 edge cache (from spine-v2) ---
+
+[[d1_databases]]
+binding = "CACHE_DB"
+database_name = "integratewise-spine-cache"
+database_id = "placeholder-d1-id"
+
+# --- KV hot entity cache (from spine-v2) ---
+
+[[kv_namespaces]]
+binding = "CACHE"
+id = "placeholder-cache-kv"
+
+[env.staging]
+name = "integratewise-pipeline-staging"
+
+[env.production]
+name = "integratewise-pipeline"

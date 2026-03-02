@@ -3,46 +3,27 @@ main = "src/index.ts"
 compatibility_date = "2024-12-01"
 compatibility_flags = ["nodejs_compat"]
 
-# Service bindings — Gateway routes to ALL downstream services
+# Service bindings — v3.6 consolidated model (5 external Workers)
+# Admin, billing, tenants are now internal to this Gateway Worker
 [[services]]
-binding = "LOADER"
-service = "integratewise-loader"
+binding = "CONNECTOR"
+service = "integratewise-connector"
 
 [[services]]
-binding = "NORMALIZER"
-service = "integratewise-normalizer"
+binding = "PIPELINE"
+service = "integratewise-pipeline"
 
 [[services]]
-binding = "THINK"
-service = "integratewise-think"
+binding = "INTELLIGENCE"
+service = "integratewise-intelligence"
 
 [[services]]
 binding = "KNOWLEDGE"
 service = "integratewise-knowledge"
 
 [[services]]
-binding = "WORKFLOW"
-service = "integratewise-workflow"
-
-[[services]]
-binding = "ADMIN"
-service = "integratewise-admin"
-
-[[services]]
-binding = "BILLING"
-service = "integratewise-billing"
-
-[[services]]
-binding = "TENANTS"
-service = "integratewise-tenants"
-
-[[services]]
-binding = "ACT"
-service = "integratewise-act"
-
-[[services]]
-binding = "GOVERN"
-service = "integratewise-govern"
+binding = "BFF"
+service = "integratewise-bff"
 
 # Queue producer — inbound webhook/connector data → pipeline
 [[queues.producers]]
