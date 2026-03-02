@@ -10,7 +10,7 @@
  *
  * Queue consumers: intelligence.events, intelligence.act, ops.dlq
  */
-import thinkApp, { queue as thinkQueue } from '../../think/src/index';
+import thinkWorker from '../../think/src/index';
 import actApp from '../../act/src/index';
 import governApp from '../../govern/src/index';
 import agentsApp from '../../agents/src/index';
@@ -49,7 +49,7 @@ export default {
     }
 
     // Default: think handles signals, intelligence, brainstorm, cognitive
-    return thinkApp.fetch(request, env, ctx);
+    return thinkWorker.fetch(request, env, ctx);
   },
 
   async queue(batch: MessageBatch<any>, env: any): Promise<void> {
@@ -57,7 +57,7 @@ export default {
 
     if (queueName === 'intelligence.events') {
       // Think: process intelligence events from pipeline
-      return thinkQueue.queue(batch, env);
+      return thinkWorker.queue(batch, env);
     }
 
     if (queueName === 'intelligence.act') {
