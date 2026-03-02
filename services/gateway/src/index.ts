@@ -103,7 +103,18 @@ export default {
     }
 
     const user = await userResponse.json() as { id: string; user_metadata?: { tenant_id?: string; role?: string } };
-    const tenantId = request.headers.get('x-tenant-id') || user.user_metadata?.tenant_id;
+    const headerTenantId = request.headers.get('x-tenant-id');
+    const jwtTenantId = user.user_metadata?.tenant_id;
+
+    // Validate tenant isolation: if both header and JWT have tenant_id, they must match
+    if (headerTenantId && jwtTenantId && headerTenantId !== jwtTenantId) {
+      return new Response(JSON.stringify({ error: 'Tenant mismatch' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' }
+      });
+    }
+
+    const tenantId = headerTenantId || jwtTenantId;
 
     if (!tenantId) {
       return new Response(JSON.stringify({ error: 'No tenant context' }), {
