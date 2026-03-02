@@ -92,7 +92,7 @@ abstract class BaseAgent {
   }
 
   async think(messages: AgentMessage[]): Promise<string> {
-    const response = await this.env.AI.run(this.model, {
+    const response = await this.env.AI.run(this.model as any, {
       messages: [
         { role: 'system', content: this.systemPrompt },
         ...messages,
@@ -171,7 +171,7 @@ Structure your findings clearly with key insights highlighted.`);
 
   async execute(task: AgentTask, step: WorkflowStep): Promise<AgentResult> {
     // Query knowledge base
-    const knowledgeResults = await step.do(`research-knowledge-${task.taskId}`, async () => {
+    const knowledgeResults = await step.do(`research-knowledge-${task.taskId}`, async (): Promise<any> => {
       const response = await fetch(`${this.env.KNOWLEDGE_URL}/search`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -185,7 +185,7 @@ Structure your findings clearly with key insights highlighted.`);
     });
 
     // Query Spine for entity data
-    const spineResults = await step.do(`research-spine-${task.taskId}`, async () => {
+    const spineResults = await step.do(`research-spine-${task.taskId}`, async (): Promise<any> => {
       if (task.context.entityId) {
         const response = await fetch(`${this.env.SPINE_URL}/entities/${task.context.entityId}`, {
           headers: { 'x-tenant-id': task.tenantId },
@@ -380,7 +380,7 @@ Log all actions for audit trail.`);
     }
 
     // Execute via Act service
-    const result = await step.do(`execute-action-${task.taskId}`, async () => {
+    const result = await step.do(`execute-action-${task.taskId}`, async (): Promise<any> => {
       const response = await fetch(`${this.env.ACT_URL}/execute`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -421,11 +421,11 @@ export class AgentColonyWorkflow extends WorkflowEntrypoint<Env, AgentTask> {
     };
 
     // Step 1: Orchestrator creates execution plan
-    const plan = await step.do('orchestrate', async () => {
+    const plan = await step.do('orchestrate', async (): Promise<any> => {
       return orchestrator.execute(task, step);
     });
 
-    const assignments = (plan.output as { assignments: Array<{ agent: string; task: string; priority: number; dependsOn?: string[] }> }).assignments || [];
+    const assignments = ((plan as any).output as { assignments: Array<{ agent: string; task: string; priority: number; dependsOn?: string[] }> }).assignments || [];
 
     // Step 2: Execute agents based on plan
     const results: Record<string, AgentResult> = {};
@@ -444,7 +444,7 @@ export class AgentColonyWorkflow extends WorkflowEntrypoint<Env, AgentTask> {
       const agent = agents[assignment.agent];
       if (!agent) continue;
 
-      const result = await step.do(`agent-${assignment.agent.toLowerCase()}`, async () => {
+      const result = await step.do(`agent-${assignment.agent.toLowerCase()}`, async (): Promise<any> => {
         const agentTask: AgentTask = {
           ...task,
           objective: assignment.task,
@@ -456,12 +456,12 @@ export class AgentColonyWorkflow extends WorkflowEntrypoint<Env, AgentTask> {
         return agent.execute(agentTask, step);
       });
 
-      results[assignment.agent] = result;
+      results[assignment.agent] = result as AgentResult;
       completed.add(assignment.agent);
     }
 
     // Step 3: Store results
-    await step.do('store-results', async () => {
+    await step.do('store-results', async (): Promise<any> => {
       await this.env.DB.prepare(`
         INSERT INTO agent_colony_runs (
           id, instance_id, tenant_id, user_id, task_objective,
@@ -473,7 +473,7 @@ export class AgentColonyWorkflow extends WorkflowEntrypoint<Env, AgentTask> {
         task.tenantId,
         task.userId,
         task.objective,
-        JSON.stringify(plan.output),
+        JSON.stringify((plan as any).output),
         JSON.stringify(results)
       ).run();
     });
@@ -481,7 +481,7 @@ export class AgentColonyWorkflow extends WorkflowEntrypoint<Env, AgentTask> {
     return {
       instanceId,
       task: task.objective,
-      plan: plan.output,
+      plan: (plan as any).output,
       results,
       status: 'completed',
     };

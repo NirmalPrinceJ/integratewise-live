@@ -73,7 +73,7 @@ export class McpSessionDO implements DurableObject {
         tool.id,
         tool.description || `Execute ${tool.id} webhook`,
         tool.schema || { type: 'object', properties: {} },
-        async (args) => {
+        async (args: Record<string, unknown>) => {
           // Update last activity timestamp
           const state = await this.state.storage.get<SessionState>('session_state');
           if (state) {
@@ -95,6 +95,9 @@ export class McpSessionDO implements DurableObject {
       );
     }
 
+    // Capture `this` for use inside ReadableStream callback
+    const self = this;
+
     // Return SSE stream response
     return new Response(
       new ReadableStream({
@@ -113,16 +116,16 @@ export class McpSessionDO implements DurableObject {
               },
             } as any;
 
-            this.transport = new SSEServerTransport('/mcp/messages', mockRes);
+            self.transport = new SSEServerTransport('/mcp/messages', mockRes);
 
             // Connect server to transport
-            if (this.server) {
-              await this.server.connect(this.transport);
+            if (self.server) {
+              await self.server.connect(self.transport);
             }
 
             // Keep the stream alive by periodically checking if still active
             const keepAliveInterval = setInterval(async () => {
-              const state = await this.state.storage.get<SessionState>('session_state');
+              const state = await self.state.storage.get<SessionState>('session_state');
               if (!state?.isActive) {
                 clearInterval(keepAliveInterval);
                 controller.close();

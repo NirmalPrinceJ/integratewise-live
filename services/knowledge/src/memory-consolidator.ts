@@ -85,7 +85,7 @@ interface ConsolidatedMemory {
 
 export class MemoryConsolidator extends DurableObject {
   private state: DurableObjectState;
-  private env: Env;
+  protected env: Env;
 
   constructor(state: DurableObjectState, env: Env) {
     super(state, env);
