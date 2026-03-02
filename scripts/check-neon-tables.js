@@ -7,7 +7,13 @@
 
 import { neon } from '@neondatabase/serverless';
 
-const NEON_CONNECTION_STRING = "postgresql://neondb_owner:npg_lPt4jLcO5dei@ep-broad-waterfall-ahejsgy6-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require";
+const NEON_CONNECTION_STRING = process.env.DATABASE_URL;
+
+if (!NEON_CONNECTION_STRING) {
+  console.error('❌ DATABASE_URL environment variable is required');
+  console.error('Usage: DATABASE_URL="postgresql://..." node scripts/check-neon-tables.js');
+  process.exit(1);
+}
 
 async function checkTables() {
   console.log('🔍 Checking Neon Database Tables\n');

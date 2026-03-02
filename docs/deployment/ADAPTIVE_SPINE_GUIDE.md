@@ -180,7 +180,7 @@ cd /Users/nirmal/Github/brainstroming
 #### 1. Get Neon Connection String
 From Neon console: Project → Connections → Connection String
 ```
-postgresql://neondb_owner:npg_lPt4jLcO5dei@ep-broad-waterfall.us-east-1.aws.neon.tech/neondb?sslmode=require
+postgresql://neondb_owner:<PASSWORD>@ep-broad-waterfall.<REGION>.aws.neon.tech/neondb?sslmode=require
 ```
 
 #### 2. Run Migrations

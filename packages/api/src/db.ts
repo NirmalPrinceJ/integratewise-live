@@ -101,7 +101,9 @@ export async function listEntities(
   if (filters.source) { query += ' AND source = ?'; values.push(filters.source); }
 
   query += ' ORDER BY updated_at DESC';
-  query += ` LIMIT ${filters.limit || 100} OFFSET ${filters.offset || 0}`;
+  const limit = Math.max(1, Math.min(Number(filters.limit) || 100, 1000));
+  const offset = Math.max(0, Number(filters.offset) || 0);
+  query += ` LIMIT ${limit} OFFSET ${offset}`;
 
   const result = await db.prepare(query).bind(...values).all();
   return (result.results || []).map(parseEntity);

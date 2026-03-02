@@ -47,13 +47,14 @@ export class CRMMasterConnector extends DomainMasterConnector {
 
     async getContacts(limit = 100): Promise<any[]> {
         const primary = this.primaryProviderId;
+        const safeLimit = Math.max(1, Math.min(Number(limit) || 100, 2000));
         if (primary === "salesforce") {
             const sf = this.getProvider<SalesforceConnector>("salesforce");
-            return sf.query(`SELECT Id, FirstName, LastName, Email FROM Contact LIMIT ${limit}`);
+            return sf.query(`SELECT Id, FirstName, LastName, Email FROM Contact LIMIT ${safeLimit}`);
         }
         if (primary === "hubspot") {
             const hs = this.getProvider<HubSpotConnector>("hubspot");
-            const result = await hs.getContacts(limit);
+            const result = await hs.getContacts(safeLimit);
             return result.results || [];
         }
         throw new Error(`No CRM provider configured`);
@@ -61,9 +62,10 @@ export class CRMMasterConnector extends DomainMasterConnector {
 
     async getDeals(limit = 100): Promise<any[]> {
         const primary = this.primaryProviderId;
+        const safeLimit = Math.max(1, Math.min(Number(limit) || 100, 2000));
         if (primary === "salesforce") {
             const sf = this.getProvider<SalesforceConnector>("salesforce");
-            return sf.query(`SELECT Id, Name, Amount, StageName FROM Opportunity LIMIT ${limit}`);
+            return sf.query(`SELECT Id, Name, Amount, StageName FROM Opportunity LIMIT ${safeLimit}`);
         }
         if (primary === "hubspot") {
             const hs = this.getProvider<HubSpotConnector>("hubspot");

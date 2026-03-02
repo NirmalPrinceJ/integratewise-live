@@ -161,10 +161,10 @@ curl https://integratewise-connector-manager.connect-a1b.workers.dev/connectors
 ### Verify Database
 ```bash
 # Check spine tables
-psql 'postgresql://neondb_owner:npg_Ra0dYcHujOv9@ep-plain-bird-abh7vpm0-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require' -c "SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'spine_%' ORDER BY table_name;"
+psql "$DATABASE_URL" -c "SELECT table_name FROM information_schema.tables WHERE table_name LIKE 'spine_%' ORDER BY table_name;"
 
 # Check schema registry
-psql 'postgresql://neondb_owner:npg_Ra0dYcHujOv9@ep-plain-bird-abh7vpm0-pooler.eu-west-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require' -c "SELECT * FROM spine_schema_registry LIMIT 5;"
+psql "$DATABASE_URL" -c "SELECT * FROM spine_schema_registry LIMIT 5;"
 ```
 
 ### Test D1 Cache

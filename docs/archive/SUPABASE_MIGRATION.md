@@ -34,7 +34,7 @@ Tables include:
 
 **Connection String**:
 ```
-postgresql://postgres:Stayfit@321@980@db.hrrbciljsqxnmuwwnrnt.supabase.co:5432/postgres?sslmode=require
+postgresql://postgres:<PASSWORD>@db.<PROJECT_REF>.supabase.co:5432/postgres?sslmode=require
 ```
 
 ---
@@ -49,7 +49,7 @@ Tables include:
 
 **Connection String**:
 ```
-postgresql://neondb_owner:npg_Ra0dYcHujOv9@ep-plain-bird-abh7vpm0-pooler.eu-west-2.aws.neon.tech/Spine?sslmode=require
+postgresql://neondb_owner:<PASSWORD>@ep-plain-bird-<ID>-pooler.eu-west-2.aws.neon.tech/Spine?sslmode=require
 ```
 
 ---
@@ -80,7 +80,7 @@ All 10 Cloudflare Workers updated with new Supabase credentials:
 ### Secrets Updated (All Services)
 ```bash
 SUPABASE_URL=https://hrrbciljsqxnmuwwnrnt.supabase.co
-SUPABASE_SERVICE_ROLE_KEY=sb_secret_NAIMfDY6w66qHfxYTueLQw_O-ic7Ea8
+SUPABASE_SERVICE_ROLE_KEY=<REDACTED — use Doppler>
 ```
 
 ---

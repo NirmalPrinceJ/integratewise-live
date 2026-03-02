@@ -81,8 +81,7 @@ for ENV in dev stg prd; do
         doppler secrets set VITE_SUPABASE_ANON_KEY "$SUPABASE_ANON_KEY" --config "$CONFIG" --project "$PROJECT"
         echo -e "  ${GREEN}✓ VITE_SUPABASE_ANON_KEY${NC}"
     else
-        doppler secrets set VITE_SUPABASE_ANON_KEY "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhycmJjaWxqc3F4bm11d3ducm50Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njk2Mzc0MjUsImV4cCI6MjA4NTIxMzQyNX0.Af158eQ6-KoS-zlKslALN0SiprqkVFeId4iaV2sOXuY" --config "$CONFIG" --project "$PROJECT"
-        echo -e "  ${GREEN}✓ VITE_SUPABASE_ANON_KEY (default)${NC}"
+        echo -e "  ${RED}✗ VITE_SUPABASE_ANON_KEY — set manually via: doppler secrets set VITE_SUPABASE_ANON_KEY <your-anon-key> --config $CONFIG --project $PROJECT${NC}"
     fi
 
     # API Base URL — maps to Gateway Worker

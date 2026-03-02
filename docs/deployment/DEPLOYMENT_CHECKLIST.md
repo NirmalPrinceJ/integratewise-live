@@ -25,7 +25,7 @@ This deployment focuses on **L3 (Adaptive Spine)**: the truth & learning layer t
 cd /Users/nirmal/Github/brainstroming
 
 # Using Neon connection
-export DATABASE_URL="postgresql://neondb_owner:npg_lPt4jLcO5dei@ep-broad-waterfall-ahejsgy6-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require"
+export DATABASE_URL="postgresql://neondb_owner:<PASSWORD>@ep-broad-waterfall-<ID>-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require"
 
 # Run individual migrations (if psql available)
 psql "$DATABASE_URL" -f sql-migrations/032_spine_department_streams.sql
@@ -58,7 +58,7 @@ cd /Users/nirmal/Github/brainstroming/services/cloudflare-workers
 
 # Set database connection
 wrangler secret put NEON_DB_URL --config wrangler.loader.toml
-# Paste: postgresql://neondb_owner:npg_lPt4jLcO5dei@ep-broad-waterfall-ahejsgy6-pooler.c-3.us-east-1.aws.neon.tech/neondb?sslmode=require
+# Paste: <your Neon DATABASE_URL from Doppler>
 
 # Set bucket signing secret (for security)
 wrangler secret put BUCKET_SIGNING_SECRET --config wrangler.loader.toml

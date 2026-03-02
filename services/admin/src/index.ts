@@ -49,6 +49,33 @@ app.use('/v1/*', async (c, next) => {
         return c.json({ error: 'Invalid token format' }, 401)
       }
 
+      // Verify JWT signature using HMAC-SHA256
+      const jwtSecret = c.env.JWT_SECRET
+      if (!jwtSecret) {
+        console.error('JWT_SECRET is not configured')
+        return c.json({ error: 'Server misconfiguration' }, 500)
+      }
+
+      const encoder = new TextEncoder()
+      const key = await crypto.subtle.importKey(
+        'raw',
+        encoder.encode(jwtSecret),
+        { name: 'HMAC', hash: 'SHA-256' },
+        false,
+        ['verify']
+      )
+
+      const signatureInput = encoder.encode(`${parts[0]}.${parts[1]}`)
+      const signatureBytes = Uint8Array.from(
+        atob(parts[2].replace(/-/g, '+').replace(/_/g, '/')),
+        (c) => c.charCodeAt(0)
+      )
+
+      const valid = await crypto.subtle.verify('HMAC', key, signatureBytes, signatureInput)
+      if (!valid) {
+        return c.json({ error: 'Invalid token signature' }, 401)
+      }
+
       // Decode payload (part 1)
       const payload = JSON.parse(
         atob(parts[1].replace(/-/g, '+').replace(/_/g, '/'))
@@ -898,7 +925,8 @@ app.patch('/v1/support-tickets/:ticketId', async (c) => {
       return c.json({ error: 'No fields to update' }, 400)
     }
 
-    updates.push(`updated_at = ${new Date().toISOString()}`)
+    updates.push(`updated_at = $${values.length + 1}`)
+    values.push(new Date().toISOString())
     values.push(ticketId)
 
     const query = `UPDATE support_tickets SET ${updates.join(', ')} WHERE id = $${values.length} RETURNING *`
