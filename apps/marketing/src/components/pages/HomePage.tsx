@@ -75,7 +75,7 @@ function GlobalProblemHero() {
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="rounded-full px-8 sm:px-10 py-6 sm:py-7 bg-foreground text-white hover:bg-foreground/90 shadow-2xl text-base sm:text-[17px] font-medium w-full sm:w-auto"
+                className="rounded-full px-8 sm:px-10 py-6 sm:py-7 bg-emerald-600 text-white hover:bg-emerald-700 shadow-2xl text-base sm:text-[17px] font-medium w-full sm:w-auto"
                 asChild
               >
                 <a href="https://app.integratewise.com" target="_blank" rel="noopener noreferrer">
