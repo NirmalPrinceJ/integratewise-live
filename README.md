@@ -106,8 +106,8 @@ Session Summary (compressed, never full transcript) → Knowledge Store
 
 | Service | URL | Platform |
 |---------|-----|----------|
-| **Marketing** | https://integratewise.co | Cloudflare Pages |
-| **App** | https://integratewise.ai | Cloudflare Pages (Vite + React 18) |
+| **Landing/Marketing** | https://integratewise.ai | Cloudflare Pages (Vite + React 18) |
+| **App (Workspace)** | https://integratewise.ai/app | Cloudflare Pages (Vite + React 18) |
 | **API Gateway** | https://api.integratewise.ai | Cloudflare Workers |
 | **Spine API** | https://spine.integratewise.online | Cloudflare Workers |
 | **Files** | https://files.integratewise.ai | Cloudflare Workers (R2) |
@@ -116,6 +116,11 @@ Session Summary (compressed, never full transcript) → Knowledge Store
 ### Staging
 
 All services deployed to `-staging` variants via GitHub Actions.
+
+**Domain Strategy**: All user-facing services are consolidated under `integratewise.ai`:  
+- Root domain (`/`) serves landing/marketing pages
+- - `/app` path serves the workspace application
+  - - Subdomain paths for API services (`api.`, `spine.`, `files.`)
 
 ## Monorepo Structure
 
