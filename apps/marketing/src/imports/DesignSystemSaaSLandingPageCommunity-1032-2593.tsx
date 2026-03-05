@@ -1733,7 +1733,7 @@ function Icon28() {
 
 function Container63() {
   return (
-    <div className="bg-emerald-900 relative rounded-[8.75px] shrink-0 size-[35px]" data-name="Container">
+    <div className="bg-black relative rounded-[8.75px] shrink-0 size-[35px]" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center relative size-full">
         <Icon28 />
       </div>
@@ -1804,7 +1804,7 @@ function Icon29() {
 
 function Container67() {
   return (
-    <div className="bg-emerald-900 relative rounded-[8.75px] shrink-0 size-[35px]" data-name="Container">
+    <div className="bg-black relative rounded-[8.75px] shrink-0 size-[35px]" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center relative size-full">
         <Icon29 />
       </div>
@@ -1874,7 +1874,7 @@ function Icon30() {
 
 function Container71() {
   return (
-    <div className="bg-emerald-900 relative rounded-[8.75px] shrink-0 size-[35px]" data-name="Container">
+    <div className="bg-black relative rounded-[8.75px] shrink-0 size-[35px]" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center relative size-full">
         <Icon30 />
       </div>
@@ -1947,7 +1947,7 @@ function Icon31() {
 
 function Container75() {
   return (
-    <div className="bg-emerald-900 relative rounded-[8.75px] shrink-0 size-[35px]" data-name="Container">
+    <div className="bg-black relative rounded-[8.75px] shrink-0 size-[35px]" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center relative size-full">
         <Icon31 />
       </div>
@@ -2017,7 +2017,7 @@ function Icon32() {
 
 function Container79() {
   return (
-    <div className="bg-emerald-900 relative rounded-[8.75px] shrink-0 size-[35px]" data-name="Container">
+    <div className="bg-black relative rounded-[8.75px] shrink-0 size-[35px]" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center relative size-full">
         <Icon32 />
       </div>
@@ -2099,7 +2099,7 @@ function Paragraph7() {
 function Container81() {
   return (
     <div className="absolute bg-white content-stretch flex flex-col h-[84px] items-start left-[112px] pl-[32px] pr-[28px] pt-[21px] rounded-br-[12.75px] rounded-tr-[12.75px] top-[508.25px] w-[672px]" data-name="Container">
-      <div aria-hidden="true" className="absolute border-emerald-600 border-l-4 border-solid inset-0 pointer-events-none rounded-br-[12.75px] rounded-tr-[12.75px] shadow-[0px_4px_6px_0px_rgba(0,0,0,0.1),0px_2px_4px_0px_rgba(0,0,0,0.1)]" />
+      <div aria-hidden="true" className="absolute border-black border-l-4 border-solid inset-0 pointer-events-none rounded-br-[12.75px] rounded-tr-[12.75px] shadow-[0px_4px_6px_0px_rgba(0,0,0,0.1),0px_2px_4px_0px_rgba(0,0,0,0.1)]" />
       <Paragraph7 />
     </div>
   );
@@ -2407,7 +2407,7 @@ function Icon34() {
 
 function Container87() {
   return (
-    <div className="absolute bg-emerald-900 content-stretch flex items-center justify-center left-[21px] rounded-[8.75px] size-[35px] top-[21px]" data-name="Container">
+    <div className="absolute bg-black content-stretch flex items-center justify-center left-[21px] rounded-[8.75px] size-[35px] top-[21px]" data-name="Container">
       <Icon34 />
     </div>
   );
@@ -2471,7 +2471,7 @@ function Icon35() {
 
 function Container90() {
   return (
-    <div className="absolute bg-emerald-900 content-stretch flex items-center justify-center left-[21px] rounded-[8.75px] size-[35px] top-[21px]" data-name="Container">
+    <div className="absolute bg-black content-stretch flex items-center justify-center left-[21px] rounded-[8.75px] size-[35px] top-[21px]" data-name="Container">
       <Icon35 />
     </div>
   );
@@ -2529,7 +2529,7 @@ function Icon36() {
 
 function Container93() {
   return (
-    <div className="absolute bg-emerald-900 content-stretch flex items-center justify-center left-[21px] rounded-[8.75px] size-[35px] top-[21px]" data-name="Container">
+    <div className="absolute bg-black content-stretch flex items-center justify-center left-[21px] rounded-[8.75px] size-[35px] top-[21px]" data-name="Container">
       <Icon36 />
     </div>
   );
@@ -2877,7 +2877,7 @@ function Heading12() {
 
 function Section4() {
   return (
-    <div className="absolute bg-emerald-900 h-[312.5px] left-[106.5px] overflow-clip rounded-[21px] top-[4234.01px] w-[896px]" data-name="Section">
+    <div className="absolute bg-black h-[312.5px] left-[106.5px] overflow-clip rounded-[21px] top-[4234.01px] w-[896px]" data-name="Section">
       <Container105 />
       <Container106 />
       <Paragraph15 />
@@ -2949,7 +2949,7 @@ function Text35() {
 
 function Button() {
   return (
-    <div className="absolute bg-emerald-900 content-stretch flex gap-[7px] h-[33.5px] items-center left-[28.5px] px-[14px] rounded-[12.75px] shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] top-0 w-[112.758px]" data-name="Button">
+    <div className="absolute bg-black content-stretch flex gap-[7px] h-[33.5px] items-center left-[28.5px] px-[14px] rounded-[12.75px] shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] top-0 w-[112.758px]" data-name="Button">
       <Icon39 />
       <Text35 />
     </div>
@@ -3229,7 +3229,7 @@ function Icon47() {
 
 function Container114() {
   return (
-    <div className="bg-emerald-900 relative rounded-[12.75px] shrink-0 size-[42px]" data-name="Container">
+    <div className="bg-black relative rounded-[12.75px] shrink-0 size-[42px]" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center relative size-full">
         <Icon47 />
       </div>
@@ -3313,7 +3313,7 @@ function Icon48() {
 
 function Container119() {
   return (
-    <div className="bg-emerald-900 relative rounded-[16777200px] shrink-0 size-[43.243px]" data-name="Container">
+    <div className="bg-black relative rounded-[16777200px] shrink-0 size-[43.243px]" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center relative size-full">
         <Icon48 />
       </div>
@@ -4092,7 +4092,7 @@ function Container150() {
 
 function Button8() {
   return (
-    <div className="absolute bg-emerald-900 h-[33.5px] left-[234.87px] rounded-[12.75px] shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] top-0 w-[75.609px]" data-name="Button">
+    <div className="absolute bg-[#0a0a0a] h-[33.5px] left-[234.87px] rounded-[12.75px] shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] top-0 w-[75.609px]" data-name="Button">
       <p className="-translate-x-1/2 absolute font-['Inter:Regular',sans-serif] font-normal leading-[17.5px] left-[38px] not-italic text-[12.25px] text-center text-white top-[8.5px] tracking-[-0.0179px]">Founder</p>
     </div>
   );
@@ -4493,7 +4493,7 @@ function Container154() {
 }
 
 function Container172() {
-  return <div className="bg-emerald-900 rounded-[16777200px] shrink-0 size-[8.036px]" data-name="Container" />;
+  return <div className="bg-[#0a0a0a] rounded-[16777200px] shrink-0 size-[8.036px]" data-name="Container" />;
 }
 
 function Text55() {
@@ -4684,7 +4684,7 @@ function Container178() {
 
 function Container173() {
   return (
-    <div className="bg-emerald-900 h-[140px] overflow-clip relative rounded-[12.75px] shrink-0 w-full" data-name="Container">
+    <div className="bg-[#0a0a0a] h-[140px] overflow-clip relative rounded-[12.75px] shrink-0 w-full" data-name="Container">
       <Icon70 />
       <Container174 />
       <Container178 />
@@ -4718,7 +4718,7 @@ function Paragraph29() {
 
 function Container179() {
   return (
-    <div className="bg-emerald-900 h-[78px] relative rounded-[12.75px] shrink-0 w-full" data-name="Container">
+    <div className="bg-[#0a0a0a] h-[78px] relative rounded-[12.75px] shrink-0 w-full" data-name="Container">
       <div className="content-stretch flex flex-col gap-[3.5px] items-start pt-[14px] px-[14px] relative size-full">
         <Paragraph28 />
         <Paragraph29 />
@@ -5554,7 +5554,7 @@ function Icon87() {
 
 function Text71() {
   return (
-    <div className="absolute bg-emerald-900 h-[16.828px] left-[273.2px] rounded-[3.5px] top-[9.75px] w-[63.578px]" data-name="Text">
+    <div className="absolute bg-[#0a0a0a] h-[16.828px] left-[273.2px] rounded-[3.5px] top-[9.75px] w-[63.578px]" data-name="Text">
       <Icon87 />
       <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[13.333px] left-[17.5px] not-italic text-[10px] text-white top-[2.25px] tracking-[0.1172px]">{` Overdue`}</p>
     </div>
@@ -5844,7 +5844,7 @@ function Icon91() {
 
 function Text91() {
   return (
-    <div className="absolute bg-emerald-900 h-[16.828px] left-[273.2px] rounded-[3.5px] top-[9.75px] w-[63.578px]" data-name="Text">
+    <div className="absolute bg-[#0a0a0a] h-[16.828px] left-[273.2px] rounded-[3.5px] top-[9.75px] w-[63.578px]" data-name="Text">
       <Icon91 />
       <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[13.333px] left-[17.5px] not-italic text-[10px] text-white top-[2.25px] tracking-[0.1172px]">{` Overdue`}</p>
     </div>
@@ -6068,7 +6068,7 @@ function Container236() {
 
 function Container227() {
   return (
-    <div className="absolute bg-emerald-900 h-[36px] left-0 overflow-clip top-[347px] w-[866px]" data-name="Container">
+    <div className="absolute bg-[#0a0a0a] h-[36px] left-0 overflow-clip top-[347px] w-[866px]" data-name="Container">
       <Container228 />
       <Container233 />
       <Container234 />
@@ -6635,7 +6635,7 @@ function Container241() {
 
 function Footer() {
   return (
-    <div className="bg-emerald-900 h-[365px] overflow-clip relative shrink-0 w-full" data-name="Footer">
+    <div className="bg-[#0a0a0a] h-[365px] overflow-clip relative shrink-0 w-full" data-name="Footer">
       <Container238 />
       <Container241 />
     </div>

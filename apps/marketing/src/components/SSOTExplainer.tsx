@@ -113,7 +113,7 @@ function MissedSignalsCanvas() {
         ctx.fill();
 
         // Label text
-        ctx.fillStyle = "#064e3b";
+        ctx.fillStyle = "#0a0a0a";
         ctx.font = `500 ${6 * s}px system-ui`;
         ctx.textAlign = "left";
         ctx.textBaseline = "middle";

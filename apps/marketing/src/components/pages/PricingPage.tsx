@@ -243,7 +243,7 @@ export function PricingPage() {
             No credit card required. Cancel anytime. 40% lower total cost than legacy ERP integrations.
           </motion.p>
           <motion.div
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 backdrop-blur-sm border border-emerald-600/[0.08] text-sm text-muted-foreground"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/70 backdrop-blur-sm border border-black/[0.04] text-sm text-muted-foreground"
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, type: "spring", stiffness: 300, damping: 20 }}
@@ -259,7 +259,7 @@ export function PricingPage() {
       </section>
 
       {/* Tiers */}
-      <section className="py-16 border-t border-emerald-600/[0.08]">
+      <section className="py-16 border-t border-black/[0.04]">
         <div className="container mx-auto px-4">
           <StaggerChildren
             className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5"
@@ -274,11 +274,11 @@ export function PricingPage() {
                 >
                   <Card
                     className={`relative h-full rounded-2xl ${
-                      tier.popular ? "shadow-lg border-emerald-600/20" : "border-emerald-600/[0.08]"
+                      tier.popular ? "shadow-lg border-[#0a0a0a]/20" : "border-black/[0.04]"
                     } hover:shadow-xl transition-shadow duration-300`}
                   >
                     {tier.popular && (
-                      <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-emerald-600 text-white rounded-full px-4">
+                      <Badge className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0a0a0a] text-white rounded-full px-4">
                         Most Popular
                       </Badge>
                     )}
@@ -298,7 +298,7 @@ export function PricingPage() {
                       <p className="text-sm text-muted-foreground mb-6">{tier.description}</p>
 
                       <Button
-                        className={`w-full mb-6 rounded-full ${tier.popular ? "bg-emerald-600 hover:bg-emerald-700" : ""}`}
+                        className={`w-full mb-6 rounded-full ${tier.popular ? "bg-[#0a0a0a] hover:bg-[#1a1a1a]" : ""}`}
                         variant={tier.popular ? "default" : "outline"}
                         asChild
                       >

@@ -63,7 +63,7 @@ function Icon() {
 
 function Container3() {
   return (
-    <div className="absolute bg-emerald-900 content-stretch flex items-center justify-center left-[22px] rounded-[7px] size-[42px] top-[25.5px]" data-name="Container">
+    <div className="absolute bg-black content-stretch flex items-center justify-center left-[22px] rounded-[7px] size-[42px] top-[25.5px]" data-name="Container">
       <Icon />
     </div>
   );
@@ -120,7 +120,7 @@ function Icon1() {
 
 function Container6() {
   return (
-    <div className="absolute bg-emerald-900 content-stretch flex items-center justify-center left-[22px] rounded-[7px] size-[42px] top-[25.5px]" data-name="Container">
+    <div className="absolute bg-black content-stretch flex items-center justify-center left-[22px] rounded-[7px] size-[42px] top-[25.5px]" data-name="Container">
       <Icon1 />
     </div>
   );
@@ -180,7 +180,7 @@ function Icon2() {
 
 function Container9() {
   return (
-    <div className="absolute bg-emerald-900 content-stretch flex items-center justify-center left-[22px] rounded-[7px] size-[42px] top-[25.5px]" data-name="Container">
+    <div className="absolute bg-black content-stretch flex items-center justify-center left-[22px] rounded-[7px] size-[42px] top-[25.5px]" data-name="Container">
       <Icon2 />
     </div>
   );
@@ -247,7 +247,7 @@ function Icon3() {
 
 function Container12() {
   return (
-    <div className="absolute bg-emerald-900 content-stretch flex items-center justify-center left-[22px] rounded-[7px] size-[42px] top-[25.5px]" data-name="Container">
+    <div className="absolute bg-black content-stretch flex items-center justify-center left-[22px] rounded-[7px] size-[42px] top-[25.5px]" data-name="Container">
       <Icon3 />
     </div>
   );
@@ -310,7 +310,7 @@ function Paragraph6() {
 function Container14() {
   return (
     <div className="absolute bg-white content-stretch flex flex-col h-[105px] items-start left-[56px] pl-[32px] pr-[28px] pt-[28px] rounded-br-[11px] rounded-tr-[11px] top-[634px] w-[784px]" data-name="Container">
-      <div aria-hidden="true" className="absolute border-emerald-600 border-l-4 border-solid inset-0 pointer-events-none rounded-br-[11px] rounded-tr-[11px] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_0px_rgba(0,0,0,0.1)]" />
+      <div aria-hidden="true" className="absolute border-black border-l-4 border-solid inset-0 pointer-events-none rounded-br-[11px] rounded-tr-[11px] shadow-[0px_1px_3px_0px_rgba(0,0,0,0.1),0px_1px_2px_0px_rgba(0,0,0,0.1)]" />
       <Paragraph6 />
     </div>
   );
@@ -641,7 +641,7 @@ function Container25() {
 
 function Container23() {
   return (
-    <div className="bg-emerald-900 h-[291px] overflow-clip relative rounded-[21px] shrink-0 w-full" data-name="Container">
+    <div className="bg-black h-[291px] overflow-clip relative rounded-[21px] shrink-0 w-full" data-name="Container">
       <Container24 />
       <Container25 />
     </div>
@@ -760,7 +760,7 @@ function Container31() {
 
 function Button() {
   return (
-    <div className="bg-emerald-900 h-[59.5px] relative rounded-[11px] shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] shrink-0 w-[317.336px]" data-name="Button">
+    <div className="bg-black h-[59.5px] relative rounded-[11px] shadow-[0px_10px_15px_0px_rgba(0,0,0,0.1),0px_4px_6px_0px_rgba(0,0,0,0.1)] shrink-0 w-[317.336px]" data-name="Button">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex gap-[14px] items-center px-[14px] relative size-full">
         <Container30 />
         <Container31 />
@@ -1285,7 +1285,7 @@ function Paragraph21() {
 function Container61() {
   return (
     <div className="absolute content-stretch flex flex-col gap-[7px] h-[112px] items-start left-0 pl-[23px] top-[140px] w-[548.664px]" data-name="Container">
-      <div aria-hidden="true" className="absolute border-emerald-600 border-l-2 border-solid inset-0 pointer-events-none" />
+      <div aria-hidden="true" className="absolute border-black border-l-2 border-solid inset-0 pointer-events-none" />
       <Paragraph20 />
       <Paragraph21 />
     </div>
@@ -1311,7 +1311,7 @@ function Container56() {
 }
 
 function Container64() {
-  return <div className="absolute bg-emerald-900 left-0 rounded-[16777200px] size-[7px] top-[3.5px]" data-name="Container" />;
+  return <div className="absolute bg-black left-0 rounded-[16777200px] size-[7px] top-[3.5px]" data-name="Container" />;
 }
 
 function Paragraph22() {
@@ -1896,7 +1896,7 @@ function Icon20() {
 
 function Button6() {
   return (
-    <div className="bg-emerald-900 h-[42px] relative rounded-[5px] shrink-0 w-[205.055px]" data-name="Button">
+    <div className="bg-black h-[42px] relative rounded-[5px] shrink-0 w-[205.055px]" data-name="Button">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
         <p className="-translate-x-1/2 absolute font-['Inter:Medium',sans-serif] font-medium leading-[21px] left-[89.5px] not-italic text-[14px] text-center text-white top-[10.5px] tracking-[-0.1504px]">Start the Cognitive Era</p>
         <Icon20 />
@@ -2260,7 +2260,7 @@ function Container106() {
 
 function Container105() {
   return (
-    <div className="absolute bg-emerald-900 content-stretch flex items-center justify-center left-0 pl-[4px] pr-[4.008px] py-[4px] rounded-[16777200px] size-[140px] top-0" data-name="Container">
+    <div className="absolute bg-black content-stretch flex items-center justify-center left-0 pl-[4px] pr-[4.008px] py-[4px] rounded-[16777200px] size-[140px] top-0" data-name="Container">
       <div aria-hidden="true" className="absolute border-4 border-solid border-white inset-0 pointer-events-none rounded-[16777200px] shadow-[0px_0px_0px_0px_#e5e5e5,0px_25px_50px_0px_rgba(0,0,0,0.25)]" />
       <Container106 />
     </div>
@@ -2531,7 +2531,7 @@ function Container111() {
 
 function Section5() {
   return (
-    <div className="absolute bg-emerald-900 h-[635.25px] left-0 overflow-clip top-[4817.44px] w-[1076px]" data-name="Section">
+    <div className="absolute bg-black h-[635.25px] left-0 overflow-clip top-[4817.44px] w-[1076px]" data-name="Section">
       <Container110 />
       <Container111 />
     </div>
@@ -2646,7 +2646,7 @@ function TextInput() {
 
 function Button9() {
   return (
-    <div className="bg-emerald-900 h-[31.5px] relative rounded-[5px] shrink-0 w-[87.227px]" data-name="Button">
+    <div className="bg-black h-[31.5px] relative rounded-[5px] shrink-0 w-[87.227px]" data-name="Button">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center px-[14px] py-[7px] relative size-full">
         <p className="font-['Inter:Medium',sans-serif] font-medium leading-[17.5px] not-italic relative shrink-0 text-[12.25px] text-center text-white tracking-[-0.0179px]">Subscribe</p>
       </div>
@@ -3317,7 +3317,7 @@ function Button10() {
 
 function Button11() {
   return (
-    <div className="bg-emerald-900 h-[31.5px] relative rounded-[5px] shrink-0 w-[86.438px]" data-name="Button">
+    <div className="bg-black h-[31.5px] relative rounded-[5px] shrink-0 w-[86.438px]" data-name="Button">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center px-[14px] py-[7px] relative size-full">
         <p className="font-['Inter:Medium',sans-serif] font-medium leading-[17.5px] not-italic relative shrink-0 text-[12.25px] text-center text-white tracking-[-0.0179px]">Start Free</p>
       </div>

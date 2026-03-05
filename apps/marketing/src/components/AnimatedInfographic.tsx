@@ -169,7 +169,7 @@ export function VideoPlayer({
         {thumbnail}
 
         {/* Dark Overlay */}
-        <div className="absolute inset-0 bg-emerald-900/40 group-hover:bg-emerald-900/30 transition-colors duration-300" />
+        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors duration-300" />
 
         {/* Play Button */}
         <motion.div
@@ -190,7 +190,7 @@ export function VideoPlayer({
 
         {/* Duration Badge */}
         <motion.div
-          className="absolute bottom-4 right-4 px-2 py-1 rounded bg-emerald-900/80 text-white text-xs font-medium"
+          className="absolute bottom-4 right-4 px-2 py-1 rounded bg-black/80 text-white text-xs font-medium"
           initial={{ opacity: 0, y: 10 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ delay: 0.5 }}

@@ -330,7 +330,7 @@ export function StoryPage() {
                 onClick={() => setActiveStory(i)}
                 className={`relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm transition-all ${
                   i === activeStory
-                    ? "bg-emerald-600 text-white shadow-lg"
+                    ? "bg-black text-white shadow-lg"
                     : "bg-white border text-muted-foreground hover:border-foreground/30"
                 }`}
                 whileHover={{ y: -2 }}
@@ -342,7 +342,7 @@ export function StoryPage() {
                 <span className="sm:hidden">{s.subtitle.split(" ")[0]}</span>
                 {i === activeStory && (
                   <motion.div
-                    className="absolute inset-0 rounded-xl bg-emerald-600 -z-10"
+                    className="absolute inset-0 rounded-xl bg-black -z-10"
                     layoutId="story-tab-bg"
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
@@ -387,7 +387,7 @@ export function StoryPage() {
                 <CardContent className="p-8 md:p-10">
                   <div className="flex items-center gap-3 mb-6">
                     <motion.div
-                      className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center"
+                      className="w-10 h-10 rounded-xl bg-black flex items-center justify-center"
                       initial={{ rotate: -10, scale: 0.8 }}
                       animate={{ rotate: 0, scale: 1 }}
                       transition={{ type: "spring", stiffness: 300, damping: 15 }}
@@ -511,7 +511,7 @@ export function StoryPage() {
                 >
                   <Card className="h-full hover:shadow-lg transition-shadow duration-300">
                     <CardContent className="p-6">
-                      <div className="w-10 h-10 rounded-lg bg-emerald-600 flex items-center justify-center mb-4">
+                      <div className="w-10 h-10 rounded-lg bg-black flex items-center justify-center mb-4">
                         <item.icon className="h-5 w-5 text-white" />
                       </div>
                       <h3 className="text-sm mb-2">{item.title}</h3>
@@ -524,7 +524,7 @@ export function StoryPage() {
           </StaggerChildren>
 
           <FadeIn delay={0.3} className="mt-12 max-w-3xl mx-auto">
-            <div className="border-l-4 border-emerald-600 bg-white rounded-r-xl shadow-md px-8 py-6">
+            <div className="border-l-4 border-black bg-white rounded-r-xl shadow-md px-8 py-6">
               <p className="italic text-muted-foreground">
                 "Like how instant payments didn't just improve bank transfers but created a new category
                 of real-time finance, IntegrateWise doesn't improve integrations — it creates

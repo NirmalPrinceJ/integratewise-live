@@ -50,7 +50,7 @@ export function ContactPage() {
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-emerald-900 to-emerald-950 flex items-center justify-center p-6">
+      <div className="min-h-screen bg-gradient-to-b from-[#0C1222] to-[#0a0a0a] flex items-center justify-center p-6">
         <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="text-center max-w-md">
           <div className="w-16 h-16 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle2 className="w-8 h-8 text-emerald-400" />
@@ -64,7 +64,7 @@ export function ContactPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-900 to-emerald-950 py-20 px-6">
+    <div className="min-h-screen bg-gradient-to-b from-[#0C1222] to-[#0a0a0a] py-20 px-6">
       <div className="max-w-2xl mx-auto">
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
           <h1 className="text-4xl font-bold text-white mb-3">Get in Touch</h1>

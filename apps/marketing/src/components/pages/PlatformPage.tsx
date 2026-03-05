@@ -362,7 +362,7 @@ export function PlatformPage() {
                 >
                   <motion.div
                     className="w-10 h-10 rounded-xl bg-muted flex items-center justify-center"
-                    whileHover={{ scale: 1.1, backgroundColor: "#059669" }}
+                    whileHover={{ scale: 1.1, backgroundColor: "#0a0a0a" }}
                     transition={{ type: "spring", stiffness: 300, damping: 15 }}
                   >
                     <s.icon className="h-5 w-5" />

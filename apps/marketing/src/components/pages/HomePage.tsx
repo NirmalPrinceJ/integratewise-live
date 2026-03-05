@@ -42,8 +42,8 @@ function GlobalProblemHero() {
         <div className="text-center max-w-4xl mx-auto">
           {/* Minimal badge */}
           <FadeIn className="mb-8">
-            <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-emerald-600/[0.06] border border-emerald-600/[0.1]">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 ag-pulse-dot" />
+            <div className="inline-flex items-center gap-2 rounded-full px-4 py-1.5 bg-black/[0.03] border border-black/[0.04]">
+              <div className="w-1.5 h-1.5 rounded-full bg-[#4285f4] ag-pulse-dot" />
               <span className="text-[11px] uppercase tracking-[0.15em] text-muted-foreground">The Disconnection Era</span>
             </div>
           </FadeIn>
@@ -75,7 +75,7 @@ function GlobalProblemHero() {
             <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
               <Button
                 size="lg"
-                className="rounded-full px-8 sm:px-10 py-6 sm:py-7 bg-emerald-600 text-white hover:bg-emerald-700 shadow-2xl text-base sm:text-[17px] font-medium w-full sm:w-auto"
+                className="rounded-full px-8 sm:px-10 py-6 sm:py-7 bg-foreground text-white hover:bg-foreground/90 shadow-2xl text-base sm:text-[17px] font-medium w-full sm:w-auto"
                 asChild
               >
                 <a href="https://app.integratewise.com" target="_blank" rel="noopener noreferrer">
@@ -85,8 +85,8 @@ function GlobalProblemHero() {
             </motion.div>
             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 text-[13px] sm:text-sm text-muted-foreground mt-2">
               <span>Start free. No credit card required.</span>
-              <span className="hidden sm:block w-1 h-1 rounded-full bg-emerald-600/20" />
-              <Link to="/platform" className="hover:text-emerald-700 transition-colors underline underline-offset-4 font-medium">
+              <span className="hidden sm:block w-1 h-1 rounded-full bg-black/20" />
+              <Link to="/platform" className="hover:text-black transition-colors underline underline-offset-4 font-medium">
                 Explore Use Cases
               </Link>
             </div>
@@ -107,13 +107,13 @@ function GlobalProblemHero() {
             ].map((stat, i) => (
               <Float key={stat.label} delay={stat.d} duration={5 + i * 0.5} y={6}>
                 <motion.div
-                  className="px-4 py-5 rounded-2xl bg-white/70 backdrop-blur-sm border border-emerald-600/[0.08] shadow-[0_1px_3px_rgba(5,150,105,0.06)] group cursor-default hover:shadow-md transition-shadow"
+                  className="px-4 py-5 rounded-2xl bg-white/70 backdrop-blur-sm border border-black/[0.04] shadow-[0_1px_3px_rgba(0,0,0,0.04)] group cursor-default hover:shadow-md transition-shadow"
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.8 + i * 0.1 }}
                   whileHover={{ y: -3 }}
                 >
-                  <div className="w-9 h-9 rounded-xl mx-auto mb-2 flex items-center justify-center bg-emerald-600/[0.08]">
+                  <div className="w-9 h-9 rounded-xl mx-auto mb-2 flex items-center justify-center bg-black/[0.04]">
                     <stat.icon className="h-4 w-4 text-foreground/50" />
                   </div>
                   <p className="text-2xl tracking-tight">{stat.number}</p>
@@ -138,7 +138,7 @@ function DarkProductShowcase() {
   return (
     <section className="px-4 lg:px-8 pb-8" ref={ref}>
       <motion.div
-        className="ag-rounded-section bg-emerald-900 text-white relative overflow-hidden max-w-[1400px] mx-auto ag-shimmer"
+        className="ag-rounded-section bg-[#000000] text-white relative overflow-hidden max-w-[1400px] mx-auto ag-shimmer"
         initial={{ opacity: 0, y: 40 }}
         animate={isInView ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.8 }}
@@ -234,7 +234,7 @@ function DarkProductShowcase() {
                 <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
                   <Button
                     size="lg"
-                    className="rounded-full px-8 bg-white text-emerald-900 hover:bg-white/90 shadow-lg text-[15px] h-12"
+                    className="rounded-full px-8 bg-white text-[#0a0a0a] hover:bg-white/90 shadow-lg text-[15px] h-12"
                     asChild
                   >
                     <a href="https://app.integratewise.com" target="_blank" rel="noopener noreferrer">
@@ -253,7 +253,7 @@ function DarkProductShowcase() {
 
             {/* Product screenshot */}
             <motion.div
-              className="max-w-5xl mx-auto rounded-2xl bg-emerald-950 border border-white/[0.08] p-4 md:p-8 shadow-2xl ag-glow-blue"
+              className="max-w-5xl mx-auto rounded-2xl bg-[#0a0a0a] border border-white/[0.06] p-4 md:p-8 shadow-2xl ag-glow-blue"
               initial={{ opacity: 0, y: 40 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ delay: 0.4, duration: 0.8 }}
@@ -314,7 +314,7 @@ function HowItHeals() {
           {healingSteps.map((step, i) => (
             <Float key={step.title} delay={i * 0.3} duration={5 + i} y={5}>
               <motion.div
-                className="ag-gradient-border relative p-6 rounded-2xl bg-white border border-emerald-600/[0.08] shadow-[0_1px_3px_rgba(5,150,105,0.06)] hover:shadow-lg transition-all duration-300 h-full"
+                className="ag-gradient-border relative p-6 rounded-2xl bg-white border border-black/[0.04] shadow-[0_1px_3px_rgba(0,0,0,0.04)] hover:shadow-lg transition-all duration-300 h-full"
                 initial={{ opacity: 0, y: 40 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: 0.1 + i * 0.1, duration: 0.6 }}
@@ -346,7 +346,7 @@ function HowItHeals() {
         </div>
         <FadeIn delay={0.3} className="text-center mt-8">
           <Link to="/platform">
-            <Button variant="outline" className="rounded-full border-emerald-600/[0.12]">
+            <Button variant="outline" className="rounded-full border-black/[0.08]">
               See the Full Picture <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </Link>
@@ -377,7 +377,7 @@ function WhatChanges() {
             <StaggerItem key={item.title}>
               <Float delay={i * 0.4} duration={6} y={6}>
                 <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
-                  <Card className="h-full hover:shadow-lg transition-shadow duration-300 rounded-2xl border-emerald-600/[0.08] overflow-hidden">
+                  <Card className="h-full hover:shadow-lg transition-shadow duration-300 rounded-2xl border-black/[0.04] overflow-hidden">
                     <CardContent className="p-6">
                       <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center mb-4"
@@ -438,7 +438,7 @@ function IndustryBenefits() {
           {verticalDetails.map((v, i) => (
             <Float key={v.label} delay={i * 0.15} duration={6 + (i % 3)} y={3}>
               <motion.div
-                className="group p-5 rounded-2xl bg-white border border-emerald-600/[0.08] shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-300 cursor-default overflow-hidden relative"
+                className="group p-5 rounded-2xl bg-white border border-black/[0.04] shadow-[0_1px_2px_rgba(0,0,0,0.03)] hover:shadow-lg transition-all duration-300 cursor-default overflow-hidden relative"
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ delay: i * 0.06 }}
@@ -478,7 +478,7 @@ function IndustryBenefits() {
         </div>
         <FadeIn delay={0.3} className="text-center mt-10">
           <Link to="/who-its-for">
-            <Button variant="outline" className="rounded-full border-emerald-600/[0.12]">See Stories From Your Industry <ArrowRight className="ml-2 h-4 w-4" /></Button>
+            <Button variant="outline" className="rounded-full border-black/[0.08]">See Stories From Your Industry <ArrowRight className="ml-2 h-4 w-4" /></Button>
           </Link>
         </FadeIn>
       </div>
@@ -526,7 +526,7 @@ function ValidationPath() {
               <Float delay={i * 0.3} duration={5} y={4}>
                 <Link to={item.link}>
                   <motion.div whileHover={{ y: -6 }} transition={{ type: "spring", stiffness: 300, damping: 20 }}>
-                    <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer group rounded-2xl border-emerald-600/[0.08]">
+                    <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer group rounded-2xl border-black/[0.04]">
                       <CardContent className="p-5">
                         <div
                           className="w-10 h-10 rounded-lg flex items-center justify-center mb-3 transition-all duration-300"
@@ -563,7 +563,7 @@ function CTASection() {
     <section ref={ref} className="px-4 lg:px-8 pb-8">
       <motion.div
         className="ag-rounded-section text-white relative overflow-hidden max-w-[1400px] mx-auto"
-        style={{ backgroundColor: '#064e3b' }}
+        style={{ backgroundColor: '#000000' }}
         initial={{ opacity: 0, y: 30 }}
         animate={isInView ? { opacity: 1, y: 0 } : { opacity: 1, y: 0 }}
         transition={{ duration: 0.8 }}
@@ -618,7 +618,7 @@ function CTASection() {
             <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
               <Button
                 size="lg"
-                className="bg-white text-emerald-900 hover:bg-white/90 rounded-full px-8 shadow-xl text-[15px] h-12"
+                className="bg-white text-[#0a0a0a] hover:bg-white/90 rounded-full px-8 shadow-xl text-[15px] h-12"
                 asChild
               >
                 <a href="https://app.integratewise.com" target="_blank" rel="noopener noreferrer">

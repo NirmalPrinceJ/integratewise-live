@@ -30,7 +30,7 @@ export function Header() {
   return (
     <motion.header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${scrolled
-          ? "bg-white/80 backdrop-blur-xl border-b border-emerald-600/[0.08] shadow-[0_1px_3px_rgba(5,150,105,0.06)]"
+          ? "bg-white/80 backdrop-blur-xl border-b border-black/[0.04] shadow-[0_1px_3px_rgba(0,0,0,0.04)]"
           : "bg-transparent"
         }`}
       initial={{ y: -20, opacity: 0 }}
@@ -89,7 +89,7 @@ export function Header() {
           >
             <Button
               size="sm"
-              className="rounded-full px-5 bg-emerald-600 text-white hover:bg-emerald-700 text-[13px] shadow-sm"
+              className="rounded-full px-5 bg-[#0a0a0a] text-white hover:bg-[#1a1a1a] text-[13px] shadow-sm"
               asChild
             >
               <a href="https://app.integratewise.com" target="_blank" rel="noopener noreferrer">
@@ -125,7 +125,7 @@ export function Header() {
       <AnimatePresence>
         {mobileOpen && (
           <motion.div
-            className="lg:hidden border-t border-emerald-600/[0.08] bg-white/95 backdrop-blur-xl overflow-hidden"
+            className="lg:hidden border-t border-black/[0.04] bg-white/95 backdrop-blur-xl overflow-hidden"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -147,9 +147,9 @@ export function Header() {
                   </motion.div>
                 );
               })}
-              <motion.div className="pt-3 border-t border-emerald-600/[0.08] mt-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
+              <motion.div className="pt-3 border-t border-black/[0.04] mt-2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
                 <Button variant="ghost" className="w-full justify-start text-sm text-muted-foreground">Sign In</Button>
-                <Button className="w-full mt-2 rounded-full bg-emerald-600 hover:bg-emerald-700" asChild>
+                <Button className="w-full mt-2 rounded-full bg-[#0a0a0a]" asChild>
                   <a href="https://app.integratewise.com" target="_blank" rel="noopener noreferrer">
                     Start Free <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                   </a>

@@ -99,7 +99,7 @@ export function DoctorScene() {
 
     // Screen 1
     const s1x = 18*s, s1y = 25*s, s1w = 85*s, s1h = 65*s;
-    ctx.fillStyle = "#065f46"; roundRect(ctx, s1x, s1y, s1w, s1h, 4*s); ctx.fill();
+    ctx.fillStyle = "#1a1a1a"; roundRect(ctx, s1x, s1y, s1w, s1h, 4*s); ctx.fill();
     ctx.fillStyle = "#fff"; roundRect(ctx, s1x+4*s, s1y+4*s, s1w-8*s, s1h-12*s, 2*s); ctx.fill();
     ctx.fillStyle = "#a3a3a3"; roundRect(ctx, s1x+8*s, s1y+8*s, 32*s, 3*s, 1); ctx.fill();
     drawScreenLines(ctx, s1x+8*s, s1y+15*s, 5, 50*s);
@@ -108,16 +108,16 @@ export function DoctorScene() {
 
     // Screen 2
     const s2x = 118*s, s2y = 20*s, s2w = 85*s, s2h = 65*s;
-    ctx.fillStyle = "#065f46"; roundRect(ctx, s2x, s2y, s2w, s2h, 4*s); ctx.fill();
+    ctx.fillStyle = "#1a1a1a"; roundRect(ctx, s2x, s2y, s2w, s2h, 4*s); ctx.fill();
     ctx.fillStyle = "#fff"; roundRect(ctx, s2x+4*s, s2y+4*s, s2w-8*s, s2h-12*s, 2*s); ctx.fill();
-    ctx.fillStyle = "#064e3b"; roundRect(ctx, s2x+8*s, s2y+8*s, 22*s, 3*s, 1); ctx.fill();
+    ctx.fillStyle = "#0a0a0a"; roundRect(ctx, s2x+8*s, s2y+8*s, 22*s, 3*s, 1); ctx.fill();
     drawScreenLines(ctx, s2x+8*s, s2y+16*s, 6, 55*s);
 
     // Tablet
     const s3x = 225*s, s3y = 35*s, s3w = 65*s, s3h = 85*s;
     ctx.fillStyle = "#2a2a2a"; roundRect(ctx, s3x, s3y, s3w, s3h, 8*s); ctx.fill();
     ctx.fillStyle = "#fff"; roundRect(ctx, s3x+5*s, s3y+7*s, s3w-10*s, s3h-22*s, 4*s); ctx.fill();
-    ctx.fillStyle = "#064e3b"; roundRect(ctx, s3x+10*s, s3y+13*s, 22*s, 3*s, 1); ctx.fill();
+    ctx.fillStyle = "#0a0a0a"; roundRect(ctx, s3x+10*s, s3y+13*s, 22*s, 3*s, 1); ctx.fill();
     drawScreenLines(ctx, s3x+10*s, s3y+20*s, 5, 38*s);
     const cp = (Math.sin(t*1.5)+1)/2;
     if (cp > 0.3) {
@@ -167,14 +167,14 @@ export function StudentScene() {
     drawConfetti(ctx, t, w, h);
 
     const lx=60*s, ly=25*s, lw=160*s, lh=95*s;
-    ctx.fillStyle = "#065f46"; roundRect(ctx,lx,ly,lw,lh,5*s); ctx.fill();
+    ctx.fillStyle = "#1a1a1a"; roundRect(ctx,lx,ly,lw,lh,5*s); ctx.fill();
     ctx.fillStyle = "#fff"; roundRect(ctx,lx+5*s,ly+4*s,lw-10*s,lh-14*s,3*s); ctx.fill();
 
     const tabCount = 4+Math.floor(t*0.5)%9;
     for (let i=0; i<Math.min(tabCount,8); i++) {
       const a = Math.min(1,(t-i*0.2)*3); if (a<=0) continue;
       ctx.save(); ctx.globalAlpha = a;
-      ctx.fillStyle = i===0?"#064e3b":"#f0f0f0"; ctx.strokeStyle = "#e5e5e5"; ctx.lineWidth = 0.3;
+      ctx.fillStyle = i===0?"#0a0a0a":"#f0f0f0"; ctx.strokeStyle = "#e5e5e5"; ctx.lineWidth = 0.3;
       roundRect(ctx,lx+9*s+i*17*s,ly+8*s,15*s,5*s,1*s); ctx.fill(); ctx.stroke(); ctx.restore();
     }
     const bp = 1+0.12*Math.sin(t*5);
@@ -189,13 +189,13 @@ export function StudentScene() {
 
     // Phone
     const px=248*s,py=30*s,pw=48*s,ph=80*s;
-    ctx.fillStyle = "#065f46"; roundRect(ctx,px,py,pw,ph,7*s); ctx.fill();
+    ctx.fillStyle = "#1a1a1a"; roundRect(ctx,px,py,pw,ph,7*s); ctx.fill();
     ctx.fillStyle = "#fff"; roundRect(ctx,px+4*s,py+7*s,pw-8*s,ph-17*s,4*s); ctx.fill();
     ctx.fillStyle = "#555"; ctx.beginPath(); ctx.arc(px+pw/2,py+ph-5*s,2.5*s,0,Math.PI*2); ctx.fill();
     [{y:12,w:24,d:true},{y:22,w:20,d:false},{y:32,w:28,d:true},{y:42,w:22,d:false},{y:52,w:18,d:true}].forEach((b,i)=>{
       const a=Math.min(1,Math.max(0,(t-0.5-i*0.8)*2)); if(a<=0)return;
       ctx.save(); ctx.globalAlpha=a*(b.d?0.8:1);
-      ctx.fillStyle=b.d?"#064e3b":"#e5e5e5";
+      ctx.fillStyle=b.d?"#0a0a0a":"#e5e5e5";
       roundRect(ctx,b.d?px+8*s:px+pw-8*s-b.w*s,py+b.y*s,b.w*s,7*s,3.5*s); ctx.fill(); ctx.restore();
     });
 
@@ -227,7 +227,7 @@ export function SmallBizScene() {
 
     // Phone
     const px=20*s,py=18*s,pw=60*s,ph=105*s;
-    ctx.fillStyle="#065f46"; roundRect(ctx,px,py,pw,ph,9*s); ctx.fill();
+    ctx.fillStyle="#1a1a1a"; roundRect(ctx,px,py,pw,ph,9*s); ctx.fill();
     ctx.fillStyle="#fff"; roundRect(ctx,px+4*s,py+8*s,pw-8*s,ph-18*s,5*s); ctx.fill();
     ctx.fillStyle="#25D366"; roundRect(ctx,px+4*s,py+8*s,pw-8*s,10*s,5*s); ctx.fill();
     ctx.fillRect(px+4*s,py+15*s,pw-8*s,3*s);
@@ -288,7 +288,7 @@ export function FreelancerScene() {
     const ac=Math.floor(t/1.8)%5;
 
     const mx=65*s,my=12*s,mw=190*s,mh=110*s;
-    ctx.fillStyle="#065f46";roundRect(ctx,mx,my,mw,mh,5*s);ctx.fill();
+    ctx.fillStyle="#1a1a1a";roundRect(ctx,mx,my,mw,mh,5*s);ctx.fill();
     ctx.fillStyle="#fff";roundRect(ctx,mx+5*s,my+4*s,mw-10*s,mh-14*s,3*s);ctx.fill();
 
     clients.forEach((c,i)=>{
@@ -314,7 +314,7 @@ export function FreelancerScene() {
     ctx.fillStyle="#c4c4c4";roundRect(ctx,mx+mw/2-20*s,my+mh,40*s,10*s,3*s);ctx.fill();
 
     ctx.save();ctx.translate(w/2,my+mh/2-5*s);ctx.rotate(t*1.57);
-    ctx.strokeStyle="#064e3b";ctx.lineWidth=0.3*s;ctx.globalAlpha=0.07;ctx.setLineDash([3*s,8*s]);
+    ctx.strokeStyle="#0a0a0a";ctx.lineWidth=0.3*s;ctx.globalAlpha=0.07;ctx.setLineDash([3*s,8*s]);
     ctx.beginPath();ctx.arc(0,0,55*s,0,Math.PI*2);ctx.stroke();ctx.setLineDash([]);ctx.restore();
 
     [{x:8,y:30,r:-5,bg:"#fef08a"},{x:8,y:90,r:3,bg:"#fce7f3"},{x:268,y:30,r:4,bg:"#dbeafe"},
@@ -359,9 +359,9 @@ export function ParentScene() {
     drawNotifBadge(ctx,px+pw-3*s,py+3*s,5+Math.floor(t*0.66)%20,t,0);
 
     const lx=105*s,ly=20*s,lw=115*s,lh=80*s;
-    ctx.fillStyle="#065f46";roundRect(ctx,lx,ly,lw,lh,4*s);ctx.fill();
+    ctx.fillStyle="#1a1a1a";roundRect(ctx,lx,ly,lw,lh,4*s);ctx.fill();
     ctx.fillStyle="#fff";roundRect(ctx,lx+4*s,ly+4*s,lw-8*s,lh-10*s,2*s);ctx.fill();
-    ctx.fillStyle="#064e3b";ctx.font=`${5*s}px system-ui`;ctx.textAlign="left";ctx.fillText("February 2026",lx+8*s,ly+12*s);
+    ctx.fillStyle="#0a0a0a";ctx.font=`${5*s}px system-ui`;ctx.textAlign="left";ctx.fillText("February 2026",lx+8*s,ly+12*s);
     const cellW=13*s,cellH=10*s,startX=lx+8*s,startY=ly+18*s;
     ["M","T","W","T","F","S","S"].forEach((d,i)=>{ctx.fillStyle="#a3a3a3";ctx.font=`${3.5*s}px system-ui`;ctx.textAlign="center";ctx.fillText(d,startX+i*cellW+cellW/2,startY);});
     for(let r=0;r<4;r++)for(let c=0;c<7;c++){
@@ -398,7 +398,7 @@ export function ExecutiveScene() {
     drawConfetti(ctx,t,w,h);
 
     const mx=30*s,my=12*s,mw=260*s,mh=105*s;
-    ctx.fillStyle="#065f46";roundRect(ctx,mx,my,mw,mh,5*s);ctx.fill();
+    ctx.fillStyle="#1a1a1a";roundRect(ctx,mx,my,mw,mh,5*s);ctx.fill();
     ctx.fillStyle="#fff";roundRect(ctx,mx+4*s,my+4*s,mw-8*s,mh-12*s,3*s);ctx.fill();
 
     const tl=["Sales","Ops","Finance","HR","Support"];
@@ -430,7 +430,7 @@ export function ExecutiveScene() {
       ctx.fillStyle="#fafafa";ctx.strokeStyle="#e5e5e5";ctx.lineWidth=0.5;
       roundRect(ctx,kx,ky,33*s,13*s,2*s);ctx.fill();ctx.stroke();
       ctx.fillStyle="#a3a3a3";roundRect(ctx,kx+3*s,ky+3*s,15*s,2*s,1);ctx.fill();
-      ctx.fillStyle="#064e3b";roundRect(ctx,kx+3*s,ky+7*s,20*s,3*s,1);ctx.fill();
+      ctx.fillStyle="#0a0a0a";roundRect(ctx,kx+3*s,ky+7*s,20*s,3*s,1);ctx.fill();
     }
 
     const pieX=mx+mw-50*s,pieY=my+20*s;

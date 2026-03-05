@@ -17,7 +17,7 @@ export function NetworkIllustration() {
         cx="200"
         cy="150"
         r="30"
-        fill="#064e3b"
+        fill="#0a0a0a"
         initial={{ scale: 0 }}
         animate={{ scale: 1 }}
         transition={{ delay: 0.2, type: "spring" }}
@@ -27,7 +27,7 @@ export function NetworkIllustration() {
         cy="150"
         r="40"
         fill="none"
-        stroke="#064e3b"
+        stroke="#0a0a0a"
         strokeWidth="1"
         strokeDasharray="4 4"
         animate={{ rotate: 360 }}
@@ -62,7 +62,7 @@ export function NetworkIllustration() {
             cy={node.y}
             r="12"
             fill="white"
-            stroke="#064e3b"
+            stroke="#0a0a0a"
             strokeWidth="2"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -73,7 +73,7 @@ export function NetworkIllustration() {
             cx={node.x}
             cy={node.y}
             r="3"
-            fill="#064e3b"
+            fill="#0a0a0a"
             animate={{
               cx: [node.x, 200],
               cy: [node.y, 150],
@@ -118,7 +118,7 @@ export function SecurityIllustration() {
       <motion.path
         d="M 200 50 L 280 80 L 280 150 Q 280 220 200 250 Q 120 220 120 150 L 120 80 Z"
         fill="white"
-        stroke="#064e3b"
+        stroke="#0a0a0a"
         strokeWidth="3"
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{ pathLength: 1, opacity: 1 }}
@@ -132,12 +132,12 @@ export function SecurityIllustration() {
         transition={{ delay: 0.8, type: "spring", stiffness: 200 }}
       >
         {/* Lock body */}
-        <rect x="180" y="150" width="40" height="50" rx="4" fill="#064e3b" />
+        <rect x="180" y="150" width="40" height="50" rx="4" fill="#0a0a0a" />
         {/* Lock shackle */}
         <path
           d="M 185 150 L 185 135 Q 185 120 200 120 Q 215 120 215 135 L 215 150"
           fill="none"
-          stroke="#064e3b"
+          stroke="#0a0a0a"
           strokeWidth="3"
           strokeLinecap="round"
         />
@@ -152,7 +152,7 @@ export function SecurityIllustration() {
           key={i}
           d="M 200 50 L 280 80 L 280 150 Q 280 220 200 250 Q 120 220 120 150 L 120 80 Z"
           fill="none"
-          stroke="#064e3b"
+          stroke="#0a0a0a"
           strokeWidth="2"
           strokeOpacity="0.2"
           initial={{ scale: 1, opacity: 0 }}
@@ -215,7 +215,7 @@ export function AILearningIllustration() {
             cy={y}
             r="8"
             fill="white"
-            stroke="#064e3b"
+            stroke="#0a0a0a"
             strokeWidth="2"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -231,7 +231,7 @@ export function AILearningIllustration() {
             cy={y}
             r="10"
             fill="white"
-            stroke="#064e3b"
+            stroke="#0a0a0a"
             strokeWidth="2"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -247,7 +247,7 @@ export function AILearningIllustration() {
             cy={y}
             r="10"
             fill="white"
-            stroke="#064e3b"
+            stroke="#0a0a0a"
             strokeWidth="2"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
@@ -262,7 +262,7 @@ export function AILearningIllustration() {
             cx="340"
             cy={y}
             r="12"
-            fill="#064e3b"
+            fill="#0a0a0a"
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             transition={{ delay: 0.9 + 0.1 * i, type: "spring" }}
@@ -332,7 +332,7 @@ export function AILearningIllustration() {
         <motion.circle
           key={`pulse-${i}`}
           r="3"
-          fill="#064e3b"
+          fill="#0a0a0a"
           animate={{
             cx: [80, 180, 280, 340],
             cy: [140, 140, 140, 140],
@@ -368,7 +368,7 @@ export function AILearningIllustration() {
 export function DashboardIllustration() {
   return (
     <svg viewBox="0 0 400 300" className="w-full h-full">
-      <rect width="400" height="300" fill="#064e3b" />
+      <rect width="400" height="300" fill="#0a0a0a" />
       
       {/* Window chrome */}
       <rect x="20" y="20" width="360" height="260" rx="8" fill="#18181b" />
