@@ -182,7 +182,7 @@ export function CognitiveLoopCanvas({ className }: { className?: string }) {
         ctx.save();
         drawRoundedRect(ctx, x - nodeW / 2, y - nodeH / 2, nodeW, nodeH, 12);
         if (isActive) {
-          ctx.fillStyle = "#0a0a0a";
+          ctx.fillStyle = "#064e3b";
           ctx.fill();
 
           // Pulsing glow ring
@@ -221,7 +221,7 @@ export function CognitiveLoopCanvas({ className }: { className?: string }) {
         ctx.font = `${isActive ? 600 : 400} ${
           isActive ? 11 : 10
         }px Inter, system-ui, sans-serif`;
-        ctx.fillStyle = isActive ? "#ffffff" : isPast ? "#0a0a0a" : "#71717a";
+        ctx.fillStyle = isActive ? "#ffffff" : isPast ? "#064e3b" : "#71717a";
         ctx.fillText(stage.label, x, y + (isActive ? 10 : 10));
 
         // "HUMAN" badge on approve stage
@@ -231,10 +231,10 @@ export function CognitiveLoopCanvas({ className }: { className?: string }) {
           const bx = x + nodeW / 2 - 8;
           const by = y - nodeH / 2 - 6;
           drawRoundedRect(ctx, bx - badgeW / 2, by - badgeH / 2, badgeW, badgeH, 4);
-          ctx.fillStyle = isActive ? "#ffffff" : "#0a0a0a";
+          ctx.fillStyle = isActive ? "#ffffff" : "#064e3b";
           ctx.fill();
           ctx.font = "600 8px Inter, system-ui, sans-serif";
-          ctx.fillStyle = isActive ? "#0a0a0a" : "#ffffff";
+          ctx.fillStyle = isActive ? "#064e3b" : "#ffffff";
           ctx.fillText("HUMAN", bx, by + 1);
         }
       }
@@ -275,7 +275,7 @@ export function CognitiveLoopCanvas({ className }: { className?: string }) {
       // Main traveling dot
       ctx.beginPath();
       ctx.arc(dotX, dotY, 5, 0, Math.PI * 2);
-      ctx.fillStyle = "#0a0a0a";
+      ctx.fillStyle = "#064e3b";
       ctx.fill();
 
       // Dot glow
@@ -289,7 +289,7 @@ export function CognitiveLoopCanvas({ className }: { className?: string }) {
 
       // Center label
       ctx.font = "500 13px Inter, system-ui, sans-serif";
-      ctx.fillStyle = "#0a0a0a";
+      ctx.fillStyle = "#064e3b";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("Cognitive", cx, cy - 14);

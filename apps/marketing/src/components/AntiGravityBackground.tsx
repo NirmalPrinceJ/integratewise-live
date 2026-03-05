@@ -21,18 +21,18 @@ interface Particle {
   shape: "dash" | "dot" | "line";
 }
 
-// Google Antigravity palette — blues, purples, pinks, with a few warm accents
+// Emerald-themed palette — greens, teals, with subtle warm accents
 const COLORS = [
-  "#4285f4", // Google blue
-  "#5e6ad2", // indigo-purple
-  "#7c3aed", // violet
-  "#a855f7", // purple
-  "#6366f1", // indigo
-  "#3b82f6", // blue
-  "#db2777", // pink
-  "#e11d48", // rose
-  "#0891b2", // cyan (rare)
-  "#059669", // emerald (rare)
+  "#059669", // emerald-600
+  "#10b981", // emerald-500
+  "#34d399", // emerald-400
+  "#6ee7b7", // emerald-300
+  "#047857", // emerald-700
+  "#14b8a6", // teal-500
+  "#2dd4bf", // teal-400
+  "#064e3b", // emerald-900
+  "#0d9488", // teal-600
+  "#a7f3d0", // emerald-200 (light accent)
 ];
 
 const PARTICLE_COUNT = 55;

@@ -37,56 +37,56 @@ const stages = [
     icon: Plug,
     label: "Connect",
     desc: "Your tools plug in with one click. No migration. No coding.",
-    color: "#0a0a0a",
+    color: "#064e3b",
   },
   {
     id: "load",
     icon: Upload,
     label: "Load",
     desc: "Data flows in from 200+ tools simultaneously.",
-    color: "#0a0a0a",
+    color: "#064e3b",
   },
   {
     id: "normalize",
     icon: Layers,
     label: "Clean",
     desc: "Messy data is automatically cleaned, matched, and organized.",
-    color: "#0a0a0a",
+    color: "#064e3b",
   },
   {
     id: "store",
     icon: Database,
     label: "Remember",
     desc: "Everything stored as one connected truth. Encrypted. Fast.",
-    color: "#0a0a0a",
+    color: "#064e3b",
   },
   {
     id: "think",
     icon: Brain,
     label: "Understand",
     desc: "Recognizes that 'J. Smith' in CRM is 'john@acme.com' in email.",
-    color: "#0a0a0a",
+    color: "#064e3b",
   },
   {
     id: "decide",
     icon: Lightbulb,
     label: "Suggest",
     desc: "Surfaces what needs attention. Waits for your approval.",
-    color: "#0a0a0a",
+    color: "#064e3b",
   },
   {
     id: "act",
     icon: Play,
     label: "Act",
     desc: "One tap to resolve. Updates flow back to your tools instantly.",
-    color: "#0a0a0a",
+    color: "#064e3b",
   },
   {
     id: "adjust",
     icon: RefreshCcw,
     label: "Learn",
     desc: "Gets smarter from your decisions. Every cycle, sharper.",
-    color: "#0a0a0a",
+    color: "#064e3b",
   },
 ];
 
@@ -158,7 +158,7 @@ function DataFlowDots({
         <motion.circle
           key={dot}
           r={2}
-          fill="#0a0a0a"
+          fill="#064e3b"
           initial={{ opacity: 0 }}
           animate={{
             opacity: [0, 0.6, 0],
@@ -525,8 +525,8 @@ export function LivingLoopAnimation() {
                             width={110}
                             height={24}
                             rx={6}
-                            fill={i === 1 ? "#0a0a0a" : "#f4f4f5"}
-                            stroke={i === 1 ? "#0a0a0a" : "#e4e4e7"}
+                            fill={i === 1 ? "#064e3b" : "#f4f4f5"}
+                            stroke={i === 1 ? "#064e3b" : "#e4e4e7"}
                             initial={{ opacity: 0, scale: 0.8 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ delay: i * 0.12, duration: 0.4 }}

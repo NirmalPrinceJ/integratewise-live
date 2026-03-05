@@ -518,7 +518,7 @@ function Container52() {
 
 function Container43() {
   return (
-    <div className="absolute bg-black border border-[#262626] border-solid h-[236.125px] left-[700px] overflow-clip rounded-[14px] shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] top-[70px] w-[224px]" data-name="Container">
+    <div className="absolute bg-emerald-900 border border-[#262626] border-solid h-[236.125px] left-[700px] overflow-clip rounded-[14px] shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] top-[70px] w-[224px]" data-name="Container">
       <Container44 />
       <Container45 />
       <Container52 />
@@ -578,7 +578,7 @@ function Icon1() {
 
 function Button() {
   return (
-    <div className="bg-black h-[31.5px] relative rounded-[5px] shrink-0 w-[100.438px]" data-name="Button">
+    <div className="bg-emerald-900 h-[31.5px] relative rounded-[5px] shrink-0 w-[100.438px]" data-name="Button">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
         <p className="-translate-x-1/2 absolute font-['Inter:Medium',sans-serif] font-medium leading-[17.5px] left-[38.25px] not-italic text-[12.25px] text-center text-white top-[7.5px] tracking-[-0.0179px]">Start Free</p>
         <Icon1 />
@@ -1029,7 +1029,7 @@ function Container58() {
 
 function Section1() {
   return (
-    <div className="absolute bg-black content-stretch flex flex-col h-[611.719px] items-start left-0 overflow-clip pt-[84px] px-[102px] top-[1663.25px] w-[1100px]" data-name="Section">
+    <div className="absolute bg-emerald-900 content-stretch flex flex-col h-[611.719px] items-start left-0 overflow-clip pt-[84px] px-[102px] top-[1663.25px] w-[1100px]" data-name="Section">
       <Container58 />
     </div>
   );
@@ -1164,7 +1164,7 @@ function Button5() {
 }
 
 function Container85() {
-  return <div className="bg-black rounded-[16777200px] shadow-[0px_0px_4.678px_0px_black] shrink-0 size-[12.715px]" data-name="Container" />;
+  return <div className="bg-emerald-900 rounded-[16777200px] shadow-[0px_0px_4.678px_0px_black] shrink-0 size-[12.715px]" data-name="Container" />;
 }
 
 function Container86() {
@@ -1443,7 +1443,7 @@ function Container99() {
 
 function Container98() {
   return (
-    <div className="bg-[#0a0a0a] h-[51px] relative rounded-[14px] shrink-0 w-full" data-name="Container">
+    <div className="bg-emerald-900 h-[51px] relative rounded-[14px] shrink-0 w-full" data-name="Container">
       <div className="overflow-clip rounded-[inherit] size-full">
         <div className="content-stretch flex flex-col items-start p-px relative size-full">
           <Container99 />
@@ -1556,7 +1556,7 @@ function Container106() {
 
 function Container105() {
   return (
-    <div className="bg-black h-[51px] relative rounded-[14px] shrink-0 w-full" data-name="Container">
+    <div className="bg-emerald-900 h-[51px] relative rounded-[14px] shrink-0 w-full" data-name="Container">
       <div className="overflow-clip rounded-[inherit] size-full">
         <div className="content-stretch flex flex-col items-start p-px relative size-full">
           <Container106 />
@@ -1588,7 +1588,7 @@ function Heading7() {
 
 function Container115() {
   return (
-    <div className="bg-black relative rounded-[3.5px] shrink-0 size-[21px]" data-name="Container">
+    <div className="bg-emerald-900 relative rounded-[3.5px] shrink-0 size-[21px]" data-name="Container">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center relative size-full">
         <p className="font-['Inter:Bold',sans-serif] font-bold leading-[15px] not-italic relative shrink-0 text-[10px] text-white tracking-[0.1172px]">1</p>
       </div>
@@ -1960,7 +1960,7 @@ function Container130() {
 
 function Container127() {
   return (
-    <div className="bg-black h-[37.5px] relative shrink-0 w-full" data-name="Container">
+    <div className="bg-emerald-900 h-[37.5px] relative shrink-0 w-full" data-name="Container">
       <Container128 />
       <Container129 />
       <Container130 />
@@ -2525,7 +2525,7 @@ function Container154() {
 
 function Section4() {
   return (
-    <div className="absolute bg-black content-stretch flex flex-col gap-[35px] h-[641.813px] items-start left-0 pt-[84px] px-[116px] top-[4197.97px] w-[1100px]" data-name="Section">
+    <div className="absolute bg-emerald-900 content-stretch flex flex-col gap-[35px] h-[641.813px] items-start left-0 pt-[84px] px-[116px] top-[4197.97px] w-[1100px]" data-name="Section">
       <Container152 />
       <Container153 />
       <Container154 />
@@ -2581,7 +2581,7 @@ function Icon21() {
 
 function Button12() {
   return (
-    <div className="bg-black h-[45.5px] relative rounded-[5px] shrink-0 w-[255.078px]" data-name="Button">
+    <div className="bg-emerald-900 h-[45.5px] relative rounded-[5px] shrink-0 w-[255.078px]" data-name="Button">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid relative size-full">
         <p className="-translate-x-1/2 absolute font-['Inter:Medium',sans-serif] font-medium leading-[21px] left-[114px] not-italic text-[14px] text-center text-white top-[12.25px] tracking-[-0.1504px]">Start Free — 60 Second Setup</p>
         <Icon21 />
@@ -2755,7 +2755,7 @@ function Container168() {
 
 function Container166() {
   return (
-    <div className="absolute bg-black h-[167.813px] left-[112px] overflow-clip rounded-[14px] top-[343.25px] w-[672px]" data-name="Container">
+    <div className="absolute bg-emerald-900 h-[167.813px] left-[112px] overflow-clip rounded-[14px] top-[343.25px] w-[672px]" data-name="Container">
       <Container167 />
       <Container168 />
     </div>
@@ -3072,7 +3072,7 @@ function TextInput() {
 
 function Button15() {
   return (
-    <div className="bg-black h-[31.5px] relative rounded-[5px] shrink-0 w-[87.227px]" data-name="Button">
+    <div className="bg-emerald-900 h-[31.5px] relative rounded-[5px] shrink-0 w-[87.227px]" data-name="Button">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center px-[14px] py-[7px] relative size-full">
         <p className="font-['Inter:Medium',sans-serif] font-medium leading-[17.5px] not-italic relative shrink-0 text-[12.25px] text-center text-white tracking-[-0.0179px]">Subscribe</p>
       </div>
@@ -3757,7 +3757,7 @@ function Button16() {
 
 function Button17() {
   return (
-    <div className="bg-black h-[31.5px] relative rounded-[5px] shrink-0 w-[86.438px]" data-name="Button">
+    <div className="bg-emerald-900 h-[31.5px] relative rounded-[5px] shrink-0 w-[86.438px]" data-name="Button">
       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center px-[14px] py-[7px] relative size-full">
         <p className="font-['Inter:Medium',sans-serif] font-medium leading-[17.5px] not-italic relative shrink-0 text-[12.25px] text-center text-white tracking-[-0.0179px]">Start Free</p>
       </div>

@@ -70,7 +70,7 @@ export default function DesignSystemSaaSLandingPageCommunity({ className }: { cl
                         <p className="absolute font-['Inter:Bold',sans-serif] font-bold leading-[17.5px] left-[14px] not-italic text-[12.25px] text-white top-[4px] tracking-[-0.0179px]">WITHOUT SPINE</p>
                       </div>
                     </div>
-                    <div className="bg-black col-2 justify-self-stretch relative rounded-[14px] row-1 self-stretch shrink-0" data-name="Container">
+                    <div className="bg-emerald-900 col-2 justify-self-stretch relative rounded-[14px] row-1 self-stretch shrink-0" data-name="Container">
                       <div aria-hidden="true" className="absolute border-2 border-[#00c950] border-solid inset-0 pointer-events-none rounded-[14px]" />
                       <div className="absolute h-[24.5px] left-[30px] top-[37px] w-[360px]" data-name="Heading 3">
                         <p className="absolute font-['Inter:Bold',sans-serif] font-bold leading-[24.5px] left-0 not-italic text-[#05df72] text-[17.5px] top-0 tracking-[-0.4358px]">Connected Intelligence</p>
@@ -477,7 +477,7 @@ export default function DesignSystemSaaSLandingPageCommunity({ className }: { cl
                   </div>
                 </div>
               </div>
-              <div className="bg-black h-[274.531px] relative rounded-[14px] shrink-0 w-full" data-name="Container">
+              <div className="bg-emerald-900 h-[274.531px] relative rounded-[14px] shrink-0 w-full" data-name="Container">
                 <div className="flex flex-col justify-center size-full">
                   <div className="content-stretch flex flex-col gap-[21px] items-start justify-center pl-[42px] relative size-full">
                     <div className="h-[31.5px] relative shrink-0 w-[784px]" data-name="Heading 3">
@@ -1355,7 +1355,7 @@ export default function DesignSystemSaaSLandingPageCommunity({ className }: { cl
                 </div>
               </div>
             </div>
-            <div className="absolute bg-black content-stretch flex flex-col gap-[56px] h-[504px] items-start left-0 pt-[70px] px-[172px] top-[6350.31px] w-[1100px]" data-name="Section">
+            <div className="absolute bg-emerald-900 content-stretch flex flex-col gap-[56px] h-[504px] items-start left-0 pt-[70px] px-[172px] top-[6350.31px] w-[1100px]" data-name="Section">
               <div className="h-[35px] relative shrink-0 w-full" data-name="Heading 2">
                 <p className="-translate-x-1/2 absolute font-['Inter:Bold',sans-serif] font-bold leading-[35px] left-[378px] not-italic text-[31.5px] text-center text-white top-0 tracking-[-0.3838px]">Desi Speed. Global Security.</p>
               </div>
@@ -1655,7 +1655,7 @@ export default function DesignSystemSaaSLandingPageCommunity({ className }: { cl
                 </div>
               </div>
             </div>
-            <div className="absolute bg-[#0a0a0a] content-stretch flex flex-col h-[826.438px] items-start left-0 overflow-clip pt-[112px] px-[60px] top-[7418.81px] w-[1100px]" data-name="Section">
+            <div className="absolute bg-emerald-900 content-stretch flex flex-col h-[826.438px] items-start left-0 overflow-clip pt-[112px] px-[60px] top-[7418.81px] w-[1100px]" data-name="Section">
               <div className="h-[602.438px] relative shrink-0 w-full" data-name="Container">
                 <div className="absolute h-[602.438px] left-0 top-0 w-[462px]" data-name="Container">
                   <div className="absolute h-[147px] left-0 top-0 w-[462px]" data-name="Container">
@@ -1748,7 +1748,7 @@ export default function DesignSystemSaaSLandingPageCommunity({ className }: { cl
                 <div className="absolute h-[346.5px] left-[518px] top-[127.97px] w-[462px]" data-name="Container">
                   <div className="absolute bg-[rgba(254,154,0,0.2)] blur-[64px] h-[374.5px] left-[-14px] opacity-20 rounded-[16777200px] top-[-14px] w-[490px]" data-name="Container" />
                   <div className="absolute bg-[#171717] border border-[#262626] border-solid h-[346.5px] left-0 overflow-clip rounded-[11px] shadow-[0px_25px_50px_-12px_rgba(0,0,0,0.25)] top-0 w-[462px]" data-name="Container">
-                    <div className="absolute bg-[#0a0a0a] content-stretch flex flex-col gap-[11.646px] h-[309.5px] items-start left-0 pl-[28px] pt-[30.354px] top-[35px] w-[460px]" data-name="Container">
+                    <div className="absolute bg-emerald-900 content-stretch flex flex-col gap-[11.646px] h-[309.5px] items-start left-0 pl-[28px] pt-[30.354px] top-[35px] w-[460px]" data-name="Container">
                       <div className="h-[34px] opacity-85 relative shrink-0 w-[404px]" data-name="Container">
                         <div aria-hidden="true" className="absolute border-[#262626] border-b border-solid inset-0 pointer-events-none" />
                         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-between pb-px relative size-full">
@@ -1857,7 +1857,7 @@ export default function DesignSystemSaaSLandingPageCommunity({ className }: { cl
                   <p className="-translate-x-1/2 absolute font-['Inter:Regular',sans-serif] font-normal leading-[28.438px] left-[294.29px] not-italic text-[#525252] text-[17.5px] text-center top-[-0.5px] tracking-[-0.4358px] w-[580px] whitespace-pre-wrap">Your business deserves a memory that never forgets, eyes that never miss the drift, and a voice that speaks your language—whether you are in Surat, Bangalore, or Jaipur.</p>
                 </div>
                 <div className="absolute content-stretch flex h-[49px] items-center justify-center left-[14px] pr-[0.008px] top-[246.31px] w-[644px]" data-name="Container">
-                  <div className="bg-black h-[49px] relative rounded-[5px] shrink-0 w-[221.992px]" data-name="Button">
+                  <div className="bg-emerald-900 h-[49px] relative rounded-[5px] shrink-0 w-[221.992px]" data-name="Button">
                     <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center px-[35px] relative size-full">
                       <p className="font-['Inter:Bold',sans-serif] font-bold leading-[24.5px] not-italic relative shrink-0 text-[15.75px] text-center text-white tracking-[-0.2922px]">Start Your Free Trial</p>
                     </div>
@@ -1868,7 +1868,7 @@ export default function DesignSystemSaaSLandingPageCommunity({ className }: { cl
                 </div>
               </div>
             </div>
-            <div className="absolute bg-black h-[569px] left-0 overflow-clip top-0 w-[1100px]" data-name="Section">
+            <div className="absolute bg-emerald-900 h-[569px] left-0 overflow-clip top-0 w-[1100px]" data-name="Section">
               <div className="absolute h-[569px] left-0 top-0 w-[1100px]" data-name="Container" style={{ backgroundImage: "url(\'data:image/svg+xml;utf8,<svg viewBox=\\'0 0 1100 569\\' xmlns=\\'http://www.w3.org/2000/svg\\' preserveAspectRatio=\\'none\\'><rect x=\\'0\\' y=\\'0\\' height=\\'100%\\' width=\\'100%\\' fill=\\'url(%23grad)\\' opacity=\\'1\\'/><defs><radialGradient id=\\'grad\\' gradientUnits=\\'userSpaceOnUse\\' cx=\\'0\\' cy=\\'0\\' r=\\'10\\' gradientTransform=\\'matrix(0 -61.923 -61.923 0 550 284.5)\\'><stop stop-color=\\'rgba(255,255,255,0.03)\\' offset=\\'0\\'/><stop stop-color=\\'rgba(0,0,0,0)\\' offset=\\'0.7\\'/></radialGradient></defs></svg>\')" }} />
               <div className="absolute h-[569px] left-[158px] top-0 w-[784px]" data-name="Container">
                 <div className="absolute h-[123.188px] left-[14px] top-[112px] w-[756px]" data-name="Heading 1">
@@ -1995,7 +1995,7 @@ export default function DesignSystemSaaSLandingPageCommunity({ className }: { cl
                         </div>
                         <div aria-hidden="true" className="absolute border border-[#e4e4e7] border-solid inset-0 pointer-events-none rounded-[5px]" />
                       </div>
-                      <div className="bg-black h-[31.5px] relative rounded-[5px] shrink-0 w-[87.227px]" data-name="Button">
+                      <div className="bg-emerald-900 h-[31.5px] relative rounded-[5px] shrink-0 w-[87.227px]" data-name="Button">
                         <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center px-[14px] py-[7px] relative size-full">
                           <p className="font-['Inter:Medium',sans-serif] font-medium leading-[17.5px] not-italic relative shrink-0 text-[12.25px] text-center text-white tracking-[-0.0179px]">Subscribe</p>
                         </div>
@@ -2406,7 +2406,7 @@ export default function DesignSystemSaaSLandingPageCommunity({ className }: { cl
                         <p className="font-['Inter:Medium',sans-serif] font-medium leading-[17.5px] not-italic relative shrink-0 text-[#09090b] text-[12.25px] text-center tracking-[-0.0179px]">Sign In</p>
                       </div>
                     </div>
-                    <div className="bg-black h-[31.5px] relative rounded-[5px] shrink-0 w-[86.438px]" data-name="Button">
+                    <div className="bg-emerald-900 h-[31.5px] relative rounded-[5px] shrink-0 w-[86.438px]" data-name="Button">
                       <div className="bg-clip-padding border-0 border-[transparent] border-solid content-stretch flex items-center justify-center px-[14px] py-[7px] relative size-full">
                         <p className="font-['Inter:Medium',sans-serif] font-medium leading-[17.5px] not-italic relative shrink-0 text-[12.25px] text-center text-white tracking-[-0.0179px]">Start Free</p>
                       </div>

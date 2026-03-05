@@ -68,7 +68,7 @@ export function Footer() {
   };
 
   return (
-    <footer ref={ref} className="bg-[#0a0a0a] text-white relative overflow-hidden">
+    <footer ref={ref} className="bg-emerald-900 text-white relative overflow-hidden">
       {/* Subtle animated glow orbs */}
       <div className="absolute inset-0 pointer-events-none">
         <motion.div
@@ -114,7 +114,7 @@ export function Footer() {
               <Button
                 type="submit"
                 disabled={submitting || submitted}
-                className="bg-white text-[#0a0a0a] hover:bg-white/90 rounded-full px-5 disabled:opacity-50"
+                className="bg-white text-emerald-900 hover:bg-white/90 rounded-full px-5 disabled:opacity-50"
               >
                 {submitted ? "Sent!" : submitting ? "Sending..." : "Get Started"} <ArrowRight className="ml-1 h-3 w-3" />
               </Button>

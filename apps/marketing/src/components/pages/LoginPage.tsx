@@ -12,7 +12,7 @@ export function LoginPage() {
     return (
         <div className="min-h-screen bg-white flex flex-col md:flex-row font-sans">
             {/* LEFT SIDE: Architecture & Technical Showcase */}
-            <div className="md:w-[55%] lg:w-[60%] bg-[#0a0a0a] text-white p-8 lg:p-16 flex flex-col relative overflow-hidden hidden md:flex">
+            <div className="md:w-[55%] lg:w-[60%] bg-emerald-900 text-white p-8 lg:p-16 flex flex-col relative overflow-hidden hidden md:flex">
                 {/* Animated Background Mesh */}
                 <div className="absolute inset-0 pointer-events-none opacity-20">
                     <motion.div
@@ -130,7 +130,7 @@ export function LoginPage() {
                             <div className="flex items-center justify-between">
                                 <Label htmlFor="password">Password</Label>
                                 {isLogin && (
-                                    <a href="#" className="text-sm text-gray-500 hover:text-black">
+                                    <a href="#" className="text-sm text-gray-500 hover:text-emerald-700">
                                         Forgot password?
                                     </a>
                                 )}
@@ -138,7 +138,7 @@ export function LoginPage() {
                             <Input id="password" type="password" className="h-11" />
                         </div>
 
-                        <Button className="w-full h-11 text-base bg-black hover:bg-black/90 text-white mt-6">
+                        <Button className="w-full h-11 text-base bg-emerald-600 hover:bg-emerald-700 text-white mt-6">
                             {isLogin ? "Sign in" : "Create account"}
                         </Button>
                     </form>
@@ -149,7 +149,7 @@ export function LoginPage() {
                         </span>
                         <button
                             onClick={() => setIsLogin(!isLogin)}
-                            className="text-black font-medium hover:underline"
+                            className="text-emerald-700 font-medium hover:underline"
                         >
                             {isLogin ? "Sign up" : "Sign in"}
                         </button>

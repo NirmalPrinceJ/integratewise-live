@@ -1090,7 +1090,7 @@ function Icon11() {
 
 function Text11() {
   return (
-    <div className="absolute bg-[#0a0a0a] h-[16.828px] left-[267.59px] rounded-[3.5px] top-[11.5px] w-[63.578px]" data-name="Text">
+    <div className="absolute bg-emerald-900 h-[16.828px] left-[267.59px] rounded-[3.5px] top-[11.5px] w-[63.578px]" data-name="Text">
       <Icon11 />
       <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[13.333px] left-[17.5px] not-italic text-[10px] text-white top-[2.25px] tracking-[0.1172px]">{` Overdue`}</p>
     </div>
@@ -1380,7 +1380,7 @@ function Icon15() {
 
 function Text31() {
   return (
-    <div className="absolute bg-[#0a0a0a] h-[16.828px] left-[267.59px] rounded-[3.5px] top-[11.5px] w-[63.578px]" data-name="Text">
+    <div className="absolute bg-emerald-900 h-[16.828px] left-[267.59px] rounded-[3.5px] top-[11.5px] w-[63.578px]" data-name="Text">
       <Icon15 />
       <p className="absolute font-['Inter:Regular',sans-serif] font-normal leading-[13.333px] left-[17.5px] not-italic text-[10px] text-white top-[2.25px] tracking-[0.1172px]">{` Overdue`}</p>
     </div>
