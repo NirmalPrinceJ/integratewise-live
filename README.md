@@ -123,11 +123,11 @@ All services deployed to `-staging` variants via GitHub Actions.
 integratewise-live/
 ├── apps/
 │   ├── web/                 # L1/L2 Workspace (Vite + React 18)
-│   └── marketing/           # Landing site
+│   └── marketing/           # L1 Marketing Site (Vite + React 18)
 ├── services/                # L3 Backend (15 Cloudflare Workers)
 │   ├── gateway/
 │   ├── loader/
-│   ├── normalizer/
+│   ├# L1 Marketing Site (Vite + React 18)
 │   ├── spine-v2/
 │   ├── think/
 │   ├── act/
