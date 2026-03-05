@@ -47,11 +47,11 @@ service = "integratewise-govern"
 # KV for rate limiting + session cache
 [[kv_namespaces]]
 binding = "RATE_LIMITS"
-id = "placeholder-rate-limits"
+id = "8f61d841d2574061ac1d547187d72a58"
 
 [[kv_namespaces]]
 binding = "SESSIONS"
-id = "placeholder-sessions"
+id = "508ba759f7a44ca8aaaf8502d603077b"
 
 [env.staging]
 name = "integratewise-gateway-staging"
