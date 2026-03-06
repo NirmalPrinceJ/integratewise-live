@@ -1,0 +1,11 @@
+name = "integratewise-agents"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[[services]]
+binding = "THINK"
+service = "integratewise-think"
+
+[env.staging]
+name = "integratewise-agents-staging"

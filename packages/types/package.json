@@ -1,24 +1,30 @@
 {
   "name": "@integratewise/types",
-  "version": "1.0.0",
-  "description": "IntegrateWise OS Spine canonical entity types",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "scripts": {
-    "build": "tsc",
-    "typecheck": "tsc --noEmit"
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    }
   },
-  "keywords": [
-    "integratewise",
-    "spine",
-    "types"
-  ],
-  "author": "IntegrateWise",
-  "license": "PROPRIETARY",
-  "devDependencies": {
-    "typescript": "^5.0.0"
+  "scripts": {
+    "dev": "tsc -p tsconfig.json --watch",
+    "build": "tsc -p tsconfig.json",
+    "lint": "eslint src/",
+    "lint:fix": "eslint src/ --fix",
+    "format": "prettier --write src/",
+    "format:check": "prettier --check src/",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
   },
   "dependencies": {
-    "zod": "^3.23.8"
+    "zod": "^3.24.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
   }
 }

@@ -1,0 +1,7 @@
+name = "integratewise-billing"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+[env.staging]
+name = "integratewise-billing-staging"

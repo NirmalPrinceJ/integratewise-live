@@ -1,0 +1,22 @@
+name = "integratewise-knowledge"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Consumes knowledge ingestion
+[[queues.consumers]]
+queue = "knowledge-ingest"
+max_batch_size = 10
+max_batch_timeout = 30
+
+# R2 for file storage
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-prod"
+
+[env.staging]
+name = "integratewise-knowledge-staging"
+
+[[env.staging.r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-staging"

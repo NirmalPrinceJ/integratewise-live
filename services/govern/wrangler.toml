@@ -1,0 +1,13 @@
+name = "integratewise-govern"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Consumes DLQ for governance review
+[[queues.consumers]]
+queue = "ops-dlq"
+max_batch_size = 10
+max_batch_timeout = 30
+
+[env.staging]
+name = "integratewise-govern-staging"

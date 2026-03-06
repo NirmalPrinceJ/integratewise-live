@@ -1,0 +1,12 @@
+name = "integratewise-store"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# R2 for file operations
+[[r2_buckets]]
+binding = "FILES"
+bucket_name = "integratewise-files-prod"
+
+[env.staging]
+name = "integratewise-store-staging"

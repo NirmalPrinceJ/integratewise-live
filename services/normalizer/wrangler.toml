@@ -1,0 +1,45 @@
+name = "integratewise-normalizer"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Consumes pipeline messages
+[[queues.consumers]]
+queue = "pipeline-process"
+max_batch_size = 10
+max_batch_timeout = 30
+
+# Consumes accelerator triggers (recalculation)
+[[queues.consumers]]
+queue = "accelerator-trigger"
+max_batch_size = 10
+max_batch_timeout = 30
+
+# Produces to multiple queues
+[[queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[[queues.producers]]
+queue = "knowledge-ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+[[queues.producers]]
+queue = "accelerator-trigger"
+binding = "ACCELERATOR_QUEUE"
+
+[[queues.producers]]
+queue = "intelligence-events"
+binding = "INTELLIGENCE_QUEUE"
+
+[[queues.producers]]
+queue = "ops-dlq"
+binding = "DLQ_QUEUE"
+
+# Service binding — ONLY service allowed to call Spine writes
+[[services]]
+binding = "SPINE"
+service = "integratewise-spine-v2"
+
+[env.staging]
+name = "integratewise-normalizer-staging"

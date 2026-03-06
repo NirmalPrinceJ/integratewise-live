@@ -1,0 +1,29 @@
+name = "integratewise-workflow"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# HITL approvals → act queue
+[[queues.producers]]
+queue = "intelligence-act"
+binding = "ACT_QUEUE"
+
+# Service bindings for view aggregation
+[[services]]
+binding = "SPINE"
+service = "integratewise-spine-v2"
+
+[[services]]
+binding = "KNOWLEDGE"
+service = "integratewise-knowledge"
+
+[[services]]
+binding = "THINK"
+service = "integratewise-think"
+
+# Durable Objects for real-time streaming
+# [durable_objects]
+# bindings = [{ name = "STREAM", class_name = "StreamSession" }]
+
+[env.staging]
+name = "integratewise-workflow-staging"

@@ -1,0 +1,25 @@
+name = "integratewise-mcp-connector"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# MCP sessions -> knowledge queue
+[[queues.producers]]
+queue = "knowledge-ingest"
+binding = "KNOWLEDGE_QUEUE"
+
+# MCP actions -> pipeline queue
+[[queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+# KV for MCP idempotency
+[[kv_namespaces]]
+binding = "MCP_IDEMPOTENCY"
+id = "16510bf2287a45d8b24163ddafd3d302"
+
+[env.staging]
+name = "integratewise-mcp-connector-staging"
+
+[env.production]
+name = "integratewise-mcp-connector"

@@ -1,0 +1,209 @@
+name: Deploy Workers (Cloudflare)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/**'
+      - 'packages/**'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/deploy-workers.yml'
+  workflow_dispatch:
+    inputs:
+      service:
+        description: 'Service to deploy (or "all")'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - all
+          - spine-v2
+          - normalizer
+          - loader
+          - store
+          - mcp-connector
+          - govern
+          - act
+          - agents
+          - think
+          - knowledge
+          - workflow
+          - admin
+          - billing
+          - tenants
+          - gateway
+      environment:
+        description: 'Deploy environment'
+        required: true
+        default: 'staging'
+        type: choice
+        options:
+          - staging
+          - production
+
+concurrency:
+  group: deploy-workers-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '20'
+  WRANGLER_SEND_METRICS: 'false'
+
+jobs:
+  deploy-workers:
+    name: Deploy Workers
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    environment:
+      name: ${{ inputs.environment || 'staging' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Deploy Workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          DEPLOY_ENV: ${{ inputs.environment || 'staging' }}
+          TARGET_SERVICE: ${{ inputs.service || 'all' }}
+        run: |
+          # Deploy order matters — downstream services first, gateway LAST
+          SERVICES=(
+            spine-v2
+            normalizer
+            loader
+            store
+            mcp-connector
+            govern
+            act
+            agents
+            think
+            knowledge
+            workflow
+            admin
+            billing
+            tenants
+            gateway
+          )
+
+          DEPLOYED=0
+          FAILED=0
+          FAILED_SERVICES=()
+
+          deploy_service() {
+            local svc=$1
+            local toml="services/$svc/wrangler.toml"
+
+            if [ ! -f "$toml" ]; then
+              echo "⚠️  Skipping $svc — no $toml found"
+              return 1
+            fi
+
+            echo "🚀 Deploying $svc (env: $DEPLOY_ENV)..."
+
+            # Check if the wrangler.toml has the env defined
+            if grep -q "\[env\.${DEPLOY_ENV}\]" "$toml"; then
+              ENV_FLAG="--env $DEPLOY_ENV"
+            else
+              echo "⚠️  No [env.$DEPLOY_ENV] in $toml — deploying to top-level (production default)"
+              ENV_FLAG=""
+            fi
+
+            if npx wrangler deploy -c "$toml" $ENV_FLAG --keep-vars 2>&1; then
+              echo "✅ $svc deployed successfully"
+              return 0
+            else
+              echo "❌ $svc failed to deploy"
+              return 1
+            fi
+          }
+
+          if [ "$TARGET_SERVICE" = "all" ]; then
+            for svc in "${SERVICES[@]}"; do
+              if deploy_service "$svc"; then
+                ((DEPLOYED++))
+              else
+                ((FAILED++)) || true
+                FAILED_SERVICES+=("$svc")
+              fi
+            done
+          else
+            if deploy_service "$TARGET_SERVICE"; then
+              ((DEPLOYED++))
+            else
+              ((FAILED++)) || true
+              FAILED_SERVICES+=("$TARGET_SERVICE")
+            fi
+          fi
+
+          echo ""
+          echo "════════════════════════════════════════"
+          echo " ✅ Deployed: $DEPLOYED  ❌ Failed: $FAILED"
+          if [ ${#FAILED_SERVICES[@]} -gt 0 ]; then
+            echo " Failed services: ${FAILED_SERVICES[*]}"
+          fi
+          echo "════════════════════════════════════════"
+
+          if [ $FAILED -gt 0 ] && [ "$TARGET_SERVICE" = "all" ]; then
+            echo "::warning::$FAILED service(s) failed to deploy: ${FAILED_SERVICES[*]}"
+            # Don't exit with failure on partial deploy — report and continue
+          fi
+
+      - name: Deployment Summary
+        if: always()
+        run: |
+          echo "## Workers Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| **Service** | ${{ inputs.service || 'all (15 services)' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Environment** | ${{ inputs.environment || 'staging' }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Branch** | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Commit** | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| **Triggered by** | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+
+  health-check:
+    name: Health Check
+    needs: deploy-workers
+    runs-on: ubuntu-latest
+    if: ${{ (inputs.environment == 'production' || github.ref == 'refs/heads/main') && needs.deploy-workers.result == 'success' }}
+    timeout-minutes: 5
+
+    steps:
+      - name: Wait for services to stabilize
+        run: sleep 30
+
+      - name: Check critical services
+        run: |
+          SERVICES=(
+            "https://gateway.integratewise.ai/health"
+            "https://think.integratewise.ai/health"
+            "https://govern.integratewise.ai/health"
+          )
+
+          ALL_HEALTHY=true
+          for url in "${SERVICES[@]}"; do
+            echo "Checking $url..."
+            if curl -sf --max-time 10 "$url" > /dev/null 2>&1; then
+              echo "  ✅ Healthy"
+            else
+              echo "  ⚠️  Unreachable (may need DNS/secrets setup)"
+              ALL_HEALTHY=false
+            fi
+          done
+
+          if [ "$ALL_HEALTHY" = false ]; then
+            echo "::warning::Some health checks failed — verify DNS and Cloudflare secrets"
+          fi

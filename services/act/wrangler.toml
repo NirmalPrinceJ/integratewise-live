@@ -1,0 +1,27 @@
+name = "integratewise-act"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Consumes approved actions
+[[queues.consumers]]
+queue = "intelligence-act"
+max_batch_size = 10
+max_batch_timeout = 30
+
+# Needs connector for tool write-back
+[[services]]
+binding = "LOADER"
+service = "integratewise-loader"
+
+[[services]]
+binding = "GOVERN"
+service = "integratewise-govern"
+
+# Produces pipeline re-ingestion after write-back
+[[queues.producers]]
+queue = "pipeline-process"
+binding = "PIPELINE_QUEUE"
+
+[env.staging]
+name = "integratewise-act-staging"

@@ -1,0 +1,26 @@
+name = "integratewise-think"
+main = "src/index.ts"
+compatibility_date = "2024-12-01"
+compatibility_flags = ["nodejs_compat"]
+
+# Consumes intelligence events from pipeline
+[[queues.consumers]]
+queue = "intelligence-events"
+max_batch_size = 10
+max_batch_timeout = 30
+
+# Cross-bindings to intelligence peers
+[[services]]
+binding = "ACT"
+service = "integratewise-act"
+
+[[services]]
+binding = "GOVERN"
+service = "integratewise-govern"
+
+[[services]]
+binding = "AGENTS"
+service = "integratewise-agents"
+
+[env.staging]
+name = "integratewise-think-staging"

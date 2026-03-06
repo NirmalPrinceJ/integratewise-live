@@ -1,0 +1,386 @@
+/**
+ * Loader Pipeline
+ * Wires Loader service to call Normalizer before storing data to Spine.
+ * 
+ * Flow:
+ * 1. Receive raw data from webhook/source
+ * 2. Call Normalizer /v1/normalize endpoint
+ * 3. If success, store canonical record to appropriate Spine table
+ * 4. If failure, Normalizer handles DLQ; we log and return failure result
+ */
+
+const NORMALIZER_URL = process.env.NORMALIZER_URL || 'http://localhost:8786';
+const STORE_URL = process.env.STORE_URL || 'http://localhost:8787';
+
+export interface PipelineResult {
+  success: boolean;
+  entity_type: string;
+  entity_id?: string;
+  canonical_record?: any;
+  version?: number;
+  dlq?: boolean;
+  errors?: string[];
+}
+
+export interface PipelineContext {
+  env: {
+    NORMALIZER_URL?: string;
+    STORE_URL?: string;
+    DATABASE_URL?: string;
+  };
+  requestId?: string;
+  log?: {
+    info: (msg: string, data?: Record<string, unknown>) => void;
+    warn: (msg: string, data?: Record<string, unknown>) => void;
+    error: (msg: string, data?: Record<string, unknown>) => void;
+  };
+}
+
+/**
+ * Maps webhook source to entity type
+ */
+export function mapSourceToEntityType(source: string, eventType?: string): string {
+  const sourceMapping: Record<string, string | Record<string, string>> = {
+    hubspot: {
+      'contact.creation': 'contact',
+      'contact.propertyChange': 'contact',
+      'contact.deletion': 'contact',
+      'deal.creation': 'deal',
+      'deal.propertyChange': 'deal',
+      'deal.deletion': 'deal',
+      'company.creation': 'account',
+      'company.propertyChange': 'account',
+      'company.deletion': 'account',
+      default: 'generic',
+    },
+    stripe: {
+      'checkout.session.completed': 'payment',
+      'customer.subscription.created': 'subscription',
+      'customer.subscription.updated': 'subscription',
+      'customer.subscription.deleted': 'subscription',
+      'invoice.paid': 'invoice',
+      'invoice.payment_failed': 'invoice',
+      default: 'payment',
+    },
+    slack: {
+      message: 'message',
+      channel: 'channel',
+      user_change: 'user',
+      default: 'message',
+    },
+    webflow: {
+      form_submission: 'form_submission',
+      form_submit: 'form_submission',
+      collection_item_created: 'cms_item',
+      collection_item_updated: 'cms_item',
+      collection_item_deleted: 'cms_item',
+      ecommerce_order_created: 'order',
+      ecommerce_order_updated: 'order',
+      default: 'cms_item',
+    },
+    notion: 'page',
+    discord: 'message',
+    asana: 'task',
+    github: 'event',
+  };
+
+  const mapping = sourceMapping[source];
+  
+  if (typeof mapping === 'string') {
+    return mapping;
+  }
+  
+  if (typeof mapping === 'object' && eventType) {
+    return mapping[eventType] || mapping.default || 'generic';
+  }
+  
+  return 'generic';
+}
+
+/**
+ * Process a single incoming webhook/data item through the normalization pipeline
+ */
+export async function processIncoming(
+  entity_type: string,
+  raw_data: any,
+  tenant_id: string,
+  source_system: string,
+  context?: PipelineContext
+): Promise<PipelineResult> {
+  const normalizerUrl = context?.env?.NORMALIZER_URL || NORMALIZER_URL;
+  const storeUrl = context?.env?.STORE_URL || STORE_URL;
+  const log = context?.log;
+  const requestId = context?.requestId || crypto.randomUUID();
+
+  try {
+    // 1. Call Normalizer /v1/normalize
+    if (log?.info) {
+      log.info('Pipeline: Calling Normalizer', {peline: Calling Normalizer', {
+        entity_type,
+        source_system,ystem,
+        tenant_id,d,
+        requestId, requestId,
+      });      });
+    }
+
+    const normalizeResponse = await fetch(`${normalizerUrl}/v1/normalize`, {izeResponse = await fetch(`${normalizerUrl}/v1/normalize`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',ion/json',
+        'x-request-id': requestId,'x-request-id': requestId,
+        'x-tenant-id': tenant_id,t_id,
+      },
+      body: JSON.stringify({gify({
+        entity_type,e,
+        source_system,
+        tenant_id,
+        raw_payload: raw_data,
+        metadata: {
+          request_id: requestId,request_id: requestId,
+          received_at: new Date().toISOString(), received_at: new Date().toISOString(),
+        }, },
+      }),      }),
+    });
+
+    // Handle Normalizer response
+    if (!normalizeResponse.ok) { (!normalizeResponse.ok) {
+      const errorBody = await normalizeResponse.text().catch(() => 'Unknown error');
+      const isDlq = normalizeResponse.status === 422;
+      // Check if it was sent to DLQ (422 status typically indicates validation failure -> DLQ)
+      if (log?.warn) {;
+        log.warn('Pipeline: Normalization failed', {
+          status: normalizeResponse.status, {
+          dlq: isDlq,e: Normalization failed', {
+          error: errorBody,normalizeResponse.status,
+          requestId, dlq: isDlq,
+        });          error: errorBody,
+      }estId,
+
+      return {
+        success: false,
+        entity_type,
+        dlq: isDlq,success: false,
+        errors: [`Normalization failed: ${errorBody}`],   entity_type,
+      };        dlq: isDlq,
+    }
+
+    const normalizeResult = await normalizeResponse.json() as {
+      success: boolean;
+      entity_type: string;await normalizeResponse.json() as {
+      entity_id: string;;
+      canonical_record: any;g;
+      version: number;entity_id: string;
+      errors?: string[];      canonical_record: any;
+    };
+
+    if (!normalizeResult.success) {
+      if (log?.warn) {
+        log.warn('Pipeline: Normalizer returned failure', {normalizeResult.success) {
+          errors: normalizeResult.errors,      if (log.warn) {
+          requestId,rn('Pipeline: Normalizer returned failure', {
+        });lizeResult.errors,
+      }
+
+      return {
+        success: false,
+        entity_type, return {
+        dlq: true,        success: false,
+        errors: normalizeResult.errors || ['Normalization returned failure'],
+      };
+    }malization returned failure'],
+
+    // 2. Store to appropriate Spine table
+    if (log?.info) {
+      log.info('Pipeline: Storing to Spine', {2. Store to appropriate Spine table
+        entity_type: normalizeResult.entity_type,    if (log.info) {
+        entity_id: normalizeResult.entity_id,
+        version: normalizeResult.version,normalizeResult.entity_type,
+        requestId,d: normalizeResult.entity_id,
+      });
+    }
+
+    const storeResponse = await fetch(`${storeUrl}/v1/spine/${normalizeResult.entity_type}`, {
+      method: 'POST',
+      headers: {eUrl}/v1/spine/${normalizeResult.entity_type}`, {
+        'Content-Type': 'application/json',T',
+        'x-request-id': requestId,
+        'x-tenant-id': tenant_id,
+      },
+      body: JSON.stringify({d': tenant_id,
+        entity_id: normalizeResult.entity_id,
+        tenant_id,
+        source_system,tity_id: normalizeResult.entity_id,
+        canonical_record: normalizeResult.canonical_record,enant_id,
+        version: normalizeResult.version, source_system,
+        metadata: {        canonical_record: normalizeResult.canonical_record,
+          normalized_at: new Date().toISOString(),sult.version,
+          request_id: requestId,
+        },    normalized_at: new Date().toISOString(),
+      }),
+    });
+
+    if (!storeResponse.ok) {
+      const storeError = await storeResponse.text().catch(() => 'Unknown store error');
+          if (!storeResponse.ok) {
+      if (log?.error) {> 'Unknown store error');
+        log.error('Pipeline: Store failed', {
+          status: storeResponse.status,error) {
+          error: storeError,line: Store failed', {
+          requestId,
+        });
+      }
+
+      return {
+        success: false,
+        entity_type: normalizeResult.entity_type, return {
+        entity_id: normalizeResult.entity_id,        success: false,
+        canonical_record: normalizeResult.canonical_record,ntity_type,
+        version: normalizeResult.version,ity_id,
+        errors: [`Store failed: ${storeError}`],ical_record,
+      };
+    }Error}`],
+
+    // 3. Success
+    if (log?.info) {
+      log.info('Pipeline: Complete', {ccess - return full result
+        entity_type: normalizeResult.entity_type,
+        entity_id: normalizeResult.entity_id,
+        version: normalizeResult.version,_type,
+        requestId,
+      });n,
+    }  requestId,
+      });
+    return {
+      success: true,
+      entity_type: normalizeResult.entity_type,return {
+      entity_id: normalizeResult.entity_id,
+      canonical_record: normalizeResult.canonical_record,zeResult.entity_type,
+      version: normalizeResult.version,ormalizeResult.entity_id,
+    };rd: normalizeResult.canonical_record,
+ormalizeResult.version,
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    rror) {
+    if (log?.error) {e = error instanceof Error ? error.message : 'Unknown error';
+      log.error('Pipeline: Unexpected error', {
+        error: errorMessage,
+        entity_type,log.error('Pipeline: Unexpected error', {
+        source_system,     error: errorMessage,
+        requestId,       entity_type,
+      });        source_system,
+    }     requestId,
+
+    return {
+      success: false,
+      entity_type,
+      errors: [`Pipeline error: ${errorMessage}`],
+    };
+  } error: ${errorMessage}`],
+}
+
+/**
+ * Process a batch of items through the pipeline
+ */
+export async function processBatch(through the pipeline
+  items: Array<{ entity_type: string; data: any; event_type?: string }>,lSettled for resilient batch processing
+  tenant_id: string,
+  source_system: string,t async function processBatch(
+  context?: PipelineContext  items: Array<{ entity_type: string; data: any; event_type?: string }>,
+): Promise<PipelineResult[]> {
+  const log = context?.log;
+
+  if (log?.info) {
+    log.info('Pipeline: Processing batch', {t log = context?.log || console;
+      itemCount: items.length,
+      source_system,
+      tenant_id,line: Processing batch', {
+    });tems.length,
+  }
+,
+  const results = await Promise.allSettled(
+    items.map((item) => {
+      const resolvedEntityType = item.entity_type || mapSourceToEntityType(source_system, item.event_type);
+      return processIncoming(resolvedEntityType, item.data, tenant_id, source_system, context);  const results = await Promise.allSettled(
+    })
+  );tity_type || mapSourceToEntityType(source_system, item.event_type);
+
+  const pipelineResults: PipelineResult[] = results.map((result, index) => { return processIncoming(
+    if (result.status === 'fulfilled') {    resolvedEntityType,
+      return result.value;
+    }
+    const errorMessage = result.reason instanceof Error ? result.reason.message : 'Unknown batch error';    source_system,
+    return {ext
+      success: false,
+      entity_type: items[index].entity_type || 'unknown',
+      errors: [`Batch processing error: ${errorMessage}`],
+    };
+  });st pipelineResults: PipelineResult[] = results.map((result, index) => {
+    if (result.status === 'fulfilled') {
+  const successCount = pipelineResults.filter((r) => r.success).length;lue;
+  const dlqCount = pipelineResults.filter((r) => r.dlq).length;
+  const errorCount = pipelineResults.filter((r) => !r.success && !r.dlq).length;
+: 'Unknown batch error';
+  if (log?.info) {    
+    log.info('Pipeline: Batch complete', {
+      total: items.length,
+      success: successCount,ndex].entity_type || 'unknown',
+      dlq: dlqCount,tch processing error: ${errorMessage}`],
+      errors: errorCount,
+      source_system,
+    });
+  }  const successCount = pipelineResults.filter((r) => r.success).length;
+neResults.filter((r) => r.dlq).length;
+  return pipelineResults; const errorCount = pipelineResults.filter((r) => !r.success && !r.dlq).length;
+}
+f (log.info) {
+/**
+ * Helper to create pipeline context from Hono context   total: items.length,
+ */
+export function createPipelineContext(c: any): PipelineContext { dlqCount,
+  return {rs: errorCount,
+    env: {
+      NORMALIZER_URL: c.env?.NORMALIZER_URL,
+      STORE_URL: c.env?.STORE_URL,
+      DATABASE_URL: c.env?.DATABASE_URL,
+    },
+    requestId: c.get?.('requestId') || crypto.randomUUID(),
+    log: c.get?.('log') || {
+      info: (msg: string, data?: any) => console.log(msg, data),
+      warn: (msg: string, data?: any) => console.warn(msg, data),
+      error: (msg: string, data?: any) => console.error(msg, data),
+    },rt function createPipelineContext(c: any): PipelineContext {
+  }; return {
+}    env: {
+   NORMALIZER_URL: c.env?.NORMALIZER_URL,
+/**
+ * Process webhook data through the pipeline (convenience wrapper)   DATABASE_URL: c.env?.DATABASE_URL,
+ */
+export async function processWebhook(stId: c.get?.('requestId') || crypto.randomUUID(),
+  c: any,c.get?.('log') || {
+  data: {tring, data?: any) => console.log(msg, data),
+    source: string;g, data?: any) => console.warn(msg, data),
+    externalId: string;ing, data?: any) => console.error(msg, data),
+    eventType: string;
+    payload: any;
+    tenantId?: string;
+  }
+): Promise<PipelineResult> {
+  const context = createPipelineContext(c);
+  const entityType = mapSourceToEntityType(data.source, data.eventType);
+  const tenantId = data.tenantId || c.get?.('tenantId') || 'default';export async function processWebhook(
+
+  return processIncoming(
+    entityType,ource: string;
+    {;
+      ...data.payload,string;
+      __meta: {
+        external_id: data.externalId,
+        event_type: data.eventType,
+        source: data.source,se<PipelineResult> {
+      },t context = createPipelineContext(c);
+    },yType = mapSourceToEntityType(data.source, data.eventType);
+    tenantId, = data.tenantId || c.get?.('tenantId') || 'default';
+    data.source,
+    contextturn processIncoming(
+  );   entityType,
+}{

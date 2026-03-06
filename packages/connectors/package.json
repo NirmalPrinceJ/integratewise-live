@@ -1,0 +1,25 @@
+{
+  "name": "@integratewise/connectors",
+  "version": "1.0.0",
+  "description": "IntegrateWise connectors for accounting, compliance, and business systems",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "test": "vitest",
+    "lint": "eslint src --ext .ts,.tsx"
+  },
+  "dependencies": {
+    "@integratewise/connector-contracts": "workspace:*",
+    "@integratewise/connector-utils": "workspace:*",
+    "@integratewise/types": "workspace:*",
+    "zod": "^3.22.4",
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "typescript": "^5.0.0",
+    "vitest": "^1.0.0"
+  }
+}
