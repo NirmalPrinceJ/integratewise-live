@@ -19,7 +19,10 @@ export const calendarView = () => import("../../../business-ops/calendar-view");
 export const integrations = () => import("../../../business-ops/integrations");
 export const workflowCanvas = () => import("../../../business-ops/workflow-canvas");
 
-// ─── System Views (used by IT_ADMIN domain) ────────────────────────────────
+// ─── Admin / IT Views (used by IT_ADMIN domain) ────────────────────────────
+export const userManagement = () => import("../../../admin/user-management");
+export const rbacManager = () => import("../../../admin/rbac-manager");
+export const approvalWorkflows = () => import("../../../admin/approval-workflows");
 export const integrationsHub = () => import("../../../integrations-hub");
 
 // ─── Personal / Workspace Views (used by PERSONAL domain) ───────────────────

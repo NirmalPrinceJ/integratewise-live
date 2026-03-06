@@ -226,7 +226,11 @@ const DOMAIN_CONTENT_MAP: Record<Domain, Record<string, () => Promise<any>>> = {
   // ─── IT & ADMIN ───────────────────────────────────────────────────────────
   IT_ADMIN: {
     dashboard:    bizopsModules.dashboard,
+    users:        bizopsModules.userManagement,
+    permissions:  bizopsModules.rbacManager,
     integrations: bizopsModules.integrationsHub,
+    "audit-logs": bizopsModules.approvalWorkflows,
+    compliance:   bizopsModules.approvalWorkflows,
     "fabric-admin": bizopsModules.fabricAdmin,
   },
 

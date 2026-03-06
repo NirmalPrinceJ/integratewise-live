@@ -13,7 +13,7 @@ export const emailStudio = () => import("../../../marketing/email-studio");
 export const forms = () => import("../../../marketing/forms");
 export const social = () => import("../../../marketing/social");
 
-// ─── Website/CMS Views ──────────────────────────────────────────────────────
+// ─── Website/CMS Views (from landing/) ──────────────────────────────────────
 export const blog = () => import("../../../website/blog");
 export const websiteDashboard = () => import("../../../website/dashboard");
 export const media = () => import("../../../website/media");
