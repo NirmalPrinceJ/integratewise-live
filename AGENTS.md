@@ -51,3 +51,10 @@ This is not needed for `apps/web` (uses esbuild 0.21.x via Vite 6 — works with
 ### Auth / Secrets
 
 The web app's authenticated routes (`/app`) require `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` environment variables. Without them, the marketing pages still work but login/signup will error. Secrets are managed via Doppler in production.
+
+To configure locally, create `apps/web/.env.local` (gitignored):
+```
+VITE_SUPABASE_URL=https://<your-project>.supabase.co
+VITE_SUPABASE_ANON_KEY=<your-anon-key>
+```
+Then restart the dev server. Note: Vite reads these at startup, not hot-reloaded — you must restart after changing `.env.local`.
