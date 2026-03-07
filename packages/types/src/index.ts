@@ -12,5 +12,5 @@ export * from './common';
 // Billing and payment types
 export * from './billing';
 
-// Spine entity canonical types (task, note, conversation, plan, health-metric)
-export * from './spine-entities';
+// Spine entity canonical types (task, note, conversation, plan, health-metric), exposed under a namespace
+export * as SpineEntities from './spine-entities';
