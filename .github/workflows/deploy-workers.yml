@@ -26,11 +26,11 @@ on:
       environment:
         description: 'Deploy environment'
         required: true
-        default: 'production'
+        default: 'staging'
         type: choice
         options:
-          - production
           - staging
+          - production
 
 concurrency:
   group: deploy-workers-${{ github.ref }}
@@ -38,6 +38,7 @@ concurrency:
 
 env:
   NODE_VERSION: '20'
+  WRANGLER_SEND_METRICS: 'false'
 
 jobs:
   deploy-workers:
@@ -45,7 +46,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment:
-      name: ${{ inputs.environment || 'production' }}
+      name: ${{ inputs.environment || 'staging' }}
 
     steps:
       - name: Checkout
@@ -67,7 +68,7 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          DEPLOY_ENV: ${{ inputs.environment || 'production' }}
+          DEPLOY_ENV: ${{ inputs.environment || 'staging' }}
           TARGET_SERVICE: ${{ inputs.service || 'all' }}
         run: |
           # Deploy order matters — downstream services first, gateway LAST
@@ -90,22 +91,32 @@ jobs:
 
           DEPLOYED=0
           FAILED=0
+          FAILED_SERVICES=()
 
           deploy_service() {
             local svc=$1
             local toml="services/$svc/wrangler.toml"
 
             if [ ! -f "$toml" ]; then
-              echo "⚠️  Skipping $svc — no $toml"
+              echo "⚠️  Skipping $svc — no $toml found"
               return 1
             fi
 
             echo "🚀 Deploying $svc (env: $DEPLOY_ENV)..."
-            if npx wrangler deploy -c "$toml" 2>&1; then
-              echo "✅ $svc deployed"
+
+            # Check if the wrangler.toml has the env defined
+            if grep -q "\[env\.${DEPLOY_ENV}\]" "$toml"; then
+              ENV_FLAG="--env $DEPLOY_ENV"
+            else
+              echo "⚠️  No [env.$DEPLOY_ENV] in $toml — deploying to top-level (production default)"
+              ENV_FLAG=""
+            fi
+
+            if npx wrangler deploy -c "$toml" $ENV_FLAG --keep-vars 2>&1; then
+              echo "✅ $svc deployed successfully"
               return 0
             else
-              echo "❌ $svc failed"
+              echo "❌ $svc failed to deploy"
               return 1
             fi
           }
@@ -116,6 +127,7 @@ jobs:
                 ((DEPLOYED++))
               else
                 ((FAILED++)) || true
+                FAILED_SERVICES+=("$svc")
               fi
             done
           else
@@ -123,19 +135,25 @@ jobs:
               ((DEPLOYED++))
             else
               ((FAILED++)) || true
+              FAILED_SERVICES+=("$TARGET_SERVICE")
             fi
           fi
 
           echo ""
           echo "════════════════════════════════════════"
-          echo "  ✅ Deployed: $DEPLOYED   ❌ Failed: $FAILED"
+          echo " ✅ Deployed: $DEPLOYED  ❌ Failed: $FAILED"
+          if [ ${#FAILED_SERVICES[@]} -gt 0 ]; then
+            echo " Failed services: ${FAILED_SERVICES[*]}"
+          fi
           echo "════════════════════════════════════════"
 
           if [ $FAILED -gt 0 ] && [ "$TARGET_SERVICE" = "all" ]; then
-            echo "::warning::$FAILED services failed to deploy"
+            echo "::warning::$FAILED service(s) failed to deploy: ${FAILED_SERVICES[*]}"
+            # Don't exit with failure on partial deploy — report and continue
           fi
 
       - name: Deployment Summary
+        if: always()
         run: |
           echo "## Workers Deployment" >> $GITHUB_STEP_SUMMARY
           echo "- **Service:** ${{ inputs.service || 'all (6 consolidated workers)' }}" >> $GITHUB_STEP_SUMMARY
@@ -146,7 +164,7 @@ jobs:
     name: Health Check
     needs: deploy-workers
     runs-on: ubuntu-latest
-    if: inputs.environment == 'production' || github.ref == 'refs/heads/main'
+    if: ${{ (inputs.environment == 'production' || github.ref == 'refs/heads/main') && needs.deploy-workers.result == 'success' }}
     timeout-minutes: 5
 
     steps:
@@ -167,11 +185,11 @@ jobs:
             if curl -sf --max-time 10 "$url" > /dev/null 2>&1; then
               echo "  ✅ Healthy"
             else
-              echo "  ⚠️ Unreachable (may need DNS/secrets setup)"
+              echo "  ⚠️  Unreachable (may need DNS/secrets setup)"
               ALL_HEALTHY=false
             fi
           done
 
           if [ "$ALL_HEALTHY" = false ]; then
-            echo "::warning::Some health checks failed — may need DNS or Doppler secrets configured"
+            echo "::warning::Some health checks failed — verify DNS and Cloudflare secrets"
           fi

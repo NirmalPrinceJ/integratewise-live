@@ -7,12 +7,15 @@ compatibility_flags = ["nodejs_compat"]
 [[d1_databases]]
 binding = "CACHE_DB"
 database_name = "integratewise-spine-cache"
-database_id = "placeholder-d1-id"
+database_id = "ed1f534a-df1e-4783-8a74-8d6d70d067ff"
 
 # KV for hot entity cache
 [[kv_namespaces]]
 binding = "CACHE"
-id = "placeholder-cache-kv"
+id = "18aa20dfeb304f0ba592d9070964dd31"
 
 [env.staging]
 name = "integratewise-spine-v2-staging"
+
+[env.production]
+name = "integratewise-spine-v2"
