@@ -1,0 +1,160 @@
+{
+  "schema_version": "1.0",
+  "server": {
+    "name": "glowing-pancake-mcp",
+    "version": "1.0.0",
+    "description": "Glowing Pancake AI-Powered Knowledge Workspace MCP Server"
+  },
+  "tools": [
+    {
+      "name": "query_context",
+      "description": "Query the Glowing Pancake knowledge base for architecture, gaps, timeline, or current status",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "description": "What to query: 'architecture', 'gaps', 'timeline', 'status', 'agents'"
+          },
+          "detail_level": {
+            "type": "string",
+            "enum": ["summary", "full"],
+            "default": "summary"
+          }
+        },
+        "required": ["query"]
+      }
+    },
+    {
+      "name": "get_system_status",
+      "description": "Get current system status including active services, recent deployments, and health checks",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "component": {
+            "type": "string",
+            "enum": ["all", "n8n", "database", "workers", "frontend"],
+            "default": "all"
+          }
+        }
+      }
+    },
+    {
+      "name": "create_task",
+      "description": "Create a new task or issue in the Glowing Pancake system",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Task title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Task description"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["critical", "high", "medium", "low"],
+            "default": "medium"
+          },
+          "category": {
+            "type": "string",
+            "enum": ["architecture", "infrastructure", "agent", "gap", "feature"]
+          }
+        },
+        "required": ["title", "description", "category"]
+      }
+    },
+    {
+      "name": "trigger_workflow",
+      "description": "Trigger an n8n workflow",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "workflow_id": {
+            "type": "string",
+            "description": "n8n workflow ID or name"
+          },
+          "payload": {
+            "type": "object",
+            "description": "Data to pass to workflow"
+          }
+        },
+        "required": ["workflow_id"]
+      }
+    },
+    {
+      "name": "analyze_with_python",
+      "description": "Run Python intelligence analysis on data",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "analysis_type": {
+            "type": "string",
+            "enum": ["churn_prediction", "health_score", "data_quality", "custom"]
+          },
+          "data_source": {
+            "type": "string",
+            "description": "Data source identifier or query"
+          },
+          "parameters": {
+            "type": "object",
+            "description": "Additional parameters for analysis"
+          }
+        },
+        "required": ["analysis_type"]
+      }
+    },
+    {
+      "name": "update_context",
+      "description": "Update the AI context layer (llm.txt, context.json) - requires approval",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "update_type": {
+            "type": "string",
+            "enum": ["milestone", "gap_resolved", "architecture_change", "status_update"]
+          },
+          "content": {
+            "type": "string",
+            "description": "Content of the update"
+          },
+          "requires_approval": {
+            "type": "boolean",
+            "default": true
+          }
+        },
+        "required": ["update_type", "content"]
+      }
+    },
+    {
+      "name": "get_agent_status",
+      "description": "Get status of AI agents (SuccessPilot, ChurnShield, etc.)",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "agent_name": {
+            "type": "string",
+            "enum": ["all", "SuccessPilot", "ChurnShield", "VaultGuard", "DataSentinel", "ArchitectIQ", "TemplateForge", "DealDesk"],
+            "default": "all"
+          }
+        }
+      }
+    }
+  ],
+  "resources": [
+    {
+      "uri": "https://glowingpancake.ai/llm.txt",
+      "name": "llm_context",
+      "description": "Primary AI context document",
+      "mimeType": "text/plain"
+    },
+    {
+      "uri": "https://glowingpancake.ai/context.json",
+      "name": "structured_context",
+      "description": "Machine-readable context data",
+      "mimeType": "application/json"
+    }
+  ]
+}

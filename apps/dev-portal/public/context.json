@@ -1,0 +1,128 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-02-14",
+  "status": "INTERNAL_DEVELOPMENT",
+  "identity": {
+    "name": "Glowing Pancake",
+    "location": "Bengaluru, India",
+    "founder": "Nirmal Prince J (Prince)",
+    "background": "13+ years MuleSoft Integration Architect, Former CSM at Salesforce (MuleSoft)",
+    "legal": "Independent LLP — NOT a Salesforce product"
+  },
+  "product": {
+    "name": "Glowing Pancake",
+    "tagline": "AI-Powered Knowledge Workspace",
+    "phase": "Pre-Launch Development",
+    "wedge_product": {
+      "name": "n8n MCP Orchestration Layer",
+      "endpoint": "https://n8n.glowingpancake.online/mcp-server/http",
+      "description": "Multi-system AI orchestration through Model Context Protocol",
+      "priority": "HIGHEST"
+    }
+  },
+  "philosophy": {
+    "principles": [
+      "AI That Thinks in Context, Waits for Approvals",
+      "Normalize Once, Render Anywhere",
+      "Dual-Context Design: vendor AND client goals in every recommendation",
+      "Approval-Based Agents: AI proposes, human approves, system learns"
+    ]
+  },
+  "architecture": {
+    "layers": [
+      {
+        "id": "L0",
+        "name": "Vision Layer",
+        "description": "Unified Intelligence Layer with two feedback loops converging in The Spine (SSOT)",
+        "components": [
+          { "name": "Loop A", "type": "Human-Governed Context", "desc": "Decisions, goals, approvals" },
+          { "name": "Loop B", "type": "System-Governed Tool Data", "desc": "Automated ingestion, normalization" },
+          { "name": "The Spine", "type": "SSOT", "desc": "Atlas Spine — canonical truth store" }
+        ]
+      },
+      {
+        "id": "L1",
+        "name": "Platform Layer",
+        "modules": 15,
+        "cognitive_components": 14,
+        "pipeline_stages": 8,
+        "accelerators": 4
+      },
+      {
+        "id": "L2",
+        "name": "System Layer",
+        "services": [
+          { "name": "Supabase", "role": "Truth Storage", "tech": "PostgreSQL + RLS + Auth" },
+          { "name": "Cloudflare", "role": "Compute/Edge/Cache", "tech": "Workers, Pages, R2, KV" },
+          { "name": "n8n", "role": "Orchestration", "tech": "Self-hosted MCP Server" },
+          { "name": "Neon PostgreSQL", "role": "Event Store", "tech": "Webhooks, Events" },
+          { "name": "Vercel", "role": "Frontend Hosting", "tech": "Next.js" },
+          { "name": "Notion", "role": "Documentation", "tech": "17-21 databases" },
+          { "name": "Box", "role": "File Storage", "tech": "Enterprise storage" }
+        ]
+      },
+      {
+        "id": "L3",
+        "name": "Implementation Layer",
+        "agents": [
+          { "name": "SuccessPilot", "function": "CS playbook execution and health scoring" },
+          { "name": "ChurnShield", "function": "Churn prediction and intervention" },
+          { "name": "VaultGuard", "function": "Data governance and compliance" },
+          { "name": "DataSentinel", "function": "Data quality monitoring" },
+          { "name": "ArchitectIQ", "function": "Integration architecture recommendations" },
+          { "name": "TemplateForge", "function": "Template and document generation" },
+          { "name": "DealDesk", "function": "Deal structuring and pricing optimization" }
+        ],
+        "agent_mode": "Approval-Based"
+      }
+    ]
+  },
+  "infrastructure": {
+    "domains": [
+      { "domain": "glowingpancake.ai", "purpose": "Internal Dev Portal", "status": "active", "hosting": "Cloudflare Pages" },
+      { "domain": "glowingpancake.co", "purpose": "Public Website", "status": "paused", "hosting": "Webflow" },
+      { "domain": "glowingpancake.online", "purpose": "Infrastructure/APIs", "status": "active", "hosting": "Cloudflare" },
+      { "domain": "n8n.glowingpancake.online", "purpose": "MCP Orchestration", "status": "active", "hosting": "Self-hosted" }
+    ]
+  },
+  "gaps": [
+    { "system": "Flow B — Tool-to-Truth Loop", "issue": "Re-ingestion mechanism missing", "severity": "critical", "status": "Not Started" },
+    { "system": "Flow C — Context-to-Truth Loop", "issue": "Entirely absent", "severity": "critical", "status": "Not Started" },
+    { "system": "Webflow Site", "issue": "Zero SEO indexing across 47 pages", "severity": "medium", "status": "Deprioritized" },
+    { "system": "Email Agents", "issue": "Not implemented", "severity": "medium", "status": "Queued" },
+    { "system": "LinkedIn / WhatsApp Business", "issue": "Setup incomplete", "severity": "low", "status": "Deprioritized" }
+  ],
+  "timeline": [
+    { "date": "2025-11", "milestone": "Infrastructure Foundation", "desc": "Cloudflare, Vercel, Neon PostgreSQL provisioned" },
+    { "date": "2025-12-01", "milestone": "n8n Deployment", "desc": "Self-hosted n8n operational, MCP endpoint configured" },
+    { "date": "2025-12-12", "milestone": "Website Deployment", "desc": "Hub-controller deployed via GitHub Actions + Vercel CI/CD" },
+    { "date": "2025-12-20", "milestone": "Webhook Infrastructure", "desc": "Cloudflare Workers + Neon event store architecture" },
+    { "date": "2025-12-26", "milestone": "Database + Auth Sprint", "desc": "7-day sprint: Neon schema, Supabase auth project" },
+    { "date": "2026-01-09", "milestone": "OS Architecture Redesign", "desc": "Streamlined user flow with role-based views" },
+    { "date": "2026-02-14", "milestone": "Dev Portal Launch", "desc": "integratewise.ai live with AI Context Layer deployed", "isLatest": true }
+  ],
+  "business": {
+    "team_size": 1,
+    "hiring": ["Operations"],
+    "revenue_target_y1": "$1.2M",
+    "strategy": "PLG Flywheel",
+    "gtm_tracks": [
+      "Digital templates and micro-products",
+      "Coaching, training, consulting",
+      "Platform subscriptions (post-launch)"
+    ],
+    "current_revenue_streams": [
+      "Digital templates",
+      "Coaching/training",
+      "Automation consulting"
+    ]
+  },
+  "ai_context": {
+    "endpoints": [
+      { "path": "https://glowingpancake.ai/llm.txt", "format": "markdown", "purpose": "Human + AI readable context document" },
+      { "path": "https://glowingpancake.ai/context.json", "format": "json", "purpose": "Machine-readable structured data" },
+      { "path": "https://glowingpancake.ai/.well-known/ai-context.json", "format": "json", "purpose": "AI agent discovery endpoint" },
+      { "path": "https://n8n.glowingpancake.online/mcp-server/http", "format": "mcp", "purpose": "Model Context Protocol endpoint" }
+    ]
+  }
+}
