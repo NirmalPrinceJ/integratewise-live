@@ -25,6 +25,11 @@ queue = "ops.dlq"
 max_batch_size = 10
 max_batch_timeout = 30
 
+[[queues.consumers]]
+queue = "signals"
+max_batch_size = 10
+max_batch_timeout = 30
+
 # --- Queue Producers ---
 
 # From act: pipeline re-ingestion after write-back
@@ -38,6 +43,23 @@ binding = "PIPELINE_QUEUE"
 [[services]]
 binding = "CONNECTOR"
 service = "integratewise-connector"
+
+[[services]]
+binding = "WORKFLOW"
+service = "integratewise-bff"
+
+[[services]]
+binding = "ACT"
+service = "integratewise-act"
+
+[[d1_databases]]
+binding = "D1"
+database_name = "integratewise-spine-cache"
+database_id = "placeholder-d1-id"
+
+[vars]
+ENABLE_SIGNALS = "true"
+SERVICE_SECRET = "replace-in-production"
 
 [env.staging]
 name = "integratewise-intelligence-staging"

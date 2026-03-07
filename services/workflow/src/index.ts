@@ -1,8 +1,12 @@
+import { HITLGate } from './durable-objects/hitl';
+
 export interface Env {
   SPINE: Fetcher;
   KNOWLEDGE: Fetcher;
   THINK: Fetcher;
+  ACT?: Fetcher;
   ACT_QUEUE: Queue;
+  HITL_GATE: DurableObjectNamespace;
   SUPABASE_URL: string;
   SUPABASE_SERVICE_ROLE_KEY: string;
 }
@@ -11,6 +15,21 @@ export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     const tenantId = request.headers.get('x-tenant-id') || '';
+
+    const hitlPrefixes = ['/hitl/', '/api/v1/cognitive/hitl/'];
+    const hitlPrefix = hitlPrefixes.find((prefix) => url.pathname.startsWith(prefix));
+    if (hitlPrefix) {
+      const id = env.HITL_GATE.idFromName('global');
+      const stub = env.HITL_GATE.get(id);
+      const suffix = url.pathname.slice(hitlPrefix.length - 1);
+      const proxiedUrl = `http://hitl${suffix}${url.search}`;
+      const proxied = new Request(proxiedUrl, {
+        method: request.method,
+        headers: request.headers,
+        body: request.body,
+      });
+      return stub.fetch(proxied);
+    }
 
     // Health check
     if (url.pathname === '/health') {
@@ -56,6 +75,8 @@ export default {
     return new Response('BFF service', { status: 200 });
   }
 };
+
+export { HITLGate };
 
 async function getDashboard(env: Env, tenantId: string): Promise<Response> {
   // Call Spine for dashboard stats

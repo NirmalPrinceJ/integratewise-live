@@ -3,10 +3,17 @@ export interface Env {
   KNOWLEDGE_QUEUE: Queue;
   ACCELERATOR_QUEUE: Queue;
   INTELLIGENCE_QUEUE: Queue;
+  SIGNAL_QUEUE?: Queue;
   DLQ_QUEUE: Queue;
   SPINE: Fetcher;
+  D1?: D1Database;
+  SIGNAL_CACHE?: KVNamespace;
+  METRICS?: KVNamespace;
   SUPABASE_URL: string;
   SUPABASE_SERVICE_ROLE_KEY: string;
+  PYTHON_INTELLIGENCE_URL?: string;
+  ENABLE_SIGNALS?: string;
+  ENABLE_PYTHON_ANALYSIS?: string;
 }
 
 type Stage = 'analyze' | 'classify' | 'filter' | 'refine' | 'extract' | 'validate' | 'sanity' | 'sectorize';
@@ -149,6 +156,9 @@ async function processStage(msg: PipelineMessage, env: Env): Promise<PipelineMes
 }
 
 async function sectorize(msg: PipelineMessage, env: Env): Promise<void> {
+  const startedAt = Date.now();
+  const traceId = msg.metadata.trace_id || crypto.randomUUID();
+
   // Build entity objects for Spine write
   const entities = [{
     entity_type: msg.payload._entity_type || msg.payload.type || 'unknown',
@@ -176,7 +186,80 @@ async function sectorize(msg: PipelineMessage, env: Env): Promise<void> {
     throw new Error(`Spine write failed: ${writeResponse.status} ${await writeResponse.text()}`);
   }
 
-  // Emit intelligence event
+  const hydrationBucket = resolveHydrationBucket(msg.payload);
+  const spineId = String(msg.payload.id || msg.payload.spine_id || msg.payload.source_id || entities[0].source_id);
+  const workspaceId = String(msg.payload.workspace_id || msg.tenant_id);
+  const domainSchema = String(msg.payload.domain_schema || msg.payload._entity_type || 'general');
+
+  if (isSignalsEnabled(env) && isSignalReadyBucket(hydrationBucket)) {
+    await refreshEntity360Entity(env, spineId);
+    const entity360 = await readEntity360Projection(env, msg.tenant_id, spineId, workspaceId, hydrationBucket, domainSchema, msg.payload);
+
+    if (env.D1) {
+      await env.D1.prepare(
+        'INSERT OR REPLACE INTO entity360_cache (spine_id, workspace_id, payload, expires_at, version) VALUES (?, ?, ?, ?, ?)'
+      )
+        .bind(
+          spineId,
+          workspaceId,
+          JSON.stringify(entity360),
+          Math.floor(Date.now() / 1000) + 300,
+          Number(msg.payload.version || 1),
+        )
+        .run();
+    }
+
+    const signalId = crypto.randomUUID();
+    const analysis = await callPythonIntelligence(env, {
+      signal_id: signalId,
+      spine_id: spineId,
+      workspace_id: workspaceId,
+      domain_schema: domainSchema,
+      hydration_bucket: hydrationBucket,
+      entity_snapshot: msg.payload,
+      recent_context: entity360?.recent_context || [],
+      recent_knowledge: entity360?.recent_knowledge || [],
+    }, traceId);
+
+    const signal = {
+      signal_id: signalId,
+      spine_id: spineId,
+      workspace_id: workspaceId,
+      type: analysis.requires_approval ? 'risk_alert' : 'entity_matured',
+      priority: analysis.confidence > 0.9 ? 'high' : 'medium',
+      confidence: analysis.confidence,
+      hydration_bucket: hydrationBucket,
+      domain_schema: domainSchema,
+      payload: {
+        spine_snapshot: msg.payload,
+        ai_analysis: analysis,
+        auto_execute: analysis.auto_execute,
+        requires_approval: analysis.requires_approval,
+      },
+      timestamp: new Date().toISOString(),
+    };
+
+    if (env.SIGNAL_QUEUE) {
+      await env.SIGNAL_QUEUE.send(signal);
+    }
+
+    if (env.SIGNAL_CACHE) {
+      await env.SIGNAL_CACHE.put(`signal:${Date.now()}:${signalId}`, JSON.stringify(signal), { expirationTtl: 3600 });
+    }
+
+    logEvent('signal_emitted', {
+      trace_id: traceId,
+      signal_id: signalId,
+      workspace_id: workspaceId,
+      spine_id: spineId,
+      confidence: analysis.confidence,
+      requires_approval: analysis.requires_approval,
+      auto_execute: analysis.auto_execute,
+      latency_ms: Date.now() - startedAt,
+    });
+  }
+
+  // Emit intelligence event for backward compatibility with current L2 consumers.
   await env.INTELLIGENCE_QUEUE.send({
     type: 'data_change',
     tenant_id: msg.tenant_id,
@@ -193,6 +276,162 @@ async function sectorize(msg: PipelineMessage, env: Env): Promise<void> {
     entity_count: entities.length,
     trace_id: msg.metadata.trace_id,
   });
+
+  if (env.METRICS) {
+    await env.METRICS.put('last_pipeline', String(Date.now()), { expirationTtl: 86400 });
+  }
+}
+
+function isSignalsEnabled(env: Env): boolean {
+  return String(env.ENABLE_SIGNALS ?? 'true').toLowerCase() === 'true';
+}
+
+function isSignalReadyBucket(bucket: string): boolean {
+  const normalized = bucket.toUpperCase();
+  return ['B5', 'B6', 'B7'].includes(normalized);
+}
+
+function resolveHydrationBucket(payload: Record<string, any>): string {
+  const raw = String(payload.hydration_bucket || payload.bucket || 'B7');
+  return raw.toUpperCase();
+}
+
+async function refreshEntity360Entity(env: Env, spineId: string): Promise<void> {
+  if (!env.SUPABASE_URL || !env.SUPABASE_SERVICE_ROLE_KEY) return;
+  try {
+    await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/refresh_entity360_entity`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      },
+      body: JSON.stringify({ entity_uuid: spineId }),
+    });
+  } catch (e) {
+    console.warn('Entity360 refresh skipped:', e);
+  }
+}
+
+async function readEntity360Projection(
+  env: Env,
+  tenantId: string,
+  spineId: string,
+  workspaceId: string,
+  hydrationBucket: string,
+  domainSchema: string,
+  snapshot: Record<string, any>,
+): Promise<Record<string, any>> {
+  try {
+    const query = new URLSearchParams({
+      spine_id: `eq.${spineId}`,
+      tenant_id: `eq.${tenantId}`,
+      select: '*',
+      limit: '1',
+    });
+    const res = await fetch(`${env.SUPABASE_URL}/rest/v1/entity360?${query.toString()}`, {
+      headers: {
+        apikey: env.SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${env.SUPABASE_SERVICE_ROLE_KEY}`,
+      },
+    });
+    if (!res.ok) throw new Error(`entity360 query failed: ${res.status}`);
+    const rows = await res.json() as Record<string, any>[];
+    return rows[0] || {
+      spine_id: spineId,
+      workspace_id: workspaceId,
+      hydration_bucket: hydrationBucket,
+      domain_schema: domainSchema,
+      recent_context: [],
+      recent_knowledge: [],
+      payload: snapshot,
+    };
+  } catch {
+    return {
+      spine_id: spineId,
+      workspace_id: workspaceId,
+      hydration_bucket: hydrationBucket,
+      domain_schema: domainSchema,
+      recent_context: [],
+      recent_knowledge: [],
+      payload: snapshot,
+    };
+  }
+}
+
+async function callPythonIntelligence(
+  env: Env,
+  payload: {
+    signal_id: string;
+    spine_id: string;
+    workspace_id: string;
+    domain_schema: string;
+    hydration_bucket: string;
+    entity_snapshot: Record<string, any>;
+    recent_context: any[];
+    recent_knowledge: any[];
+  },
+  traceId: string,
+): Promise<{
+  signal_id: string;
+  recommended_action: string;
+  confidence: number;
+  reasoning: string[];
+  requires_approval: boolean;
+  auto_execute: boolean;
+}> {
+  const fallback = {
+    signal_id: payload.signal_id,
+    recommended_action: payload.domain_schema === 'sales' ? 'update_crm' : 'notify_user',
+    confidence: payload.hydration_bucket === 'B7' ? 0.9 : 0.7,
+    reasoning: ['Fallback analysis: Python Intelligence unavailable'],
+    requires_approval: payload.hydration_bucket !== 'B7',
+    auto_execute: false,
+  };
+
+  const pythonEnabled = String(env.ENABLE_PYTHON_ANALYSIS ?? 'true').toLowerCase() === 'true';
+  if (!pythonEnabled || !env.PYTHON_INTELLIGENCE_URL) return fallback;
+
+  try {
+    const controller = new AbortController();
+    const timeoutMs = 800;
+    const timeout = setTimeout(() => controller.abort('python_timeout'), timeoutMs);
+    let res: Response;
+    try {
+      res = await fetch(`${env.PYTHON_INTELLIGENCE_URL}/analyze`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-correlation-id': traceId,
+        },
+        signal: controller.signal,
+        body: JSON.stringify(payload),
+      });
+    } finally {
+      clearTimeout(timeout);
+    }
+    if (!res.ok) return fallback;
+    const analysis = await res.json() as typeof fallback;
+    return {
+      ...fallback,
+      ...analysis,
+      confidence: Number(analysis.confidence ?? fallback.confidence),
+      reasoning: Array.isArray(analysis.reasoning) ? analysis.reasoning : fallback.reasoning,
+      requires_approval: Boolean(analysis.requires_approval),
+      auto_execute: Boolean(analysis.auto_execute),
+    };
+  } catch {
+    return fallback;
+  }
+}
+
+function logEvent(event: string, details: Record<string, unknown>): void {
+  console.log(JSON.stringify({
+    ts: new Date().toISOString(),
+    service: 'normalizer',
+    event,
+    ...details,
+  }));
 }
 
 function detectEntityType(payload: Record<string, any>): string {

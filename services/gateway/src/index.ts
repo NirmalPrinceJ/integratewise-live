@@ -28,10 +28,14 @@ export interface Env {
   // KV
   RATE_LIMITS: KVNamespace;
   SESSIONS: KVNamespace;
+  SIGNAL_CACHE?: KVNamespace;
+  METRICS?: KVNamespace;
   // Secrets
   SUPABASE_URL: string;
   SUPABASE_SERVICE_ROLE_KEY: string;
   ALLOWED_ORIGINS?: string;
+  HUBSPOT_WEBHOOK_SECRET?: string;
+  ENABLE_SIGNALS?: string;
 }
 
 // Route table: path prefix → binding name or 'INTERNAL_ADMIN' | 'INTERNAL_BILLING' | 'INTERNAL_TENANTS'
@@ -95,6 +99,16 @@ export default {
 
     const url = new URL(request.url);
 
+    // IP-based edge throttling for all ingress requests.
+    const ip = request.headers.get('cf-connecting-ip') || 'unknown';
+    const ipRateKey = `ip:${ip}:${Math.floor(Date.now() / 60000)}`;
+    const currentIpCount = parseInt((await env.RATE_LIMITS.get(ipRateKey)) || '0', 10);
+    if (currentIpCount >= 100) {
+      logGatewayEvent('rate_limited_ip', { ip });
+      return new Response('Rate limited', { status: 429 });
+    }
+    await env.RATE_LIMITS.put(ipRateKey, String(currentIpCount + 1), { expirationTtl: 120 });
+
     // Health check
     if (url.pathname === '/health') {
       return new Response(JSON.stringify({ status: 'ok', service: 'gateway', ts: Date.now() }), {
@@ -102,8 +116,42 @@ export default {
       });
     }
 
+    if (url.pathname === '/metrics/signals') {
+      if (!isSignalsEnabled(env)) {
+        return new Response(JSON.stringify({
+          recent_signals: [],
+          hitl_pending: { pending: 0 },
+          pipeline_latency: null,
+          enabled: false,
+        }), {
+          headers: { 'Content-Type': 'application/json' },
+        });
+      }
+
+      const recentSignals = await readRecentSignals(env.SIGNAL_CACHE);
+      const hitlPending = await readHitlPending(env.BFF);
+      const lastPipeline = Number((await env.METRICS?.get('last_pipeline')) || '0');
+      const pipelineLatency = lastPipeline > 0 ? Date.now() - lastPipeline : null;
+
+      return new Response(JSON.stringify({
+        recent_signals: recentSignals.slice(0, 50),
+        hitl_pending: hitlPending,
+        pipeline_latency: pipelineLatency,
+      }), {
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     // Webhook routes bypass auth (they use signature verification)
     if (url.pathname.startsWith('/webhooks')) {
+      const provider = url.pathname.split('/webhooks/')[1]?.split('/')[0] || 'unknown';
+      const isValid = await verifyWebhook(provider, request.clone(), env);
+      if (!isValid) {
+        logGatewayEvent('webhook_rejected', { provider, path: url.pathname });
+        return new Response('Unauthorized', { status: 401 });
+      }
+      logGatewayEvent('webhook_verified', { provider, path: url.pathname });
+
       for (const [prefix, target] of ROUTES) {
         if (url.pathname.startsWith(prefix)) {
           return routeRequest(request, env, target);
@@ -196,3 +244,91 @@ export default {
     });
   }
 };
+
+async function verifyWebhook(provider: string, request: Request, env: Env): Promise<boolean> {
+  if (provider === 'hubspot') {
+    const signature = request.headers.get('x-hubspot-signature-v3');
+    const timestampHeader = request.headers.get('x-hubspot-request-timestamp');
+    if (!signature || !timestampHeader || !env.HUBSPOT_WEBHOOK_SECRET) return false;
+
+    const requestTs = Number(timestampHeader);
+    if (!Number.isFinite(requestTs)) return false;
+    const nowSec = Math.floor(Date.now() / 1000);
+    if (Math.abs(nowSec - requestTs) > 300) return false;
+
+    const body = await request.text();
+    const fullUrl = new URL(request.url).toString();
+    const payload = `${request.method}${fullUrl}${body}${timestampHeader}`;
+    const encodedSecret = new TextEncoder().encode(env.HUBSPOT_WEBHOOK_SECRET);
+    const key = await crypto.subtle.importKey(
+      'raw',
+      encodedSecret,
+      { name: 'HMAC', hash: 'SHA-256' },
+      false,
+      ['sign']
+    );
+    const digest = await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(payload));
+    const computedBase64 = base64FromBytes(new Uint8Array(digest));
+    return timingSafeEqual(computedBase64, signature);
+  }
+  // Unknown providers are denied by default.
+  return false;
+}
+
+function isSignalsEnabled(env: Env): boolean {
+  return String(env.ENABLE_SIGNALS ?? 'true').toLowerCase() === 'true';
+}
+
+function timingSafeEqual(a: string, b: string): boolean {
+  if (a.length !== b.length) return false;
+  let mismatch = 0;
+  for (let i = 0; i < a.length; i++) {
+    mismatch |= a.charCodeAt(i) ^ b.charCodeAt(i);
+  }
+  return mismatch === 0;
+}
+
+function base64FromBytes(bytes: Uint8Array): string {
+  let binary = '';
+  for (const b of bytes) binary += String.fromCharCode(b);
+  return btoa(binary);
+}
+
+async function readRecentSignals(signalCache?: KVNamespace): Promise<any[]> {
+  if (!signalCache) return [];
+  const keyList = await signalCache.list({ prefix: 'signal:', limit: 50 });
+  const values = await Promise.all(
+    keyList.keys.map(async (k) => {
+      try {
+        const raw = await signalCache.get(k.name);
+        return raw ? JSON.parse(raw) : null;
+      } catch {
+        return null;
+      }
+    })
+  );
+  return values.filter(Boolean).sort((a: any, b: any) => {
+    const at = new Date(a.timestamp || 0).getTime();
+    const bt = new Date(b.timestamp || 0).getTime();
+    return bt - at;
+  });
+}
+
+async function readHitlPending(bff: Fetcher): Promise<any> {
+  try {
+    const res = await bff.fetch(new Request('http://bff/hitl/count'));
+    if (!res.ok) return { pending: 0 };
+    return await res.json();
+  } catch {
+    return { pending: 0 };
+  }
+}
+
+function logGatewayEvent(event: string, details: Record<string, unknown>): void {
+  console.log(JSON.stringify({
+    ts: new Date().toISOString(),
+    service: 'gateway',
+    event,
+    ...details,
+  }));
+}

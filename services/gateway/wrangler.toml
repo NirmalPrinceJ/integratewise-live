@@ -39,6 +39,18 @@ id = "8f61d841d2574061ac1d547187d72a58"
 binding = "SESSIONS"
 id = "508ba759f7a44ca8aaaf8502d603077b"
 
+[[kv_namespaces]]
+binding = "SIGNAL_CACHE"
+id = "placeholder-signal-kv"
+
+[[kv_namespaces]]
+binding = "METRICS"
+id = "placeholder-metrics-kv"
+
+[vars]
+HUBSPOT_WEBHOOK_SECRET = "replace-in-production"
+ENABLE_SIGNALS = "true"
+
 [env.staging]
 name = "integratewise-gateway-staging"
 

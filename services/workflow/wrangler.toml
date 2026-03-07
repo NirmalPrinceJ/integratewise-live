@@ -21,9 +21,19 @@ service = "integratewise-knowledge"
 binding = "THINK"
 service = "integratewise-intelligence"
 
+[[services]]
+binding = "ACT"
+service = "integratewise-act"
+
 # Durable Objects for real-time streaming (Hot Memory)
 [durable_objects]
-bindings = [{ name = "STREAM", class_name = "StreamSession" }]
+bindings = [
+  { name = "HITL_GATE", class_name = "HITLGate" }
+]
+
+[[migrations]]
+tag = "v1-hitl-gate"
+new_classes = ["HITLGate"]
 
 [env.staging]
 name = "integratewise-bff-staging"

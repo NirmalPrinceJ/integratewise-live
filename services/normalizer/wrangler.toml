@@ -36,10 +36,34 @@ binding = "INTELLIGENCE_QUEUE"
 queue = "ops.dlq"
 binding = "DLQ_QUEUE"
 
+[[queues.producers]]
+queue = "signals"
+binding = "SIGNAL_QUEUE"
+
+# D1 cache for entity360 edge projection
+[[d1_databases]]
+binding = "D1"
+database_name = "integratewise-spine-cache"
+database_id = "placeholder-d1-id"
+
+# KV signal cache for quick metrics retrieval
+[[kv_namespaces]]
+binding = "SIGNAL_CACHE"
+id = "placeholder-signal-kv"
+
+[[kv_namespaces]]
+binding = "METRICS"
+id = "placeholder-metrics-kv"
+
 # Service binding — ONLY service allowed to call Spine writes
 [[services]]
 binding = "SPINE"
 service = "integratewise-spine-v2"
+
+[vars]
+PYTHON_INTELLIGENCE_URL = "https://ai.integratewise.online"
+ENABLE_SIGNALS = "true"
+ENABLE_PYTHON_ANALYSIS = "true"
 
 [env.staging]
 name = "integratewise-normalizer-staging"

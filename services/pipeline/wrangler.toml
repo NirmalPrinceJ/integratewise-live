@@ -40,10 +40,19 @@ binding = "INTELLIGENCE_QUEUE"
 queue = "ops.dlq"
 binding = "DLQ_QUEUE"
 
+[[queues.producers]]
+queue = "signals"
+binding = "SIGNAL_QUEUE"
+
 # --- D1 edge cache (from spine-v2) ---
 
 [[d1_databases]]
 binding = "CACHE_DB"
+database_name = "integratewise-spine-cache"
+database_id = "placeholder-d1-id"
+
+[[d1_databases]]
+binding = "D1"
 database_name = "integratewise-spine-cache"
 database_id = "placeholder-d1-id"
 
@@ -52,6 +61,19 @@ database_id = "placeholder-d1-id"
 [[kv_namespaces]]
 binding = "CACHE"
 id = "placeholder-cache-kv"
+
+[[kv_namespaces]]
+binding = "SIGNAL_CACHE"
+id = "placeholder-signal-kv"
+
+[[kv_namespaces]]
+binding = "METRICS"
+id = "placeholder-metrics-kv"
+
+[vars]
+PYTHON_INTELLIGENCE_URL = "https://ai.integratewise.online"
+ENABLE_SIGNALS = "true"
+ENABLE_PYTHON_ANALYSIS = "true"
 
 [env.staging]
 name = "integratewise-pipeline-staging"
