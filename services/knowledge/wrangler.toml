@@ -5,7 +5,7 @@ compatibility_flags = ["nodejs_compat"]
 
 # Consumes knowledge ingestion
 [[queues.consumers]]
-queue = "knowledge-ingest"
+queue = "knowledge.ingest"
 max_batch_size = 10
 max_batch_timeout = 30
 
