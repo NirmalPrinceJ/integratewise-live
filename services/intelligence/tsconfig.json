@@ -2,7 +2,6 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src",
     "types": ["@cloudflare/workers-types"]
   },
   "include": ["src/**/*.ts", "../think/src/**/*.ts", "../act/src/**/*.ts", "../govern/src/**/*.ts", "../agents/src/**/*.ts"]
