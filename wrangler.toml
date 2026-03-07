@@ -1,0 +1,7 @@
+# Cloudflare Pages - No Worker
+# This file prevents wrangler from trying to deploy a Worker
+name = "glowing-pancake"
+compatibility_date = "2026-02-14"
+
+# Pages sites don't need a main entry
+# The out/ directory is auto-deployed
