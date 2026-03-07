@@ -17,20 +17,11 @@ on:
         type: choice
         options:
           - all
-          - spine-v2
-          - normalizer
-          - loader
-          - store
-          - mcp-connector
-          - govern
-          - act
-          - agents
-          - think
+          - pipeline
+          - connector
+          - intelligence
           - knowledge
           - workflow
-          - admin
-          - billing
-          - tenants
           - gateway
       environment:
         description: 'Deploy environment'
@@ -81,21 +72,20 @@ jobs:
           TARGET_SERVICE: ${{ inputs.service || 'all' }}
         run: |
           # Deploy order matters — downstream services first, gateway LAST
+          # v3.6 Architecture: 6 consolidated Workers
+          # Layer 1: Data stores (pipeline = normalizer + spine-v2)
+          # Layer 2: Connectors (connector = loader + mcp-connector + store)
+          # Layer 3: Intelligence (intelligence = think + act + govern + agents)
+          # Layer 4: Knowledge
+          # Layer 5: BFF (workflow)
+          # Layer 6: Gateway (LAST — needs all service bindings ready)
+          #          Gateway also includes admin + billing + tenants internally
           SERVICES=(
-            spine-v2
-            normalizer
-            loader
-            store
-            mcp-connector
-            govern
-            act
-            agents
-            think
+            pipeline
+            connector
+            intelligence
             knowledge
             workflow
-            admin
-            billing
-            tenants
             gateway
           )
 
@@ -165,14 +155,10 @@ jobs:
       - name: Deployment Summary
         if: always()
         run: |
-          echo "## Workers Deployment Summary" >> $GITHUB_STEP_SUMMARY
-          echo "| Field | Value |" >> $GITHUB_STEP_SUMMARY
-          echo "|-------|-------|" >> $GITHUB_STEP_SUMMARY
-          echo "| **Service** | ${{ inputs.service || 'all (15 services)' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Environment** | ${{ inputs.environment || 'staging' }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Branch** | ${{ github.ref_name }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Commit** | ${{ github.sha }} |" >> $GITHUB_STEP_SUMMARY
-          echo "| **Triggered by** | ${{ github.actor }} |" >> $GITHUB_STEP_SUMMARY
+          echo "## Workers Deployment" >> $GITHUB_STEP_SUMMARY
+          echo "- **Service:** ${{ inputs.service || 'all (6 consolidated workers)' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Environment:** ${{ inputs.environment || 'production' }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
 
   health-check:
     name: Health Check

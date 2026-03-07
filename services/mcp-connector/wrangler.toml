@@ -5,12 +5,12 @@ compatibility_flags = ["nodejs_compat"]
 
 # MCP sessions -> knowledge queue
 [[queues.producers]]
-queue = "knowledge-ingest"
+queue = "knowledge.ingest"
 binding = "KNOWLEDGE_QUEUE"
 
 # MCP actions -> pipeline queue
 [[queues.producers]]
-queue = "pipeline-process"
+queue = "pipeline.process"
 binding = "PIPELINE_QUEUE"
 
 # KV for MCP idempotency

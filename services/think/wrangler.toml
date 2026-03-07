@@ -5,7 +5,7 @@ compatibility_flags = ["nodejs_compat"]
 
 # Consumes intelligence events from pipeline
 [[queues.consumers]]
-queue = "intelligence-events"
+queue = "intelligence.events"
 max_batch_size = 10
 max_batch_timeout = 30
 

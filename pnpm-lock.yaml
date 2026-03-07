@@ -800,6 +800,31 @@ importers:
         specifier: ^4.0.0
         version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
 
+  services/connector:
+    dependencies:
+      '@neondatabase/serverless':
+        specifier: ^0.10.4
+        version: 0.10.4
+      '@supabase/supabase-js':
+        specifier: ^2.48.0
+        version: 2.93.3
+      hono:
+        specifier: ^4.6.0
+        version: 4.11.7
+      zod:
+        specifier: ^3.24.0
+        version: 3.25.76
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20241205.0
+        version: 4.20260131.0
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      wrangler:
+        specifier: ^4.0.0
+        version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
+
   services/gateway:
     dependencies:
       '@integratewise/connector-contracts':
@@ -861,6 +886,28 @@ importers:
       vitest:
         specifier: ^2.1.0
         version: 2.1.9(@types/node@22.19.7)(happy-dom@20.5.0)(jsdom@28.0.0)(lightningcss@1.31.1)(terser@5.16.9)
+      wrangler:
+        specifier: ^4.0.0
+        version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
+
+  services/intelligence:
+    dependencies:
+      '@neondatabase/serverless':
+        specifier: ^0.10.4
+        version: 0.10.4
+      hono:
+        specifier: ^4.6.0
+        version: 4.11.7
+      zod:
+        specifier: ^3.24.0
+        version: 3.25.76
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20241205.0
+        version: 4.20260131.0
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
       wrangler:
         specifier: ^4.0.0
         version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
@@ -976,6 +1023,31 @@ importers:
       wrangler:
         specifier: ^3.24.0
         version: 3.114.17(@cloudflare/workers-types@4.20260128.0)
+
+  services/pipeline:
+    dependencies:
+      '@neondatabase/serverless':
+        specifier: ^0.10.4
+        version: 0.10.4
+      '@supabase/supabase-js':
+        specifier: ^2.48.0
+        version: 2.93.3
+      hono:
+        specifier: ^4.6.0
+        version: 4.11.7
+      zod:
+        specifier: ^3.24.0
+        version: 3.25.76
+    devDependencies:
+      '@cloudflare/workers-types':
+        specifier: ^4.20241205.0
+        version: 4.20260131.0
+      typescript:
+        specifier: ^5.5.0
+        version: 5.9.3
+      wrangler:
+        specifier: ^4.0.0
+        version: 4.61.1(@cloudflare/workers-types@4.20260131.0)
 
   services/spine-v2:
     dependencies:
@@ -2871,7 +2943,7 @@ packages:
 
   '@expo/bunyan@4.0.1':
     resolution: {integrity: sha512-+Lla7nYSiHZirgK+U/uYzsLv/X+HaJienbD5AKX1UQZHYfWaP+9uuQluRB4GrEVWF0GZ7vEVp/jzaOT9k/SQlg==}
-    engines: {node: '>=0.10.0'}
+    engines: {'0': node >=0.10.0}
 
   '@expo/cli@0.22.28':
     resolution: {integrity: sha512-lvt72KNitGuixYD2l3SZmRKVu2G4zJpmg5V7WfUBNpmUU5oODBw/6qmiJ6kSLAlfDozscUk+BBGknBBzxUrwrA==}
